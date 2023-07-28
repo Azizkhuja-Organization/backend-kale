@@ -1,0 +1,97 @@
+version: '3'
+
+volumes:
+  kale_local_postgres_data: {}
+  kale_local_postgres_data_backups: {}
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: kale_local_django
+    container_name: kale_local_django
+    depends_on:
+      - postgres
+      - redis
+#      - mailhog
+    volumes:
+      - .:/app:z
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    ports:
+      - '8000:8000'
+    command: /start
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: kale_production_postgres
+    container_name: kale_local_postgres
+    volumes:
+      - kale_local_postgres_data:/var/lib/postgresql/data
+      - kale_local_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.local/.postgres
+
+#  docs:
+#    image: kale_local_docs
+#    container_name: kale_local_docs
+#    build:
+#      context: .
+#      dockerfile: ./compose/local/docs/Dockerfile
+#    env_file:
+#      - ./.envs/.local/.django
+#    volumes:
+#      - ./docs:/docs:z
+#      - ./config:/app/config:z
+#      - ./kale:/app/kale:z
+#    ports:
+#      - '9000:9000'
+#    command: /start-docs
+
+#  mailhog:
+#    image: mailhog/mailhog:v1.0.0
+#    container_name: kale_local_mailhog
+#    ports:
+#      - "8025:8025"
+
+  redis:
+    image: redis:6
+    container_name: kale_local_redis
+
+  celeryworker:
+    <<: *django
+    image: kale_local_celeryworker
+    container_name: kale_local_celeryworker
+    depends_on:
+      - redis
+      - postgres
+#      - mailhog
+    ports: []
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *django
+    image: kale_local_celerybeat
+    container_name: kale_local_celerybeat
+    depends_on:
+      - redis
+      - postgres
+#      - mailhog
+    ports: []
+    command: /start-celerybeat
+
+#  flower:
+#    <<: *django
+#    image: kale_local_flower
+#    container_name: kale_local_flower
+#    depends_on:
+#      - redis
+#      - postgres
+#      - mailhog
+##    ports:
+##      - '5555:5555'
+#    command: /start-flower

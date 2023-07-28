@@ -1,0 +1,60 @@
+from rest_framework import serializers
+
+from api.products.product.serializers import ProductDetailSerializer
+from api.users.serializers import UserListSerializer
+from common.order.models import Cart, CartProduct
+from common.product.models import Product
+
+
+# CART
+
+class CartCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = ['id', 'guid', 'user']
+
+
+class CartListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = ['id', 'guid', 'user', 'total_price']
+
+
+class CartDetailSerializer(serializers.ModelSerializer):
+    user = UserListSerializer()
+
+    class Meta:
+        model = Cart
+        fields = ['id', 'guid', 'user', 'total_price']
+
+
+# CART PRODUCTS
+
+class CartProductCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CartProduct
+        fields = ['id', 'guid', 'cart', 'product', 'quantity', 'orderPrice']
+
+
+class CartProductSerializer(serializers.ModelSerializer):
+    photo_small = serializers.ImageField(read_only=True)
+
+    class Meta:
+        model = Product
+        fields = ['id', 'guid', 'title', 'code', 'price', 'photo_small', 'cornerStatus', 'discount']
+
+
+class CartProductListSerializer(serializers.ModelSerializer):
+    product = CartProductSerializer()
+
+    class Meta:
+        model = CartProduct
+        fields = ['id', 'guid', 'product', 'quantity', 'orderPrice']
+
+
+class CartProductDetailSerializer(serializers.ModelSerializer):
+    product = ProductDetailSerializer()
+
+    class Meta:
+        model = CartProduct
+        fields = ['id', 'guid', 'product', 'quantity', 'orderPrice']
