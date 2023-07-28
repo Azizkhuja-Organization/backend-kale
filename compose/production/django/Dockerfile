@@ -84,8 +84,6 @@ RUN chmod +x /start-celerybeat
 COPY --chown=django:django . ${APP_HOME}
 
 # make django owner of the WORKDIR directory as well.
-RUN chown -R django:django $APP_HOME
-COPY . $APP_HOME
 
 
 RUN mkdir -p $APP_HOME/static
@@ -96,6 +94,8 @@ RUN chown django $APP_HOME/media
 
 RUN chmod 755 $APP_HOME/static # new line
 RUN chmod 755 $APP_HOME/media # new line
+RUN chown -R django:django $APP_HOME
+
 
 USER django
 

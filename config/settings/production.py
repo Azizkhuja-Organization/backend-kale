@@ -157,3 +157,4 @@ sentry_sdk.init(
 # ]
 # Your stuff...
 # ------------------------------------------------------------------------------
+STATIC_ROOT = STATIC_ROOT = os.path.join(BASE_DIR, 'static')
