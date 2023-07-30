@@ -336,4 +336,5 @@ dump.rdb
 #.envs/*
 #!.envs/.local/
 
-media
+media/
+static/

@@ -33,9 +33,9 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV BUILD_ENV ${BUILD_ENVIRONMENT}
 
 WORKDIR ${APP_HOME}
-
-RUN addgroup --system django \
-    && adduser --system --ingroup django django
+#
+#RUN addgroup --system django \
+#    && adduser --system --ingroup django django
 
 
 # Install required system dependencies
@@ -57,20 +57,20 @@ RUN pip install --no-cache-dir --no-index --find-links=/wheels/ /wheels/* \
   && rm -rf /wheels/
 
 
-COPY --chown=django:django ./compose/production/django/entrypoint /entrypoint
+COPY ./compose/production/django/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
 RUN chmod +x /entrypoint
 
 
-COPY --chown=django:django ./compose/production/django/start /start
+COPY ./compose/production/django/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
-COPY --chown=django:django ./compose/production/django/celery/worker/start /start-celeryworker
+COPY ./compose/production/django/celery/worker/start /start-celeryworker
 RUN sed -i 's/\r$//g' /start-celeryworker
 RUN chmod +x /start-celeryworker
 
 
-COPY --chown=django:django ./compose/production/django/celery/beat/start /start-celerybeat
+COPY ./compose/production/django/celery/beat/start /start-celerybeat
 RUN sed -i 's/\r$//g' /start-celerybeat
 RUN chmod +x /start-celerybeat
 
@@ -81,23 +81,23 @@ RUN chmod +x /start-celerybeat
 
 
 # copy application code to WORKDIR
-COPY --chown=django:django . ${APP_HOME}
+COPY . ${APP_HOME}
 
 # make django owner of the WORKDIR directory as well.
 
 
 RUN mkdir -p $APP_HOME/static
-RUN chown django $APP_HOME/static
+RUN #chown django $APP_HOME/static
 
 RUN mkdir -p $APP_HOME/media
-RUN chown django $APP_HOME/media
+RUN #chown django $APP_HOME/media
 
 RUN chmod 755 $APP_HOME/static # new line
 RUN chmod 755 $APP_HOME/media # new line
-RUN chown -R django:django $APP_HOME
+RUN #chown -R django:django $APP_HOME
 
 
-USER django
+#USER django
 
 WORKDIR $APP_HOME
 
