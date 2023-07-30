@@ -7,6 +7,6 @@ set -o nounset
 
 python /app/manage_prod.py collectstatic --noinput
 python /app/manage_prod.py migrate
-exec whoami
+
 exec /usr/local/bin/uvicorn config.asgi:application --host 0.0.0.0 --port 7000 --app-dir=/app
 #exec uvicorn config.asgi:application --host 0.0.0.0:7000 --reload --reload-include '*.html'

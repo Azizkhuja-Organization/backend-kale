@@ -88,7 +88,7 @@ THIRD_PARTY_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "django_celery_beat",
-    "paymeuz",
+    "kale.contrib.paymeuz",
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework.authtoken",

@@ -1,18 +1,12 @@
 import requests
-from django.contrib.auth import get_user_model
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from kale.contrib.paymeuz.serializers import SubscribeSerializer
 from kale.contrib.paymeuz.config import *
 from kale.contrib.paymeuz.methods import *
 from kale.contrib.paymeuz.models import Transaction
-from kale.contrib.paymeuz.serializers import SubscribeSerializer
-from rest_framework.response import Response
-from rest_framework.views import APIView
-
-from common.order.models import Checkout, Order
-from common.payment.payme.models import Payment, PaymentType
-
-User = get_user_model()
-
-AUTHORIZATION1 = {'X-Auth': AUTHORIZATION['X-Auth'].split(':')[0]}
 
 
 class CardCreateApiView(APIView):
@@ -21,6 +15,7 @@ class CardCreateApiView(APIView):
         serializer = SubscribeSerializer(data=request.data, many=False)
         serializer.is_valid(raise_exception=True)
         result = self.card_create(serializer.validated_data)
+
         return Response(result)
 
     def card_create(self, validated_data):
@@ -32,10 +27,11 @@ class CardCreateApiView(APIView):
                     number=validated_data['params']['card']['number'],
                     expire=validated_data['params']['card']['expire'],
                 ),
+                amount=validated_data['params']['amount'],
                 save=validated_data['params']['save']
             )
         )
-        response = requests.post(URL, json=data, headers=AUTHORIZATION1)
+        response = requests.post(URL, json=data, headers=AUTHORIZATION)
         result = response.json()
         if 'error' in result:
             return result
@@ -52,10 +48,11 @@ class CardCreateApiView(APIView):
                 token=token
             )
         )
-        response = requests.post(URL, json=data, headers=AUTHORIZATION1)
+        response = requests.post(URL, json=data, headers=AUTHORIZATION)
         result = response.json()
         if 'error' in result:
             return result
+
         result.update(token=token)
         return result
 
@@ -66,6 +63,7 @@ class CardVerifyApiView(APIView):
         serializer = SubscribeSerializer(data=request.data, many=False)
         serializer.is_valid(raise_exception=True)
         result = self.card_verify(serializer.validated_data)
+
         return Response(result)
 
     def card_verify(self, validated_data):
@@ -77,7 +75,7 @@ class CardVerifyApiView(APIView):
                 code=validated_data['params']['code'],
             )
         )
-        response = requests.post(URL, json=data, headers=AUTHORIZATION1)
+        response = requests.post(URL, json=data, headers=AUTHORIZATION)
         result = response.json()
 
         return result
@@ -90,18 +88,19 @@ class PaymentApiView(APIView):
         serializer.is_valid(raise_exception=True)
         token = serializer.validated_data['params']['token']
         result = self.receipts_create(token, serializer.validated_data)
+
         return Response(result)
 
     def receipts_create(self, token, validated_data):
         key_2 = validated_data['params']['account'][KEY_2] if KEY_2 else None
-        checkout = Checkout.objects.filter(user_id=validated_data.get('id')).first()
         data = dict(
             id=validated_data['id'],
             method=RECEIPTS_CREATE,
             params=dict(
-                amount=checkout.amount,
+                amount=validated_data['params']['amount'],
                 account=dict(
-                    KEY_1=validated_data['params']['account'][KEY_1]
+                    KEY_1 = validated_data['params']['account'][KEY_1],
+                    KEY_2 = key_2,
                 )
             )
         )
@@ -112,6 +111,7 @@ class PaymentApiView(APIView):
 
         trans_id = result['result']['receipt']['_id']
         trans = Transaction()
+        print(result)
         trans.create_transaction(
             trans_id=trans_id,
             request_id=result['id'],
@@ -127,7 +127,8 @@ class PaymentApiView(APIView):
             method=RECEIPTS_PAY,
             params=dict(
                 id=trans_id,
-                token=token)
+                token=token,
+            )
         )
         response = requests.post(URL, json=data, headers=AUTHORIZATION)
         result = response.json()
@@ -144,35 +145,6 @@ class PaymentApiView(APIView):
             trans_id=result['result']['receipt']['_id'],
             status=trans.PAID,
         )
-        if not 'error' in result:
-            checkout = Checkout.objects.filter(user=self.request.user).first()
-            if checkout.isDelivery:
-                orders = [
-                    Order(checkout=checkout,
-                          product=i.product,
-                          quantity=i.quantity,
-                          totalAmount=i.amount
-                          ) for i in checkout.products.select_related('cart', 'product').all()
-                ]
-            else:
-                orders = [
-                    Order(checkout=checkout,
-                          product=i.product,
-                          quantity=i.quantity,
-                          totalAmount=i.amount
-                          ) for i in checkout.products.select_related('cart', 'product').all()
-                ]
-            orders = Order.objects.bulk_create(orders)
-            payment = Payment.objects.create(
-                user=self.request.user,
-                amount=checkout.amount,
-                paymentType=PaymentType.PAYME
-            )
-            payment.orders.set(orders)
-            payment.save()
-
-            # REMOVE CART PRODUCTS FROM CHECKOUT
-            for i in checkout.products.select_related('cart', 'product').all():
-                i.delete()
 
         return result
+

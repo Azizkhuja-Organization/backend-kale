@@ -13,8 +13,8 @@ services:
 
     image: kale_production_django
     volumes:
-      - ./media:/app/media
-      - ./static:/app/static
+      - /var/www/kale.abba.uz/media:/app/media
+      - /var/www/kale.abba.uz/static:/app/static
     depends_on:
       - postgres
       - redis
