@@ -33,9 +33,8 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV BUILD_ENV ${BUILD_ENVIRONMENT}
 
 WORKDIR ${APP_HOME}
-#
-#RUN addgroup --system django \
-#    && adduser --system --ingroup django django
+
+#RUN addgroup --system django && adduser --system --ingroup django django
 
 
 # Install required system dependencies
@@ -65,6 +64,8 @@ RUN chmod +x /entrypoint
 COPY ./compose/production/django/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
+
+
 COPY ./compose/production/django/celery/worker/start /start-celeryworker
 RUN sed -i 's/\r$//g' /start-celeryworker
 RUN chmod +x /start-celeryworker
@@ -87,14 +88,14 @@ COPY . ${APP_HOME}
 
 
 RUN mkdir -p $APP_HOME/static
-RUN #chown django $APP_HOME/static
+#RUN chown django $APP_HOME/static
 
 RUN mkdir -p $APP_HOME/media
-RUN #chown django $APP_HOME/media
+#RUN chown django $APP_HOME/media
 
 RUN chmod 755 $APP_HOME/static # new line
 RUN chmod 755 $APP_HOME/media # new line
-RUN #chown -R django:django $APP_HOME
+#RUN #chown -R django:django $APP_HOME
 
 
 #USER django

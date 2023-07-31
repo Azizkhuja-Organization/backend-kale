@@ -71,4 +71,5 @@ drf_base64==2.0
 django-ckeditor==6.6.1
 
 # PAYME
+paymeuz==0.2
 django-payments==2.0.0
