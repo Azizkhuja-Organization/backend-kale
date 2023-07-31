@@ -367,6 +367,14 @@ REST_FRAMEWORK = {
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://kale.abba.uz'
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "https://kale.abba.uz"
+]
+
 # Your stuff...
 # ------------------------------------------------------------------------------
 

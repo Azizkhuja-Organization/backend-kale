@@ -7,6 +7,9 @@ class Social(BaseModel):
     telegram = models.URLField(null=True, blank=True)
     instagram = models.URLField(null=True, blank=True)
     facebook = models.URLField(null=True, blank=True)
+    youtube = models.URLField(null=True, blank=True)
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    location = models.URLField(null=True, blank=True)
 
     def __str__(self):
         return "Social"
