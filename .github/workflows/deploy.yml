@@ -1,0 +1,34 @@
+name: Production Django deploy kale
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: GIT pulling from github repository
+      uses: appleboy/scp-action@master
+      with:
+        HOST: ${{ secrets.NEW_HOST }}
+        USERNAME: ${{ secrets.NEW_USERNAME }}
+        PORT: ${{ secrets.NEW_PORT }}
+        KEY: ${{ secrets.NEW_KEY }}
+        source: "."
+        target: "/home/user/kale"
+
+    - name: Command using from script
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.NEW_HOST }}
+        USERNAME: ${{ secrets.NEW_USERNAME }}
+        PORT: ${{ secrets.NEW_PORT }}
+        KEY: ${{ secrets.NEW_KEY }}
+        script: |
+          git --work-tree=/home/user/kale --git-dir=/home/user/kale/.git clean -f .
+          /usr/local/bin/docker-compose -f /home/user/kale/production.yml restart
+          sh /home/devops/deploy.sh "${{ github.event.head_commit.message }}" "Kale API changes"
