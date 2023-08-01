@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from api.paginator import CustomPagination
 from api.products.product.serializers import ProductCreateSerializer, ProductListSerializer, ProductDetailSerializer
+from api.products.product.tasks import updateProducts
 from common.order.models import Wishlist
 from common.product.models import Product
 
@@ -22,6 +23,8 @@ class ProductListAPIView(ListAPIView):
     filterset_fields = ['category', 'unit', 'status', 'brand', 'manufacturer', 'cornerStatus', 'isTop']
 
     def get_queryset(self):
+        updateProducts.apply_async() # Update products from 1C
+
         queryset = super().get_queryset()
         if self.request.user.is_authenticated:
             wishlist, created = Wishlist.objects.get_or_create(user_id=self.request.user.id)

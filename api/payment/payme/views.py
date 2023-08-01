@@ -1,5 +1,7 @@
 import requests
 from django.contrib.auth import get_user_model
+from rest_framework import status
+
 from kale.contrib.paymeuz.config import *
 from kale.contrib.paymeuz.methods import *
 from kale.contrib.paymeuz.models import Transaction
@@ -42,7 +44,6 @@ class CardCreateApiView(APIView):
 
         token = result['result']['card']['token']
         result = self.card_get_verify_code(token)
-
         return result
 
     def card_get_verify_code(self, token):
@@ -79,7 +80,6 @@ class CardVerifyApiView(APIView):
         )
         response = requests.post(URL, json=data, headers=AUTHORIZATION1)
         result = response.json()
-
         return result
 
 
@@ -95,6 +95,8 @@ class PaymentApiView(APIView):
     def receipts_create(self, token, validated_data):
         key_2 = validated_data['params']['account'][KEY_2] if KEY_2 else None
         checkout = Checkout.objects.filter(user_id=validated_data.get('id')).first()
+        if checkout is None:
+            return {"status":status.HTTP_400_BAD_REQUEST}
         data = dict(
             id=validated_data['id'],
             method=RECEIPTS_CREATE,
@@ -105,8 +107,9 @@ class PaymentApiView(APIView):
                 )
             )
         )
-        response = requests.post(URL, json=data, headers=AUTHORIZATION)
+        response = requests.post(URL, json=data, headers=AUTHORIZATION1)
         result = response.json()
+        print(result, 1)
         if 'error' in result:
             return result
 
@@ -120,6 +123,7 @@ class PaymentApiView(APIView):
             status=trans.PROCESS,
         )
         result = self.receipts_pay(trans_id, token)
+        print(result, 2)
         return result
 
     def receipts_pay(self, trans_id, token):
