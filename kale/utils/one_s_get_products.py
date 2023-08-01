@@ -1,19 +1,18 @@
 import requests
 
-from django.conf import settings
+from config.settings.base import env
 
-username = settings.ONE_C_USERNAME
-password = settings.ONE_C_PASSWORD
+username = env("ONE_C_USERNAME")
+password = env("ONE_C_PASSWORD")
 
 
 def get_products():
     url = "http://94.158.52.249/Base/hs/info/stocks/"
     try:
         response = requests.get(url, auth=(username, password))
-        json_data = response.json()
-        return json_data
+        return response.json()
     except:
-        return {"Товары":[]}
+        return {"Товары": []}
 
 
 def get_latest_update_datetime():
@@ -23,4 +22,4 @@ def get_latest_update_datetime():
         json_data = response.json()
         return json_data
     except:
-        return {"Товары":[]}
+        return {"Товары": []}

@@ -4,8 +4,6 @@ from rest_framework.permissions import IsAuthenticated
 
 from api.news.serializers import NewsCreateSerializer, NewsListSerializer, NewsDetailSerializer
 from api.paginator import CustomPagination
-from api.products.product import tasks
-from api.products.product.tasks import createCategories
 from common.news.models import News
 
 
@@ -34,8 +32,6 @@ class NewsListAPIView(ListAPIView):
         p = self.request.query_params.get('p')
         if p:
             self.pagination_class = CustomPagination
-        tasks.updateProducts.apply_async()
-        createCategories()
         return queryset
 
 
