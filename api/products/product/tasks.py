@@ -14,6 +14,7 @@ def updateProducts():
     products = get_products()
     newProducts = []
     updateProducts = []
+    print(len(products.get("Товары")))
     for product in products.get("Товары"):
         category_name = product.get("Категория")
         code = product.get("Код")
