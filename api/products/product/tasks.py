@@ -1,20 +1,14 @@
 from celery import shared_task
 
 from common.product.models import Product, Category, SubCategory
-from config.celery_app import app
 from kale.utils.one_s_get_products import get_products
 
 
 @shared_task(name='updateProducts')
 def updateProducts():
-    # for i in Product.objects.all():
-    #     i.delete()
-    # return
-
     products = get_products()
     newProducts = []
     updateProducts = []
-    print(len(products.get("Товары")))
     for product in products.get("Товары"):
         category_name = product.get("Категория")
         code = product.get("Код")
@@ -68,6 +62,7 @@ def updateProducts():
                                     fields=['category', 'title', 'description', 'price', 'unit', 'brand', 'size',
                                             'manufacturer', 'quantity'])
     return
+
 
 categories = [
     {
