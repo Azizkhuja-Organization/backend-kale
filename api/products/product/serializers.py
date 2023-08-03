@@ -50,27 +50,8 @@ class ProductListSerializer(serializers.ModelSerializer):
 
 class ProductDetailSerializer(serializers.ModelSerializer):
     category = CategoryCreateSerializer()
-    colour = serializers.SerializerMethodField()
     photo_medium = serializers.ImageField(read_only=True)
     photos = serializers.SerializerMethodField()
-
-    def get_colour(self, product):
-        colour = None
-        if product.cornerStatus == ProductCornerStatus.CHEAP:
-            colour = ""
-        elif product.discount or product.cornerStatus == ProductCornerStatus.DISCOUNT:
-            colour = "#E31E25"
-        elif product.cornerStatus == ProductCornerStatus.EXPENSIVE:
-            colour = ""
-        elif product.cornerStatus == ProductCornerStatus.NEWS:
-            colour = "#FFFFFF"
-        elif product.cornerStatus == ProductCornerStatus.POPULAR:
-            colour = ""
-        elif product.cornerStatus == ProductCornerStatus.RECOMMENDATION:
-            colour = "#FDE9EA"
-        elif product.cornerStatus == ProductCornerStatus.SPECIAL:
-            colour = "#FFBC10"
-        return colour
 
     def get_photos(self, product):
         product_images = product.productImages.all()
