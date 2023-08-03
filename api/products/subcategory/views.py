@@ -1,17 +1,18 @@
 from django.db.models import Q
+from api.permissions import IsAdmin
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from api.paginator import CustomPagination
-from api.products.subcategory.serializers import SubCategoryCreateSerializer
+from api.products.subcategory.serializers import SubCategoryCreateSerializer, SubCategoryDetailSerializer
 from common.product.models import SubCategory
 
 
 class SubCategoryCreateAPIView(CreateAPIView):
     queryset = SubCategory.objects.all()
     serializer_class = SubCategoryCreateSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
 
 
 class SubCategoryListAPIView(ListAPIView):
@@ -19,7 +20,6 @@ class SubCategoryListAPIView(ListAPIView):
     serializer_class = SubCategoryCreateSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['category']
-    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -38,20 +38,19 @@ class SubCategoryListAPIView(ListAPIView):
 
 class SubCategoryDetailAPIView(RetrieveAPIView):
     queryset = SubCategory.objects.select_related('category').all()
-    serializer_class = SubCategoryCreateSerializer
-    # permission_classes = [IsAuthenticated]
+    serializer_class = SubCategoryDetailSerializer
     lookup_field = 'guid'
 
 
 class SubCategoryUpdateAPIView(UpdateAPIView):
     queryset = SubCategory.objects.all()
     serializer_class = SubCategoryCreateSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
     lookup_field = 'guid'
 
 
 class SubCategoryDeleteAPIView(DestroyAPIView):
     queryset = SubCategory.objects.all()
     serializer_class = SubCategoryCreateSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
     lookup_field = 'guid'

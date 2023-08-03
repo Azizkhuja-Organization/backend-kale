@@ -1,10 +1,17 @@
 from django.db.models import Q
+from api.permissions import IsAdmin
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from api.map.serializers import MapCreateSerializer
 from api.paginator import CustomPagination
 from common.social.models import Map
+
+
+class MapCreateAPIView(CreateAPIView):
+    queryset = Map.objects.all()
+    serializer_class = MapCreateSerializer
+    permission_classes = [IsAdmin]
 
 
 class MapListAPIView(ListAPIView):
@@ -22,8 +29,21 @@ class MapListAPIView(ListAPIView):
         return queryset
 
 
-class MapDetailAPIView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
+class MapDetailAPIView(RetrieveAPIView):
     queryset = Map.objects.all()
     serializer_class = MapCreateSerializer
-    permission_classes = [IsAuthenticated]
+    lookup_field = 'guid'
+
+
+class MapUpdateAPIView(UpdateAPIView):
+    queryset = Map.objects.all()
+    serializer_class = MapCreateSerializer
+    permission_classes = [IsAdmin]
+    lookup_field = 'guid'
+
+
+class MapDestroyAPIView(DestroyAPIView):
+    queryset = Map.objects.all()
+    serializer_class = MapCreateSerializer
+    permission_classes = [IsAdmin]
     lookup_field = 'guid'

@@ -42,7 +42,7 @@ class CheckoutDetailAPIView(RetrieveAPIView, DestroyAPIView):
 class OrderCreateAPIView(CreateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderCreateSerializer
-    permission_classes = [IsClient]
+    permission_classes = [IsClient | IsAdmin]
 
 
 class OrderListAPIView(ListAPIView):
@@ -50,9 +50,7 @@ class OrderListAPIView(ListAPIView):
     serializer_class = OrderListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['checkout', 'product', 'status']
-
-    # ordering_fields = ['quantity', 'orderedTime', 'deliveredTime', 'status']
-    permission_classes = [IsClient]
+    permission_classes = [IsClient | IsAdmin]
 
     def get_queryset(self):
         queryset = super().get_queryset()

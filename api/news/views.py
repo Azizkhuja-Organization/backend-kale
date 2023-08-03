@@ -1,4 +1,5 @@
 from django.db.models import Q
+from api.permissions import IsAdmin
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
@@ -10,7 +11,7 @@ from common.news.models import News
 class NewsCreateAPIView(CreateAPIView):
     queryset = News.objects.all()
     serializer_class = NewsCreateSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
 
 
 class NewsListAPIView(ListAPIView):
@@ -38,19 +39,18 @@ class NewsListAPIView(ListAPIView):
 class NewsDetailAPIView(RetrieveAPIView):
     queryset = News.objects.all()
     serializer_class = NewsDetailSerializer
-    permission_classes = [IsAuthenticated]
     lookup_field = 'guid'
 
 
 class NewsUpdateAPIView(UpdateAPIView):
     queryset = News.objects.all()
     serializer_class = NewsCreateSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
     lookup_field = 'guid'
 
 
 class NewsDeleteAPIView(DestroyAPIView):
     queryset = News.objects.all()
     serializer_class = NewsCreateSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
     lookup_field = 'guid'

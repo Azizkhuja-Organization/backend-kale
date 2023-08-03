@@ -1,4 +1,5 @@
 from django.db.models import Q
+from api.permissions import IsAdmin
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
@@ -10,13 +11,12 @@ from common.product.models import Category
 class CategoryCreateAPIView(CreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategoryCreateSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
 
 
 class CategoryListAPIView(ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategoryListSerializer
-    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -41,19 +41,18 @@ class CategoryListAPIView(ListAPIView):
 class CategoryDetailAPIView(RetrieveAPIView):
     queryset = Category.objects.all()
     serializer_class = CategoryDetailSerializer
-    # permission_classes = [IsAuthenticated]
     lookup_field = 'guid'
 
 
 class CategoryUpdateAPIView(UpdateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategoryCreateSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
     lookup_field = 'guid'
 
 
 class CategoryDeleteAPIView(DestroyAPIView):
     queryset = Category.objects.all()
     serializer_class = CategoryCreateSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
     lookup_field = 'guid'

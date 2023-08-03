@@ -1,4 +1,5 @@
 from django.db.models import Q, Exists, OuterRef
+from api.permissions import IsAdmin
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -13,7 +14,7 @@ from common.product.models import Product
 class ProductCreateAPIView(CreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductCreateSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
 
 
 class ProductListAPIView(ListAPIView):
@@ -70,12 +71,12 @@ class ProductDetailAPIView(RetrieveAPIView):
 class ProductUpdateAPIView(UpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductCreateSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
     lookup_field = 'guid'
 
 
 class ProductDeleteAPIView(DestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductCreateSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
     lookup_field = 'guid'

@@ -1,4 +1,5 @@
 from django.db.models import F, Sum, Q
+from api.permissions import IsAdmin, IsClient
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, ListAPIView, DestroyAPIView
@@ -16,8 +17,7 @@ from common.product.models import Product
 # CART
 
 class CountersAPIView(APIView):
-    # permission_classes = [IsAuthenticated]
-
+    
     def get(self, request):
         if request.user.is_authenticated:
             cartProducts = CartProduct.objects.filter(cart__user=request.user).count()
@@ -36,7 +36,7 @@ class CountersAPIView(APIView):
 
 
 class CartAddSubAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsClient]
 
     def get(self, request):
         id = request.query_params.get('id')
@@ -59,47 +59,18 @@ class CartAddSubAPIView(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class CartCreateAPIView(CreateAPIView):
-    queryset = Cart.objects.all()
-    serializer_class = CartCreateSerializer
-    # permission_classes = [IsAuthenticated]
-
-
-class CartListAPIView(ListAPIView):
-    queryset = Cart.objects.select_related('user').all()
-    serializer_class = CartListSerializer
-    filter_backends = [DjangoFilterBackend]
-    filter_fields = ['user']
-    # permission_classes = [IsAuthenticated]
-    lookup_field = 'guid'
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        p = self.request.query_params.get('p')
-        if p:
-            self.pagination_class = CustomPagination
-        return queryset
-
-
-class CartDetailAPIView(RetrieveAPIView):
-    queryset = Cart.objects.all()
-    serializer_class = CartDetailSerializer
-    # permission_classes = [IsAuthenticated]
-    lookup_field = 'guid'
-
-
 # CART PRODUCTS
 
 class CartProductCreateAPIView(CreateAPIView):
     queryset = CartProduct.objects.all()
     serializer_class = CartProductCreateSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsClient]
 
 
 class CartProductListAPIView(ListAPIView):
     queryset = CartProduct.objects.select_related('cart', 'cart__user', 'product').all()
     serializer_class = CartProductListSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsClient]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -133,5 +104,5 @@ class CartProductListAPIView(ListAPIView):
 class CartProductDestroyAPIView(DestroyAPIView):
     queryset = CartProduct.objects.all()
     serializer_class = CartProductCreateSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsClient]
     lookup_field = 'guid'

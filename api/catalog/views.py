@@ -1,4 +1,5 @@
 from django.db.models import Q
+from api.permissions import IsAdmin
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
@@ -10,13 +11,12 @@ from common.catalog.models import Catalog
 class CatalogCreateAPIView(CreateAPIView):
     queryset = Catalog.objects.all()
     serializer_class = CatalogCreateSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
 
 
 class CatalogListAPIView(ListAPIView):
     queryset = Catalog.objects.all()
     serializer_class = CatalogListSerializer
-    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -39,19 +39,18 @@ class CatalogListAPIView(ListAPIView):
 class CatalogDetailAPIView(RetrieveAPIView):
     queryset = Catalog.objects.all()
     serializer_class = CatalogDetailSerializer
-    # permission_classes = [IsAuthenticated]
     lookup_field = 'guid'
 
 
 class CatalogUpdateAPIView(UpdateAPIView):
     queryset = Catalog.objects.all()
     serializer_class = CatalogCreateSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
     lookup_field = 'guid'
 
 
 class CatalogDeleteAPIView(DestroyAPIView):
     queryset = Catalog.objects.all()
     serializer_class = CatalogCreateSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
     lookup_field = 'guid'

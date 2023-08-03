@@ -6,12 +6,24 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from api.auth.serializers import LogOutSerializer, LoginSerializer, SignUpSerializer, VerifyCodeSerializer, \
+from api.auth.serializers import LogOutSerializer, LoginSerializer, SignUpSerializer, UserLoginSerializer, VerifyCodeSerializer, \
     ReSendCodeSerializer
 from common.users.models import Code
 from .tasks import send_sms
 
 User = get_user_model()
+
+
+
+class LoginAPIView(CreateAPIView):
+    serializer_class = UserLoginSerializer
+    queryset = User.objects.all()
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class SignUpAPIView(CreateAPIView):
