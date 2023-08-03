@@ -19,6 +19,18 @@ class PortfolioImagesDetailSerializer(serializers.ModelSerializer):
         model = PortfolioImage
         fields = ['photo_medium']
 
+class PortfolioListSerializer(serializers.ModelSerializer):
+    photo_medium = serializers.ImageField(read_only=True)
+    photos = serializers.SerializerMethodField()
+
+    def get_photos(self, portfolio):
+        portfolio_images = portfolio.portfolioImages.all()
+        return PortfolioImagesDetailSerializer(portfolio_images, many=True).data
+
+    class Meta:
+        model = Portfolio
+        fields = ['id', 'guid', 'title', 'photos', 'description', 'photo_medium']
+
 class PortfolioDetailSerializer(serializers.ModelSerializer):
     photo_medium = serializers.ImageField(read_only=True)
     photos = serializers.SerializerMethodField()

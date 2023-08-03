@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from api.paginator import CustomPagination
 from api.permissions import IsAdmin
-from api.portfolio.serializers import PortfolioCreateSerializer, PortfolioDetailSerializer
+from api.portfolio.serializers import PortfolioCreateSerializer, PortfolioDetailSerializer, PortfolioListSerializer
 from common.portfolio.models import Portfolio
 
 
@@ -16,7 +16,7 @@ class PortfolioCreateAPIView(CreateAPIView):
 
 class PortfolioListAPIView(ListAPIView):
     queryset = Portfolio.objects.all()
-    serializer_class = PortfolioCreateSerializer
+    serializer_class = PortfolioListSerializer
 
     def get_queryset(self):
         queryset = super().get_queryset()

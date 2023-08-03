@@ -17,35 +17,17 @@ class ProductCreateSerializer(serializers.ModelSerializer):
 
 class ProductListSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
-    colour = serializers.SerializerMethodField()
     photo_small = serializers.ImageField(read_only=True)
     isLiked = serializers.BooleanField(default=False)
 
     def get_category(self, product):
         return product.category.title if product.category else None
 
-    def get_colour(self, product):
-        colour = None
-        if product.cornerStatus == ProductCornerStatus.CHEAP:
-            colour = ""
-        elif product.cornerStatus == ProductCornerStatus.DISCOUNT:
-            colour = ""
-        elif product.cornerStatus == ProductCornerStatus.EXPENSIVE:
-            colour = ""
-        elif product.cornerStatus == ProductCornerStatus.NEWS:
-            colour = ""
-        elif product.cornerStatus == ProductCornerStatus.POPULAR:
-            colour = ""
-        elif product.cornerStatus == ProductCornerStatus.RECOMMENDATION:
-            colour = ""
-        elif product.cornerStatus == ProductCornerStatus.SPECIAL:
-            colour = ""
-        return colour
 
     class Meta:
         model = Product
         fields = ['id', 'guid', 'category', 'title', 'code', 'price', 'brand', 'size', 'manufacturer', 'photo_small',
-                  'file3D', 'cornerStatus', 'isLiked', 'colour']
+                  'file3D', 'cornerStatus', 'isLiked']
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
@@ -61,4 +43,4 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'guid', 'category', 'code', 'title', 'description', 'price', 'material', 'unit', 'file3D',
-                  'status', 'brand', 'size', 'manufacturer', 'photo_medium', 'photos', 'colour']
+                  'status', 'brand', 'size', 'manufacturer', 'photo_medium', 'photos']
