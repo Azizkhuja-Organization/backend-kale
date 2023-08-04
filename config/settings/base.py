@@ -368,11 +368,13 @@ REST_FRAMEWORK = {
 CORS_ALLOW_ALL_ORIGINS = True
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://kale.abba.uz'
+    'https://kale.abba.uz',
+    "http://localhost:5173"
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://kale.abba.uz"
+    "https://kale.abba.uz",
+    "http://localhost:5173"
 ]
 
 # Your stuff...
@@ -389,14 +391,14 @@ CACHE_TTL = 60 * 5
 
 # TRANSLATIONS
 
-# MODELTRANSLATION_DEFAULT_LANGUAGE = 'uz'
+# MODELTRANSLATION_DEFAULT_LANGUAGE = 'ru'
 
 # LANGUAGES = (
 #     ('uz', 'Uzbek'),
 #     ('ru', 'Russian'),
 #     ('en', 'English'),
 # )
-# MODELTRANSLATION_FALLBACK_LANGUAGES = ('uz', 'ru', 'en')
+# MODELTRANSLATION_FALLBACK_LANGUAGES = ('uz', 'en')
 
 # MODELTRANSLATION_TRANSLATION_FILES = (
 #     'common.activities.translations',
