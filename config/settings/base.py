@@ -159,8 +159,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -365,7 +365,6 @@ REST_FRAMEWORK = {
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
 # CORS_URLS_REGEX = r"^/api/.*$"
 
-CORS_ALLOW_ALL_ORIGINS = True
 CORS_ORIGIN_ALLOW_ALL = True
 
 # CORS_ORIGIN_WHITELIST = (
@@ -373,17 +372,18 @@ CORS_ORIGIN_ALLOW_ALL = True
 #     "http://localhost:5173",
 # )
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://kale.abba.uz',
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+# CSRF_TRUSTED_ORIGINS = [
+#     'https://kale.abba.uz',
+#     "http://localhost:5173",
+#     "http://127.0.0.1:5173",
+# ]
 
 # CORS_ALLOWED_ORIGINS = [
 #     "https://kale.abba.uz",
 #     "http://localhost:5173",
 #     "http://127.0.0.1:5173",
 # ]
+
 
 # Your stuff...
 # ------------------------------------------------------------------------------
