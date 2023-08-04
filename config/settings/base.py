@@ -372,10 +372,10 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173"
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "https://kale.abba.uz",
-    "http://localhost:5173"
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "https://kale.abba.uz",
+#     "http://localhost:5173"
+# ]
 
 # Your stuff...
 # ------------------------------------------------------------------------------
