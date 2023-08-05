@@ -35,9 +35,10 @@ class ProductListAPIView(ListAPIView):
 
         others = self.request.query_params.get('others')
         guid = self.request.query_params.get('guid')
-        if others and guid:
+        product = Product.objects.filter(guid=guid).first()
+        if others and product:
             try:
-                queryset = queryset.exclude(guid=guid)
+                queryset = queryset.filter(category=product.category).exclude(guid=guid)
             except:
                 pass
 
