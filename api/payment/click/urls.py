@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import PaymentClick, PaymentComplete, prepare, complete, PaymentPrepareAPIView, PaymentCompleteAPIView
+from .views import PaymentClick, PaymentPrepareAPIView, PaymentCompleteAPIView
 
 urlpatterns = [
     # path('-prepare/', prepare, name='prepare'),

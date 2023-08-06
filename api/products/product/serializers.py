@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from api.products.category.serializers import CategoryCreateSerializer
 from api.products.images.serializers import ProductImageDetailSerializer
-from common.product.models import Product, ProductCornerStatus
+from common.product.models import Product
 
 
 class ProductCreateSerializer(serializers.ModelSerializer):
@@ -11,8 +11,9 @@ class ProductCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'guid', 'category', 'code', 'title', 'description', 'price', 'material', 'unit', 'file3D',
-                  'status', 'brand', 'size', 'manufacturer', 'photo']
+        fields = ['id', 'guid', 'category', 'code', 'title', 'title_uz', 'title_ru', 'description', 'description_uz',
+                  'description_ru', 'price', 'material', 'material_uz', 'material_ru', 'unit', 'file3D', 'status',
+                  'brand', 'size', 'manufacturer', 'manufacturer_uz', 'manufacturer_ru', 'photo']
 
 
 class ProductListSerializer(serializers.ModelSerializer):
@@ -22,7 +23,6 @@ class ProductListSerializer(serializers.ModelSerializer):
 
     def get_category(self, product):
         return product.category.title if product.category else None
-
 
     class Meta:
         model = Product

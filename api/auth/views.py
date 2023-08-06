@@ -6,13 +6,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from api.auth.serializers import LogOutSerializer, LoginSerializer, SignUpSerializer, UserLoginSerializer, VerifyCodeSerializer, \
+from api.auth.serializers import LogOutSerializer, LoginSerializer, SignUpSerializer, UserLoginSerializer, \
+    VerifyCodeSerializer, \
     ReSendCodeSerializer
 from common.users.models import Code
 from .tasks import send_sms
 
 User = get_user_model()
-
 
 
 class LoginAPIView(CreateAPIView):

@@ -78,6 +78,7 @@ DJANGO_APPS = [
     # "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'modeltranslation',
     "django.contrib.admin",
     "django.forms",
 ]
@@ -98,7 +99,6 @@ THIRD_PARTY_APPS = [
     "django_filters",
     'drf_yasg',
     'imagekit',
-    'modeltranslation',
     'drf_base64',
 ]
 
@@ -175,7 +175,6 @@ MIDDLEWARE = [
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
-
 
 # MEDIA
 # ------------------------------------------------------------------------------
@@ -399,22 +398,21 @@ CACHE_TTL = 60 * 5
 
 # TRANSLATIONS
 
-# MODELTRANSLATION_DEFAULT_LANGUAGE = 'ru'
+LANGUAGES = (
+    ('uz', 'Uzbek'),
+    ('en', 'English'),
+    ('ru', 'Russian'),
+)
 
-# LANGUAGES = (
-#     ('uz', 'Uzbek'),
-#     ('ru', 'Russian'),
-#     ('en', 'English'),
-# )
-# MODELTRANSLATION_FALLBACK_LANGUAGES = ('uz', 'en')
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'ru'
+MODELTRANSLATION_FALLBACK_LANGUAGES = ('en', 'uz')
 
-# MODELTRANSLATION_TRANSLATION_FILES = (
-#     'common.activities.translations',
-#     'common.groups.translations',
-#     'common.icons.translations',
-#     'common.meals.translations',
-#     'common.notification.translations',
-# )
+MODELTRANSLATION_TRANSLATION_FILES = (
+    'common.catalog.translations',
+    'common.news.translations',
+    'common.portfolio.translations',
+    'common.product.translations',
+)
 
 # CHANNEL LAYER
 
@@ -452,4 +450,3 @@ PAYMENT_VARIANTS = {
         'secret_key': env('CLICK_SECRET_KEY')
     })
 }
-

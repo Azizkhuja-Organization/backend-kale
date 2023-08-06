@@ -1,15 +1,12 @@
 from django.db.models import F, Sum, Q
-from api.permissions import IsAdmin, IsClient
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, RetrieveAPIView, ListAPIView, DestroyAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import CreateAPIView, ListAPIView, DestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.cart.serializers import CartCreateSerializer, CartListSerializer, CartDetailSerializer, \
-    CartProductCreateSerializer, CartProductListSerializer
+from api.cart.serializers import CartProductCreateSerializer, CartProductListSerializer
 from api.paginator import CustomPagination
+from api.permissions import IsClient
 from common.order.models import Cart, CartProduct, Wishlist
 from common.product.models import Product
 
@@ -17,7 +14,7 @@ from common.product.models import Product
 # CART
 
 class CountersAPIView(APIView):
-    
+
     def get(self, request):
         if request.user.is_authenticated:
             cartProducts = CartProduct.objects.filter(cart__user=request.user).count()

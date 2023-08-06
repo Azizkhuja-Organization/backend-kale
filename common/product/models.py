@@ -41,7 +41,8 @@ class Category(BaseModel):
                                  options={'quality': 70})
 
     def __str__(self):
-        return self.title
+        return self.title_ru
+        # return "self.title_ru"
 
 
 class SubCategory(BaseModel):
@@ -49,7 +50,7 @@ class SubCategory(BaseModel):
     title = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.title
+        return self.title_ru
 
 
 class Product(BaseModel):
@@ -86,7 +87,7 @@ class Product(BaseModel):
         return self.price
 
     def __str__(self):
-        return self.title
+        return self.title_ru
 
 
 class ProductImage(BaseModel):

@@ -1,5 +1,4 @@
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, DestroyAPIView, ListAPIView, UpdateAPIView
-from rest_framework.permissions import IsAuthenticated
 
 from api.chat.room import serializers as _serializers
 from common.chat.models import Room

@@ -1,7 +1,7 @@
 from django.urls import path
 
-from api.order.views import OrderCreateAPIView, OrderListAPIView, OrderDetailAPIView, \
-    OrderUpdateAPIView, OrderDeleteAPIView, CheckoutCreateAPIView, CheckoutDetailAPIView
+from api.order.views import OrderListAPIView, OrderDetailAPIView, \
+    CheckoutCreateAPIView, CheckoutDetailAPIView
 
 app_name = 'order'
 

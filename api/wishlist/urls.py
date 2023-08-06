@@ -1,7 +1,6 @@
 from django.urls import path
 
-from api.wishlist.views import WishlistCreateAPIView, WishlistListAPIView, WishlistDetailAPIView, \
-    WishlistUpdateAPIView, WishlistAddSubAPIView, WishlistProductsAPIView
+from api.wishlist.views import WishlistAddSubAPIView, WishlistProductsAPIView
 
 app_name = 'wishlist'
 

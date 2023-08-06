@@ -1,7 +1,7 @@
-from api.permissions import IsAdmin
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.response import Response
 
+from api.permissions import IsAdmin
 from api.social.serializers import SocialLinksSerializer
 from common.social.models import Social
 
@@ -20,7 +20,7 @@ class SocialListAPIView(ListAPIView):
     def list(self, request, *args, **kwargs):
         socialLinks = self.queryset.first()
         return Response(SocialLinksSerializer(socialLinks).data)
-    
+
 
 class SocialDetailAPIView(RetrieveAPIView):
     queryset = Social.objects.all()

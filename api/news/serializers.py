@@ -9,7 +9,8 @@ class NewsCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = News
-        fields = ['id', 'guid', 'title', 'description', 'photo']
+        fields = ['id', 'guid', 'title', 'title_uz', 'title_ru', 'description', 'description_uz', 'description_ru',
+                  'photo']
 
 
 class NewsListSerializer(serializers.ModelSerializer):

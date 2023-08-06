@@ -1,10 +1,9 @@
 from django.db.models import Q
-from api.permissions import IsAdmin
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from api.catalog.serializers import CatalogCreateSerializer, CatalogListSerializer, CatalogDetailSerializer
 from api.paginator import CustomPagination
+from api.permissions import IsAdmin
 from common.catalog.models import Catalog
 
 

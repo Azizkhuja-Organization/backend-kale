@@ -6,6 +6,9 @@ from kale.utils.one_s_get_products import get_products
 
 @shared_task(name='updateProducts')
 def updateProducts():
+    for i in Product.objects.all():
+        i.delete()
+
     products = get_products()
     newProducts = []
     updateProducts = []
@@ -22,7 +25,7 @@ def updateProducts():
         description = product.get("Описание")
         manufacturer = product.get("Производитель")
         quantity = product.get("Остаток")
-        category = SubCategory.objects.filter(title=category_name).first()
+        category = SubCategory.objects.filter(title_ru=category_name).first()
         if category is None:
             continue
 
@@ -31,36 +34,38 @@ def updateProducts():
             updateProducts.append(Product(
                 id=pr.id,
                 category=category,
-                title=title,
-                description=description,
+                # title=title,
+                title_ru=title,
+                description_ru=description,
                 price=price,
-                # material=material,
+                # material_ru=material,
                 unit=unit,
                 brand=brand,
                 size=size,
-                manufacturer=manufacturer,
+                manufacturer_ru=manufacturer,
                 quantity=quantity
             ))
         else:
             newProducts.append(Product(
                 category=category,
                 code=code,
-                title=title,
-                description=description,
+                # title=title,
+                title_ru=title,
+                description_ru=description,
                 price=price,
-                # material=material,
+                # material_ru=material,
                 unit=unit,
                 brand=brand,
                 size=size,
-                manufacturer=manufacturer,
+                manufacturer_ru=manufacturer,
                 quantity=quantity
             ))
     if newProducts:
         Product.objects.bulk_create(newProducts)
     if updateProducts:
         Product.objects.bulk_update(updateProducts,
-                                    fields=['category', 'title', 'description', 'price', 'unit', 'brand', 'size',
-                                            'manufacturer', 'quantity'])
+                                    fields=['category', 'title_ru', 'description_ru', 'price', 'unit', 'brand', 'size',
+                                            'manufacturer_ru', 'quantity'])
     return
 
 
@@ -120,9 +125,9 @@ categories = [
 def createCategories():
     subcategories = []
     for i in categories:
-        category, created = Category.objects.get_or_create(title=i.get('title'))
+        category, created = Category.objects.get_or_create(title_ru=i.get('title'))
         if created:
             for j in i.get('subcategories'):
-                subcategories.append(SubCategory(category=category, title=j))
+                subcategories.append(SubCategory(category=category, title_ru=j))
     if subcategories:
         SubCategory.objects.bulk_create(subcategories)

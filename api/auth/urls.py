@@ -8,8 +8,7 @@ urlpatterns = [
     path('sign_up/', SignUpAPIView.as_view(), name='sign_up'),
     path('verify/', VerifyCodeAPIview.as_view(), name='verify'),
     path('resend_code/', ReSendCodeAPIView.as_view(), name='resend_code'),
-    
-    
+
     path('logout/', LogoutView.as_view(), name="logout"),
     path('login/', LoginAPIView.as_view(), name='login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh')

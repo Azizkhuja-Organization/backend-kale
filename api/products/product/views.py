@@ -1,12 +1,11 @@
 from django.db.models import Q, Exists, OuterRef
-from api.permissions import IsAdmin
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from api.paginator import CustomPagination
+from api.permissions import IsAdmin
 from api.products.product.serializers import ProductCreateSerializer, ProductListSerializer, ProductDetailSerializer
-from api.products.product.tasks import updateProducts
+from api.products.product.tasks import createCategories
 from common.order.models import Wishlist
 from common.product.models import Product
 
@@ -24,6 +23,7 @@ class ProductListAPIView(ListAPIView):
     filterset_fields = ['category', 'unit', 'status', 'brand', 'manufacturer', 'cornerStatus', 'isTop']
 
     def get_queryset(self):
+        createCategories()
         queryset = super().get_queryset()
         if self.request.user.is_authenticated:
             wishlist, created = Wishlist.objects.get_or_create(user_id=self.request.user.id)

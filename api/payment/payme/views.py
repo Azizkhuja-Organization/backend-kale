@@ -1,16 +1,15 @@
 import requests
 from django.contrib.auth import get_user_model
 from rest_framework import status
-
-from kale.contrib.paymeuz.config import *
-from kale.contrib.paymeuz.methods import *
-from kale.contrib.paymeuz.models import Transaction
-from kale.contrib.paymeuz.serializers import SubscribeSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from common.order.models import Checkout, Order
 from common.payment.payme.models import Payment, PaymentType
+from kale.contrib.paymeuz.config import *
+from kale.contrib.paymeuz.methods import *
+from kale.contrib.paymeuz.models import Transaction
+from kale.contrib.paymeuz.serializers import SubscribeSerializer
 
 User = get_user_model()
 
@@ -96,7 +95,7 @@ class PaymentApiView(APIView):
         key_2 = validated_data['params']['account'][KEY_2] if KEY_2 else None
         checkout = Checkout.objects.filter(user_id=validated_data.get('id')).first()
         if checkout is None:
-            return {"status":status.HTTP_400_BAD_REQUEST}
+            return {"status": status.HTTP_400_BAD_REQUEST}
         data = dict(
             id=validated_data['id'],
             method=RECEIPTS_CREATE,

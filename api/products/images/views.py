@@ -1,8 +1,7 @@
-from api.permissions import IsAdmin
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
-from rest_framework.permissions import IsAuthenticated
 
 from api.paginator import CustomPagination
+from api.permissions import IsAdmin
 from api.products.images.serializers import ProductImageCreateSerializer, ProductImageListSerializer, \
     ProductImageDetailSerializer
 from common.product.models import ProductImage

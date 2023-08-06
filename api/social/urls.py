@@ -1,6 +1,7 @@
 from django.urls import path
 
-from api.social.views import SocialCreateAPIView, SocialDeleteAPIView, SocialDetailAPIView, SocialListAPIView, SocialUpdateAPIView
+from api.social.views import SocialCreateAPIView, SocialDeleteAPIView, SocialDetailAPIView, SocialListAPIView, \
+    SocialUpdateAPIView
 
 app_name = 'social'
 

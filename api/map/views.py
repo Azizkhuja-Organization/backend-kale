@@ -1,10 +1,9 @@
 from django.db.models import Q
-from api.permissions import IsAdmin
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
-from rest_framework.permissions import IsAuthenticated
 
-from api.map.serializers import MapCreateSerializer
+from api.map.serializers import MapCreateSerializer, MapListSerializer
 from api.paginator import CustomPagination
+from api.permissions import IsAdmin
 from common.social.models import Map
 
 
@@ -16,7 +15,7 @@ class MapCreateAPIView(CreateAPIView):
 
 class MapListAPIView(ListAPIView):
     queryset = Map.objects.all()
-    serializer_class = MapCreateSerializer
+    serializer_class = MapListSerializer
 
     def get_queryset(self):
         queryset = super().get_queryset()

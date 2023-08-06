@@ -1,10 +1,9 @@
 from django.db.models import Q
-from api.permissions import IsAdmin
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
-from rest_framework.permissions import IsAuthenticated
 
 from api.paginator import CustomPagination
 from api.partner.serializers import PartnerCreateSerializer, PartnerListSerializer, PartnerDetailSerializer
+from api.permissions import IsAdmin
 from common.partner.models import Partner
 
 
