@@ -14,7 +14,7 @@ class CategoryCreateAPIView(CreateAPIView):
 
 
 class CategoryListAPIView(ListAPIView):
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().order_by('id')
     serializer_class = CategoryListSerializer
 
     def get_queryset(self):

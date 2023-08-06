@@ -9,8 +9,8 @@ class PortfolioCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Portfolio
-        fields = ['id', 'guid', 'title', 'title_uz', 'title_ru', 'file3D', 'description', 'description_uz',
-                  'description_ru', 'photo']
+        fields = ['id', 'guid', 'title', 'title_uz', 'title_ru', 'title_en', 'file3D', 'description', 'description_uz',
+                  'description_ru', 'description_en', 'photo']
 
 
 class PortfolioImagesDetailSerializer(serializers.ModelSerializer):
@@ -44,4 +44,5 @@ class PortfolioDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Portfolio
-        fields = ['id', 'guid', 'title', 'photos', 'file3D', 'description', 'photo_medium']
+        fields = ['id', 'guid', 'title', 'title_uz', 'title_ru', 'title_en', 'photos', 'file3D', 'description',
+                  'description_uz', 'description_ru', 'description_en', 'photo_medium']

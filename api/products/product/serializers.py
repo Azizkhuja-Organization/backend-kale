@@ -11,9 +11,10 @@ class ProductCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'guid', 'category', 'code', 'title', 'title_uz', 'title_ru', 'description', 'description_uz',
-                  'description_ru', 'price', 'material', 'material_uz', 'material_ru', 'unit', 'file3D', 'status',
-                  'brand', 'size', 'manufacturer', 'manufacturer_uz', 'manufacturer_ru', 'photo']
+        fields = ['id', 'guid', 'category', 'code', 'title', 'title_uz', 'title_ru', 'title_en', 'description',
+                  'description_uz', 'description_ru', 'description_en', 'price', 'material', 'material_uz',
+                  'material_ru', 'material_en', 'unit', 'file3D', 'status', 'brand', 'size', 'manufacturer',
+                  'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo']
 
 
 class ProductListSerializer(serializers.ModelSerializer):
@@ -38,9 +39,10 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     def get_photos(self, product):
         product_images = product.productImages.all()
         return ProductImageDetailSerializer(product_images, many=True).data
-        # return [image.imageUrl for image in product_images]
 
     class Meta:
         model = Product
-        fields = ['id', 'guid', 'category', 'code', 'title', 'description', 'price', 'material', 'unit', 'file3D',
-                  'status', 'brand', 'size', 'manufacturer', 'photo_medium', 'photos']
+        fields = ['id', 'guid', 'category', 'code', 'title', 'title_uz', 'title_ru', 'title_en', 'description',
+                  'description_uz', 'description_ru', 'description_en', 'price', 'material', 'material_uz',
+                  'material_ru', 'material_en', 'unit', 'file3D', 'status', 'brand', 'size', 'manufacturer',
+                  'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo_medium', 'photos']

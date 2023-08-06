@@ -9,8 +9,8 @@ class CatalogCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Catalog
-        fields = ['id', 'guid', 'title', 'title_uz', 'title_ru', 'description', 'description_uz', 'description_ru',
-                  'photo']
+        fields = ['id', 'guid', 'title', 'title_uz', 'title_ru', 'title_en', 'description', 'description_uz',
+                  'description_ru', 'description_en', 'photo']
 
 
 class CatalogListSerializer(serializers.ModelSerializer):
@@ -26,4 +26,5 @@ class CatalogDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Catalog
-        fields = ['id', 'guid', 'title', 'description', 'photo_medium']
+        fields = ['id', 'guid', 'title', 'title_uz', 'title_ru', 'title_en', 'description', 'description_uz',
+                  'description_ru', 'description_en', 'photo_medium']
