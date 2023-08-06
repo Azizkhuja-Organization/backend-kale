@@ -5,7 +5,7 @@ from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIVie
 from rest_framework.permissions import IsAuthenticated
 
 from api.paginator import CustomPagination
-from api.products.subcategory.serializers import SubCategoryCreateSerializer, SubCategoryDetailSerializer
+from api.products.subcategory.serializers import SubCategoryCreateSerializer, SubCategoryDetailSerializer, SubCategoryListSerializer
 from common.product.models import SubCategory
 
 
@@ -17,7 +17,7 @@ class SubCategoryCreateAPIView(CreateAPIView):
 
 class SubCategoryListAPIView(ListAPIView):
     queryset = SubCategory.objects.select_related('category').all()
-    serializer_class = SubCategoryCreateSerializer
+    serializer_class = SubCategoryListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['category']
 
