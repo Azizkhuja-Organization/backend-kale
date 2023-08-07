@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api.products.category.serializers import CategoryListSerializer
 from common.product.models import Category, SubCategory
 
 
@@ -24,12 +25,7 @@ class SubCategoryListSerializer(serializers.ModelSerializer):
 
 
 class SubCategoryDetailSerializer(serializers.ModelSerializer):
-    category = serializers.SerializerMethodField()
-
-    def get_category(self, sub):
-        if sub.category:
-            return sub.category.title
-        return None
+    category = CategoryListSerializer()
 
     class Meta:
         model = SubCategory
