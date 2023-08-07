@@ -398,20 +398,22 @@ CACHE_TTL = 60 * 5
 
 # TRANSLATIONS
 
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'ru'
+
 LANGUAGES = (
     ('uz', 'Uzbek'),
-    ('en', 'English'),
     ('ru', 'Russian'),
+    ('en', 'English'),
 )
-
-MODELTRANSLATION_DEFAULT_LANGUAGE = 'ru'
-MODELTRANSLATION_FALLBACK_LANGUAGES = ('en', 'uz')
+MODELTRANSLATION_FALLBACK_LANGUAGES = ('uz', 'ru', 'en')
 
 MODELTRANSLATION_TRANSLATION_FILES = (
     'common.catalog.translations',
     'common.news.translations',
+    'common.partner.translations',
     'common.portfolio.translations',
     'common.product.translations',
+    'common.social.translations',
 )
 
 # CHANNEL LAYER
