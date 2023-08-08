@@ -92,3 +92,11 @@ class Wishlist(BaseModel):
 
     def __str__(self):
         return self.user.name
+
+
+class Comparison(BaseModel):
+    user = models.ForeignKey(User, related_name='userComparison', on_delete=models.CASCADE)
+    products = models.ManyToManyField(Product, related_name='comparisonProducts', blank=True)
+
+    def __str__(self):
+        return self.user.name

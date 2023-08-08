@@ -27,6 +27,7 @@ urlpatterns += [
     path('order', include("api.order.urls")),
     path('cart', include("api.cart.urls")),
     path('wishlist', include("api.wishlist.urls")),
+    path('comparison', include("api.comparison.urls")),
 
     # NEWS
     path('news', include("api.news.urls")),
