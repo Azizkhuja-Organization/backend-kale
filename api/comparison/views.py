@@ -29,7 +29,7 @@ class ComparisonProductsAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        comparison, created = Comparison.objects.get_or_create(user_id=2)
+        comparison, created = Comparison.objects.get_or_create(user=request.user)
         data = []
         products = comparison.products.select_related('category')
 
