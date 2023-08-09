@@ -1,9 +1,12 @@
 from django.db.models import Q, Exists, OuterRef
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
+from rest_framework.response import Response
 
 from api.paginator import CustomPagination
 from api.permissions import IsAdmin
+from api.products.images.serializers import ProductImageCreateSerializer
 from api.products.product.serializers import ProductCreateSerializer, ProductListSerializer, ProductDetailSerializer
 from api.products.product.tasks import createCategories
 from common.order.models import Wishlist
@@ -14,6 +17,26 @@ class ProductCreateAPIView(CreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductCreateSerializer
     permission_classes = [IsAdmin]
+
+    def create(self, request, *args, **kwargs):
+        photos = None
+        if 'photos' in request.data:
+            photos = request.data.pop('photos')
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        product = serializer.save()
+        if photos:
+            for photo in photos:
+                try:
+                    serial = ProductImageCreateSerializer(data={
+                        "product": product.id,
+                        "photo": photo
+                    })
+                    serial.is_valid(raise_exception=True)
+                    serial.save()
+                except:
+                    continue
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class ProductListAPIView(ListAPIView):
@@ -64,7 +87,7 @@ class ProductListAPIView(ListAPIView):
 
 
 class ProductDetailAPIView(RetrieveAPIView):
-    queryset = Product.objects.all()
+    queryset = Product.objects.select_related('subcategory').all()
     serializer_class = ProductDetailSerializer
     lookup_field = 'guid'
 
@@ -74,6 +97,25 @@ class ProductUpdateAPIView(UpdateAPIView):
     serializer_class = ProductCreateSerializer
     permission_classes = [IsAdmin]
     lookup_field = 'guid'
+
+    def update(self, request, *args, **kwargs):
+        photos = request.data.pop('photos')
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        if photos:
+            for photo in photos:
+                try:
+                    serial = ProductImageCreateSerializer(data={
+                        "product": instance.id,
+                        "photo": photo
+                    })
+                    serial.is_valid(raise_exception=True)
+                    serial.save()
+                except:
+                    continue
+        return Response(serializer.data)
 
 
 class ProductDeleteAPIView(DestroyAPIView):

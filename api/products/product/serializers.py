@@ -9,13 +9,14 @@ from common.product.models import Product
 
 class ProductCreateSerializer(serializers.ModelSerializer):
     photo = Base64ImageField(required=True)
+    photos = serializers.ListField(write_only=True, required=False)
 
     class Meta:
         model = Product
         fields = ['id', 'guid', 'subcategory', 'code', 'title', 'title_uz', 'title_ru', 'title_en', 'description',
                   'description_uz', 'description_ru', 'description_en', 'price', 'material', 'material_uz',
                   'material_ru', 'material_en', 'unit', 'file3D', 'status', 'brand', 'size', 'manufacturer',
-                  'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo']
+                  'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo', 'photos']
 
 
 class ProductListSerializer(serializers.ModelSerializer):

@@ -26,4 +26,4 @@ class ProductImageDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductImage
-        fields = ['photo_medium']
+        fields = ['id', 'guid', 'photo_medium']
