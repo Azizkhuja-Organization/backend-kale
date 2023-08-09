@@ -55,6 +55,10 @@ class CartProduct(BaseModel):
             self.orderPrice = self.quantity * self.product.price * (1 - self.product.discount / 100)
             self.save()
 
+    @property
+    def basePrice(self):
+        return self.product.price * self.quantity
+
     def __str__(self):
         return f"Cart #{self.cart.id} {self.product.title} {self.quantity}"
 

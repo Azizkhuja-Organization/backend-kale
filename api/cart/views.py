@@ -67,35 +67,36 @@ class CartProductCreateAPIView(CreateAPIView):
 class CartProductListAPIView(ListAPIView):
     queryset = CartProduct.objects.select_related('cart', 'cart__user', 'product').all()
     serializer_class = CartProductListSerializer
-    permission_classes = [IsClient]
+    # permission_classes = [IsClient]
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        user = self.request.user
-        queryset = queryset.filter(cart__user_id=user)
+        # queryset = queryset.filter(cart__user=self.request.user)
+        queryset = queryset.filter(cart__user_id=2)
         q = self.request.query_params.get('q')
         if q:
             queryset = queryset.filter(Q(title__icontains=q) | Q(description__icontains=q))
         p = self.request.query_params.get('p')
         if p:
             self.pagination_class = CustomPagination
-        queryset.aggregate(totalSum=Sum(F('orderPrice')))
+        # queryset.aggregate(totalSum=Sum(F('orderPrice')))
         return queryset
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         total = queryset.aggregate(totalSum=Sum(F('orderPrice')))
+        totalDiscount = queryset.aggregate(totalDiscount=Sum(F('product__price')))
         if not self.request.query_params.get('p'):
             serializer = self.get_serializer(queryset, many=True)
 
-            return Response({"products": serializer.data, **total})
+            return Response({"products": serializer.data, **total, **totalDiscount})
 
         page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(page, many=True)
-        if page is not None:
-            return Response({"products": self.get_paginated_response(serializer.data).data, **total})
-        elif page:
-            return Response({"products": self.get_paginated_response(serializer.data).data, **total})
+        # if page is not None:
+        return Response({"products": self.get_paginated_response(serializer.data).data, **total, **totalDiscount})
+        # elif page:
+            # return Response({"products": self.get_paginated_response(serializer.data).data, **total, **totalDiscount})
 
 
 class CartProductDestroyAPIView(DestroyAPIView):
