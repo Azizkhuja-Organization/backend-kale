@@ -10,7 +10,7 @@ from api.products.images.serializers import ProductImageCreateSerializer
 from api.products.product.serializers import ProductCreateSerializer, ProductListSerializer, ProductDetailSerializer
 from api.products.product.tasks import createCategories
 from common.order.models import Wishlist
-from common.product.models import Product
+from common.product.models import Product, ProductImage
 
 
 class ProductCreateAPIView(CreateAPIView):
@@ -26,16 +26,16 @@ class ProductCreateAPIView(CreateAPIView):
         serializer.is_valid(raise_exception=True)
         product = serializer.save()
         if photos:
+            obj = []
             for photo in photos:
-                try:
-                    serial = ProductImageCreateSerializer(data={
-                        "product": product.id,
-                        "photo": photo
-                    })
-                    serial.is_valid(raise_exception=True)
-                    serial.save()
-                except:
-                    continue
+                serial = ProductImageCreateSerializer(data={
+                    "product": product.id,
+                    "photo": photo
+                })
+                serial.is_valid(raise_exception=True)
+                obj.append(ProductImage(product=product, photo=serial.validated_data.get('photo')))
+            if obj:
+                ProductImage.objects.bulk_create(obj)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -105,17 +105,17 @@ class ProductUpdateAPIView(UpdateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         if photos:
+            obj = []
             for photo in photos:
-                try:
-                    serial = ProductImageCreateSerializer(data={
-                        "product": instance.id,
-                        "photo": photo
-                    })
-                    serial.is_valid(raise_exception=True)
-                    serial.save()
-                except:
-                    continue
-        return Response(serializer.data)
+                serial = ProductImageCreateSerializer(data={
+                    "product": instance.id,
+                    "photo": photo
+                })
+                serial.is_valid(raise_exception=True)
+                obj.append(ProductImage(product=instance, photo=serial.validated_data.get('photo')))
+            if obj:
+                ProductImage.objects.bulk_create(obj)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ProductDeleteAPIView(DestroyAPIView):

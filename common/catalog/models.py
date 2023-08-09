@@ -22,5 +22,5 @@ class Catalog(BaseModel):
 
 
 class CatalogImage(BaseModel):
-    portfolio = models.ForeignKey(Catalog, related_name='catalogImages', on_delete=models.CASCADE)
+    catalog = models.ForeignKey(Catalog, related_name='catalogImages', on_delete=models.CASCADE)
     imageURL = models.URLField()
