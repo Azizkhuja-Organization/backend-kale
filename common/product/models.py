@@ -54,7 +54,7 @@ class SubCategory(BaseModel):
 
 
 class Product(BaseModel):
-    category = models.ForeignKey(SubCategory, related_name="subcategoryProducts", on_delete=models.SET_NULL, null=True,
+    subcategory = models.ForeignKey(SubCategory, related_name="subcategoryProducts", on_delete=models.SET_NULL, null=True,
                                  blank=True)
     code = models.CharField(max_length=50)
     title = models.CharField(max_length=250)

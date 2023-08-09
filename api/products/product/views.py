@@ -17,10 +17,10 @@ class ProductCreateAPIView(CreateAPIView):
 
 
 class ProductListAPIView(ListAPIView):
-    queryset = Product.objects.select_related('category').all()
+    queryset = Product.objects.select_related('subcategory', 'subcategory__category').all()
     serializer_class = ProductListSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['category', 'unit', 'status', 'brand', 'manufacturer', 'cornerStatus', 'isTop']
+    filterset_fields = ['subcategory', 'unit', 'status', 'brand', 'manufacturer', 'cornerStatus', 'isTop']
 
     def get_queryset(self):
         createCategories()
@@ -38,7 +38,7 @@ class ProductListAPIView(ListAPIView):
         product = Product.objects.filter(guid=guid).first()
         if others and product:
             try:
-                queryset = queryset.filter(category=product.category).exclude(guid=guid)
+                queryset = queryset.filter(subcategory=product.subcategory).exclude(guid=guid)
             except:
                 pass
 
@@ -46,9 +46,9 @@ class ProductListAPIView(ListAPIView):
         if has3D:
             queryset = queryset.filter(file3D__isnull=False)
 
-        baseCategory = self.request.query_params.get('baseCategory')
-        if baseCategory:
-            queryset = queryset.filter(category__category=baseCategory)
+        category = self.request.query_params.get('category')
+        if category:
+            queryset = queryset.filter(subcategory__category=category)
 
         min = self.request.query_params.get('min')
         max = self.request.query_params.get('max')
