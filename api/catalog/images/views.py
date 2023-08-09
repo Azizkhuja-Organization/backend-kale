@@ -14,7 +14,7 @@ class CatalogImageCreateAPIView(CreateAPIView):
 
 
 class CatalogImageListAPIView(ListAPIView):
-    queryset = CatalogImage.objects.all()
+    queryset = CatalogImage.objects.select_related('catalog').all()
     serializer_class = CatalogImageListSerializer
 
     def get_queryset(self):
@@ -26,7 +26,7 @@ class CatalogImageListAPIView(ListAPIView):
 
 
 class CatalogImageDetailAPIView(RetrieveAPIView):
-    queryset = CatalogImage.objects.all()
+    queryset = CatalogImage.objects.select_related('catalog').all()
     serializer_class = CatalogImageDetailSerializer
     lookup_field = 'guid'
 

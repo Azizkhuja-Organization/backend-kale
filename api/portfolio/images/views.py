@@ -14,7 +14,7 @@ class PortfolioImageCreateAPIView(CreateAPIView):
 
 
 class PortfolioImageListAPIView(ListAPIView):
-    queryset = PortfolioImage.objects.all()
+    queryset = PortfolioImage.objects.select_related('portfolio').all()
     serializer_class = PortfolioImageListSerializer
 
     def get_queryset(self):
@@ -26,7 +26,7 @@ class PortfolioImageListAPIView(ListAPIView):
 
 
 class PortfolioImageDetailAPIView(RetrieveAPIView):
-    queryset = PortfolioImage.objects.all()
+    queryset = PortfolioImage.objects.select_related('portfolio').all()
     serializer_class = PortfolioImageDetailSerializer
     lookup_field = 'guid'
 

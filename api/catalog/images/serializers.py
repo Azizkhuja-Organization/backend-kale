@@ -5,7 +5,7 @@ from common.catalog.models import CatalogImage
 
 
 class CatalogImageCreateSerializer(serializers.ModelSerializer):
-    photo = Base64ImageField(required=False)
+    photo = Base64ImageField(required=True)
 
     class Meta:
         model = CatalogImage

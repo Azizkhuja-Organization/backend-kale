@@ -5,7 +5,7 @@ from common.product.models import ProductImage
 
 
 class ProductImageCreateSerializer(serializers.ModelSerializer):
-    photo = Base64ImageField(required=False)
+    photo = Base64ImageField(required=True)
 
     class Meta:
         model = ProductImage

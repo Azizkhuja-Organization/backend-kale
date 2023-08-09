@@ -14,7 +14,7 @@ class ProductImageCreateAPIView(CreateAPIView):
 
 
 class ProductImageListAPIView(ListAPIView):
-    queryset = ProductImage.objects.all()
+    queryset = ProductImage.objects.select_related('product').all()
     serializer_class = ProductImageListSerializer
 
     def get_queryset(self):
@@ -26,7 +26,7 @@ class ProductImageListAPIView(ListAPIView):
 
 
 class ProductImageDetailAPIView(RetrieveAPIView):
-    queryset = ProductImage.objects.all()
+    queryset = ProductImage.objects.select_related('product').all()
     serializer_class = ProductImageDetailSerializer
     lookup_field = 'guid'
 

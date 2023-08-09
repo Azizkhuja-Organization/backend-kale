@@ -5,7 +5,7 @@ from common.portfolio.models import PortfolioImage
 
 
 class PortfolioImageCreateSerializer(serializers.ModelSerializer):
-    photo = Base64ImageField(required=False)
+    photo = Base64ImageField(required=True)
 
     class Meta:
         model = PortfolioImage
