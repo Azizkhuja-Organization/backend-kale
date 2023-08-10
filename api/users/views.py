@@ -3,6 +3,7 @@ from django.db.models import Q
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
 
 from api.paginator import CustomPagination
+from api.permissions import IsAdmin, IsClient, IsOwn
 from api.users import serializers as _serializer
 
 User = get_user_model()
@@ -11,14 +12,13 @@ User = get_user_model()
 class UserCreateAPIView(CreateAPIView):
     queryset = User.objects.all()
     serializer_class = _serializer.UserCreateSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
 
 
 class UserListAPIView(ListAPIView):
     queryset = User.objects.all()
     serializer_class = _serializer.UserListSerializer
-
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -36,19 +36,19 @@ class UserListAPIView(ListAPIView):
 class UserDetailAPIView(RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = _serializer.UserDetailSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin | IsOwn]
     lookup_field = 'guid'
 
 
 class UserUpdateAPIView(UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = _serializer.UserUpdateSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin | IsOwn]
     lookup_field = 'guid'
 
 
 class UserDeleteAPIView(DestroyAPIView):
     queryset = User.objects.all()
     serializer_class = _serializer.UserCreateSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdmin]
     lookup_field = 'guid'
