@@ -4,7 +4,8 @@ from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIVie
 from rest_framework.response import Response
 
 from api.catalog.images.serializers import CatalogImageCreateSerializer
-from api.catalog.serializers import CatalogCreateSerializer, CatalogListSerializer, CatalogDetailSerializer
+from api.catalog.serializers import CatalogCreateSerializer, CatalogListSerializer, CatalogDetailSerializer, \
+    CatalogUpdateSerializer
 from api.paginator import CustomPagination
 from api.permissions import IsAdmin
 from common.catalog.models import Catalog, CatalogImage
@@ -66,7 +67,7 @@ class CatalogDetailAPIView(RetrieveAPIView):
 
 class CatalogUpdateAPIView(UpdateAPIView):
     queryset = Catalog.objects.all()
-    serializer_class = CatalogCreateSerializer
+    serializer_class = CatalogUpdateSerializer
     permission_classes = [IsAdmin]
     lookup_field = 'guid'
 

@@ -6,7 +6,8 @@ from rest_framework.response import Response
 from api.paginator import CustomPagination
 from api.permissions import IsAdmin
 from api.portfolio.images.serializers import PortfolioImageCreateSerializer
-from api.portfolio.serializers import PortfolioCreateSerializer, PortfolioDetailSerializer, PortfolioListSerializer
+from api.portfolio.serializers import PortfolioCreateSerializer, PortfolioDetailSerializer, PortfolioListSerializer, \
+    PortfolioUpdateSerializer
 from common.portfolio.models import Portfolio, PortfolioImage
 
 
@@ -66,7 +67,7 @@ class PortfolioDetailAPIView(RetrieveAPIView):
 
 class PortfolioUpdateAPIView(UpdateAPIView):
     queryset = Portfolio.objects.all()
-    serializer_class = PortfolioCreateSerializer
+    serializer_class = PortfolioUpdateSerializer
     permission_classes = [IsAdmin]
     lookup_field = 'guid'
 

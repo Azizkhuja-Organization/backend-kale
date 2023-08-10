@@ -13,6 +13,15 @@ class NewsCreateSerializer(serializers.ModelSerializer):
                   'description_ru', 'description_en', 'photo']
 
 
+class NewsUpdateSerializer(serializers.ModelSerializer):
+    photo = Base64ImageField(required=False)
+
+    class Meta:
+        model = News
+        fields = ['id', 'guid', 'title', 'title_uz', 'title_ru', 'title_en', 'description', 'description_uz',
+                  'description_ru', 'description_en', 'photo']
+
+
 class NewsListSerializer(serializers.ModelSerializer):
     photo_small = serializers.ImageField(read_only=True)
 

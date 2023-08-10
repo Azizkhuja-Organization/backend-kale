@@ -7,7 +7,8 @@ from rest_framework.response import Response
 from api.paginator import CustomPagination
 from api.permissions import IsAdmin
 from api.products.images.serializers import ProductImageCreateSerializer
-from api.products.product.serializers import ProductCreateSerializer, ProductListSerializer, ProductDetailSerializer
+from api.products.product.serializers import ProductCreateSerializer, ProductListSerializer, ProductDetailSerializer, \
+    ProductUpdateSerializer
 from api.products.product.tasks import createCategories
 from common.order.models import Wishlist
 from common.product.models import Product, ProductImage
@@ -94,7 +95,7 @@ class ProductDetailAPIView(RetrieveAPIView):
 
 class ProductUpdateAPIView(UpdateAPIView):
     queryset = Product.objects.all()
-    serializer_class = ProductCreateSerializer
+    serializer_class = ProductUpdateSerializer
     permission_classes = [IsAdmin]
     lookup_field = 'guid'
 

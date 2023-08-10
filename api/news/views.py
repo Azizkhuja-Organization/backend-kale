@@ -1,7 +1,7 @@
 from django.db.models import Q
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
 
-from api.news.serializers import NewsCreateSerializer, NewsListSerializer, NewsDetailSerializer
+from api.news.serializers import NewsCreateSerializer, NewsListSerializer, NewsDetailSerializer, NewsUpdateSerializer
 from api.paginator import CustomPagination
 from api.permissions import IsAdmin
 from common.news.models import News
@@ -43,7 +43,7 @@ class NewsDetailAPIView(RetrieveAPIView):
 
 class NewsUpdateAPIView(UpdateAPIView):
     queryset = News.objects.all()
-    serializer_class = NewsCreateSerializer
+    serializer_class = NewsUpdateSerializer
     permission_classes = [IsAdmin]
     lookup_field = 'guid'
 

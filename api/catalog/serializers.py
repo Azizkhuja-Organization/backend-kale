@@ -14,6 +14,16 @@ class CatalogCreateSerializer(serializers.ModelSerializer):
                   'description_ru', 'description_en', 'photo', 'photos']
 
 
+class CatalogUpdateSerializer(serializers.ModelSerializer):
+    photo = Base64ImageField(required=False)
+    photos = serializers.ListField(write_only=True, required=False)
+
+    class Meta:
+        model = Catalog
+        fields = ['id', 'guid', 'title', 'title_uz', 'title_ru', 'title_en', 'description', 'description_uz',
+                  'description_ru', 'description_en', 'photo', 'photos']
+
+
 class CatalogListSerializer(serializers.ModelSerializer):
     photo_small = serializers.ImageField(read_only=True)
 

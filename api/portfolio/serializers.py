@@ -14,6 +14,16 @@ class PortfolioCreateSerializer(serializers.ModelSerializer):
                   'description_ru', 'description_en', 'photo', 'photos']
 
 
+class PortfolioUpdateSerializer(serializers.ModelSerializer):
+    photo = Base64ImageField(required=False)
+    photos = serializers.ListField(write_only=True, required=False)
+
+    class Meta:
+        model = Portfolio
+        fields = ['id', 'guid', 'title', 'title_uz', 'title_ru', 'title_en', 'file3D', 'description', 'description_uz',
+                  'description_ru', 'description_en', 'photo', 'photos']
+
+
 class PortfolioImagesDetailSerializer(serializers.ModelSerializer):
     photo_medium = serializers.ImageField(read_only=True)
 
