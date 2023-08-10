@@ -67,7 +67,7 @@ class CartProductCreateAPIView(CreateAPIView):
 class CartProductListAPIView(ListAPIView):
     queryset = CartProduct.objects.select_related('cart', 'cart__user', 'product').all()
     serializer_class = CartProductListSerializer
-    # permission_classes = [IsClient]
+    permission_classes = [IsClient]
 
     def get_queryset(self):
         queryset = super().get_queryset()

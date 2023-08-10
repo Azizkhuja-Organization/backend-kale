@@ -15,7 +15,6 @@ class SocialCreateAPIView(CreateAPIView):
 class SocialListAPIView(ListAPIView):
     queryset = Social.objects.all()
     serializer_class = SocialLinksSerializer
-    permission_classes = [IsAdmin]
 
     def list(self, request, *args, **kwargs):
         socialLinks = self.queryset.first()
