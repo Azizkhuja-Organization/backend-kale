@@ -76,7 +76,7 @@ class OrderListAPIView(ListAPIView):
 
 
 class OrderDetailAPIView(RetrieveAPIView):
-    queryset = Order.objects.all()
+    queryset = Order.objects.select_related('checkout', 'product').all()
     serializer_class = OrderDetailSerializer
     permission_classes = [IsClient | IsAdmin]
     lookup_field = 'guid'

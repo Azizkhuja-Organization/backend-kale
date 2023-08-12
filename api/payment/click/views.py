@@ -46,10 +46,10 @@ def click_secret_key():
 
 
 class PaymentClick(APIView):
-    permission_classes = [IsClient]
+    # permission_classes = [IsClient]
 
     def get(self, request):
-        checkout = Checkout.objects.get(user=request.user)
+        checkout = Checkout.objects.filter(user=request.user).last()
         # payment = Payment.objects.create(user_id=request.user.id,
         #                                  total=checkout.amount,
         #                                  description="o'qish uchun to'lov",
@@ -89,7 +89,7 @@ class PaymentPrepareAPIView(CreateAPIView):
         result['merchant_trans_id'] = request.data.get('merchant_trans_id', None)
         result['merchant_prepare_id'] = request.data.get('merchant_trans_id', None)
         result['merchant_confirm_id'] = request.data.get('merchant_trans_id', None)
-        return Response()
+        return Response(result, status=status.HTTP_200_OK)
 
     def click_webhook_errors(self, request):
         click_trans_id = request.data.get('click_trans_id', None)

@@ -92,7 +92,7 @@ class PaymentApiView(APIView):
         return Response(result)
 
     def receipts_create(self, token, validated_data):
-        checkout = Checkout.objects.filter(user_id=validated_data.get('id')).last()
+        checkout = Checkout.objects.filter(user_id=validated_data.get('id')).first()
         if checkout is None:
             return {"status": status.HTTP_400_BAD_REQUEST}
         data = dict(
@@ -144,9 +144,8 @@ class PaymentApiView(APIView):
             trans_id=result['result']['receipt']['_id'],
             status=trans.PAID,
         )
-        print(result, "Paid")
         if not 'error' in result:
-            checkout = Checkout.objects.filter(user=self.request.user).order_by('-id').first()
+            checkout = Checkout.objects.filter(user=self.request.user).last()
             if checkout.isDelivery:
                 orders = [
                     Order(checkout=checkout,

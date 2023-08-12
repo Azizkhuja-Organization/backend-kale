@@ -17,19 +17,21 @@ class CheckoutDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Checkout
-        fields = ['id', 'guid', 'user', 'products', 'amount']
+        fields = ['id', 'guid', 'user', 'products', 'amount', 'isNewAddress', 'region', 'district', 'street',
+                  'comment', 'paymentType', 'installation']
+
+
+class OrderCheckoutSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Checkout
+        fields = ['id', 'guid', 'amount', 'isNewAddress', 'region', 'district', 'street', 'comment', 'paymentType',
+                  'installation']
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'guid', 'checkout', 'product', 'isDelivery', 'orderedTime', 'deliveredTime']
-
-
-class OrderListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Order
-        fields = ['id', 'guid', 'checkout', 'product', 'isDelivery', 'orderedTime', 'deliveredTime', 'status']
 
 
 class OrderProductDetailSerializer(serializers.ModelSerializer):
@@ -41,8 +43,17 @@ class OrderProductDetailSerializer(serializers.ModelSerializer):
                   'photo_small']
 
 
+class OrderListSerializer(serializers.ModelSerializer):
+    product = OrderProductDetailSerializer()
+
+    class Meta:
+        model = Order
+        fields = ['id', 'guid', 'product', 'isDelivery', 'orderedTime', 'deliveredTime', 'status']
+
+
 class OrderDetailSerializer(serializers.ModelSerializer):
-    product = OrderProductDetailSerializer(many=False)
+    product = OrderProductDetailSerializer()
+    checkout = OrderCheckoutSerializer()
 
     class Meta:
         model = Order
