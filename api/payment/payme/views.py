@@ -101,7 +101,8 @@ class PaymentApiView(APIView):
             params=dict(
                 amount=checkout.amount,
                 account=dict(
-                    KEY_1=validated_data['params']['account'][KEY_1]
+                    order_id=validated_data['id']
+                    # KEY_1=validated_data['params']['account'][KEY_1]
                 )
             )
         )
