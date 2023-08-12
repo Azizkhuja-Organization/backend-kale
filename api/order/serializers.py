@@ -8,7 +8,8 @@ from common.product.models import Product
 class CheckoutCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Checkout
-        fields = ['id', 'guid', 'user', 'products']
+        fields = ['id', 'guid', 'user', 'products', 'isNewAddress', 'region', 'district', 'street',
+                  'comment', 'paymentType', 'installation']
 
 
 class CheckoutDetailSerializer(serializers.ModelSerializer):

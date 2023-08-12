@@ -92,8 +92,7 @@ class PaymentApiView(APIView):
         return Response(result)
 
     def receipts_create(self, token, validated_data):
-        key_2 = validated_data['params']['account'][KEY_2] if KEY_2 else None
-        checkout = Checkout.objects.filter(user_id=validated_data.get('id')).first()
+        checkout = Checkout.objects.filter(user_id=validated_data.get('id')).last()
         if checkout is None:
             return {"status": status.HTTP_400_BAD_REQUEST}
         data = dict(
@@ -108,7 +107,6 @@ class PaymentApiView(APIView):
         )
         response = requests.post(URL, json=data, headers=AUTHORIZATION1)
         result = response.json()
-        print(result, 1)
         if 'error' in result:
             return result
 
@@ -122,7 +120,6 @@ class PaymentApiView(APIView):
             status=trans.PROCESS,
         )
         result = self.receipts_pay(trans_id, token)
-        print(result, 2)
         return result
 
     def receipts_pay(self, trans_id, token):
@@ -147,8 +144,9 @@ class PaymentApiView(APIView):
             trans_id=result['result']['receipt']['_id'],
             status=trans.PAID,
         )
+        print(result, "Paid")
         if not 'error' in result:
-            checkout = Checkout.objects.filter(user=self.request.user).first()
+            checkout = Checkout.objects.filter(user=self.request.user).order_by('-id').first()
             if checkout.isDelivery:
                 orders = [
                     Order(checkout=checkout,
@@ -175,7 +173,7 @@ class PaymentApiView(APIView):
             payment.save()
 
             # REMOVE CART PRODUCTS FROM CHECKOUT
-            for i in checkout.products.select_related('cart', 'product').all():
-                i.delete()
+            # for i in checkout.products.select_related('cart', 'product').all():
+                # i.delete()
 
         return result

@@ -12,10 +12,10 @@ class Partner(BaseModel):
     description = RichTextField()
 
     photo = models.ImageField(_("Image of News"), upload_to='newsImage')
-    photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(250, 250)], format='PNG',
+    photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(1460, 575)], format='PNG',
                                   options={'quality': 90})
-    photo_small = ImageSpecField(source='photo', processors=[ResizeToFill(70, 70)], format='PNG',
-                                 options={'quality': 70})
+    photo_small = ImageSpecField(source='photo', processors=[ResizeToFill(350, 235)], format='PNG',
+                                 options={'quality': 90})
 
     def __str__(self):
         return self.title

@@ -31,19 +31,19 @@ class ComparisonProductsAPIView(APIView):
     def get(self, request):
         comparison, created = Comparison.objects.get_or_create(user=request.user)
         data = []
-        products = comparison.products.select_related('category')
+        products = comparison.products.select_related('subcategory')
 
         subcategories = SubCategory.objects.all()
         subcategory_products_map = {subcategory.id: [] for subcategory in subcategories}
 
         for product in products:
-            subcategory_products_map[product.category_id].append(product)
+            subcategory_products_map[product.subcategory_id].append(product)
 
         for subcategory in subcategories:
             subcategory_products = subcategory_products_map[subcategory.id]
             if subcategory_products:
                 data.append({
-                    "category": SubCategoryCategoryListSerializer(subcategory).data,
+                    "subcategory": SubCategoryCategoryListSerializer(subcategory).data,
                     "products": ComparisonProductDetailSerializer(subcategory_products, many=True).data
                 })
 

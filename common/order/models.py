@@ -63,9 +63,23 @@ class CartProduct(BaseModel):
         return f"Cart #{self.cart.id} {self.product.title} {self.quantity}"
 
 
+class PaymentTypes(models.IntegerChoices):
+    CASH = 0, "CASH"
+    PAYME = 1, "PAYME"
+    CLICK = 2, "CLICK"
+    UZUM = 3, "UZUM"
+
+
 class Checkout(BaseModel):
     user = models.ForeignKey(User, related_name='userCheckout', on_delete=models.CASCADE)
     products = models.ManyToManyField(CartProduct, related_name='checkoutCartProduct', blank=True)
+    paymentType = models.IntegerField(choices=PaymentTypes.choices, default=PaymentTypes.CASH)
+    installation = models.BooleanField(default=False)
+    comment = models.TextField(null=True, blank=True)
+    isNewAddress = models.BooleanField(default=False)
+    region = models.CharField(max_length=50, null=True, blank=True)
+    district = models.CharField(max_length=50, null=True, blank=True)
+    street = models.CharField(max_length=100, null=True, blank=True)
 
     @property
     def amount(self):

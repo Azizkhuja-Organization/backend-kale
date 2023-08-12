@@ -35,14 +35,14 @@ class ProductUnit(models.TextChoices):
 class Category(BaseModel):
     title = models.CharField(max_length=100)
     photo = models.ImageField(_("Image of Category"), upload_to='categoryImage', null=True, blank=True)
-    photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(250, 250)], format='PNG',
+    photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(500, 500)], format='PNG',
                                   options={'quality': 90})
-    photo_small = ImageSpecField(source='photo', processors=[ResizeToFill(70, 70)], format='PNG',
-                                 options={'quality': 70})
+    photo_small = ImageSpecField(source='photo', processors=[ResizeToFill(200, 200)], format='PNG',
+                                 options={'quality': 90})
 
     def __str__(self):
         return self.title_ru
-        # return "self.title_ru"
+        # return f"#{self.id}"
 
 
 class SubCategory(BaseModel):
@@ -51,6 +51,7 @@ class SubCategory(BaseModel):
 
     def __str__(self):
         return self.title_ru
+        # return f"#{self.id}"
 
 
 class Product(BaseModel):
@@ -69,10 +70,10 @@ class Product(BaseModel):
     manufacturer = models.CharField(max_length=20, null=True, blank=True)
 
     photo = models.ImageField(_("Image of Product"), upload_to='productImage', null=True, blank=True)
-    photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(250, 250)], format='PNG',
+    photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(500, 500)], format='PNG',
                                   options={'quality': 90})
-    photo_small = ImageSpecField(source='photo', processors=[ResizeToFill(70, 70)], format='PNG',
-                                 options={'quality': 70})
+    photo_small = ImageSpecField(source='photo', processors=[ResizeToFill(200, 200)], format='PNG',
+                                 options={'quality': 90})
     quantity = models.IntegerField(default=0)
     discount = models.FloatField(default=0)
     isTop = models.BooleanField(_("Is Top"), default=False)
@@ -88,12 +89,13 @@ class Product(BaseModel):
 
     def __str__(self):
         return self.title_ru
+        # return f"#{self.id}"
 
 
 class ProductImage(BaseModel):
     product = models.ForeignKey(Product, related_name='productImages', on_delete=models.CASCADE)
     photo = models.ImageField(_("Image of Product"), upload_to='productImage', null=True, blank=True)
-    photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(250, 250)], format='PNG',
+    photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(500, 500)], format='PNG',
                                   options={'quality': 90})
-    photo_small = ImageSpecField(source='photo', processors=[ResizeToFill(70, 70)], format='PNG',
-                                 options={'quality': 70})
+    photo_small = ImageSpecField(source='photo', processors=[ResizeToFill(200, 200)], format='PNG',
+                                 options={'quality': 90})

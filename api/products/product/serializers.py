@@ -1,10 +1,9 @@
 from drf_base64.fields import Base64ImageField
 from rest_framework import serializers
 
-from api.products.category.serializers import CategoryCreateSerializer
-from api.products.images.serializers import ProductImageDetailSerializer
 from api.products.subcategory.serializers import SubCategoryListSerializer
 from common.product.models import Product
+from config.settings.base import env
 
 
 class ProductCreateSerializer(serializers.ModelSerializer):
@@ -35,11 +34,12 @@ class ProductListSerializer(serializers.ModelSerializer):
     subcategory = SubCategoryListSerializer()
     photo_small = serializers.ImageField(read_only=True)
     isLiked = serializers.BooleanField(default=False)
+    isCompared = serializers.BooleanField(default=False)
 
     class Meta:
         model = Product
         fields = ['id', 'guid', 'subcategory', 'title', 'code', 'price', 'brand', 'size', 'manufacturer', 'photo_small',
-                  'file3D', 'cornerStatus', 'isLiked']
+                  'file3D', 'cornerStatus', 'isLiked', 'isCompared']
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
@@ -49,7 +49,11 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
     def get_photos(self, product):
         product_images = product.productImages.all()
-        return ProductImageDetailSerializer(product_images, many=True).data
+        return [{
+            "id": productImage.id,
+            "guid": productImage.guid,
+            "photo_medium": env('BASE_URL') + productImage.photo_medium.url
+        } for productImage in product_images if not "http" in productImage.photo_medium.url]
 
     class Meta:
         model = Product

@@ -12,17 +12,17 @@ from common.order.models import Order, Checkout
 
 
 class CheckoutCreateAPIView(CreateAPIView):
-    queryset = Checkout.objects.select_related('user').prefetch_related('products', 'products__product')
+    queryset = Checkout.objects.all()
     serializer_class = CheckoutCreateSerializer
     permission_classes = [IsClient]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        checkout, created = Checkout.objects.get_or_create(user=request.user)
-        checkout.products.set(serializer.data.get('products'))
-        checkout.save()
-        return Response(CheckoutCreateSerializer(checkout).data, status=status.HTTP_201_CREATED)
+        if not serializer.validated_data.get('products'):
+            return Response({"error": "Product is not chosen"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class CheckoutDetailAPIView(RetrieveAPIView, DestroyAPIView):
@@ -85,12 +85,12 @@ class OrderDetailAPIView(RetrieveAPIView):
 class OrderUpdateAPIView(UpdateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderCreateSerializer
-    permission_classes = [IsClient | IsAdmin]
+    permission_classes = [IsAdmin]
     lookup_field = 'guid'
 
 
 class OrderDeleteAPIView(DestroyAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderCreateSerializer
-    permission_classes = [IsClient | IsAdmin]
+    permission_classes = [IsAdmin]
     lookup_field = 'guid'

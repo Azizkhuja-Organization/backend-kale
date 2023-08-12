@@ -6,8 +6,8 @@ from kale.utils.one_s_get_products import get_products
 
 @shared_task(name='updateProducts')
 def updateProducts():
-    # for i in Product.objects.all():
-    #     i.delete()
+    for i in Product.objects.all():
+        i.delete()
 
     products = get_products()
     newProducts = []
@@ -33,7 +33,7 @@ def updateProducts():
         if pr and pr.code == code:
             updateProducts.append(Product(
                 id=pr.id,
-                category=category,
+                subcategory=category,
                 # title=title,
                 title_ru=title,
                 description_ru=description,
@@ -47,7 +47,7 @@ def updateProducts():
             ))
         else:
             newProducts.append(Product(
-                category=category,
+                subcategory=category,
                 code=code,
                 # title=title,
                 title_ru=title,
@@ -64,7 +64,7 @@ def updateProducts():
         Product.objects.bulk_create(newProducts)
     if updateProducts:
         Product.objects.bulk_update(updateProducts,
-                                    fields=['category', 'title_ru', 'description_ru', 'price', 'unit', 'brand', 'size',
+                                    fields=['subcategory', 'title_ru', 'description_ru', 'price', 'unit', 'brand', 'size',
                                             'manufacturer_ru', 'quantity'])
     return
 

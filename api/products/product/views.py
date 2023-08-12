@@ -10,7 +10,7 @@ from api.products.images.serializers import ProductImageCreateSerializer
 from api.products.product.serializers import ProductCreateSerializer, ProductListSerializer, ProductDetailSerializer, \
     ProductUpdateSerializer
 from api.products.product.tasks import createCategories
-from common.order.models import Wishlist
+from common.order.models import Wishlist, Comparison
 from common.product.models import Product, ProductImage
 
 
@@ -53,9 +53,16 @@ class ProductListAPIView(ListAPIView):
             wishlist, created = Wishlist.objects.get_or_create(user_id=self.request.user.id)
             queryset = queryset.annotate(isLiked=Exists(wishlist.products.all().filter(id__in=OuterRef('pk'))))
 
+            comparison, created2 = Comparison.objects.get_or_create(user_id=self.request.user.id)
+            queryset = queryset.annotate(isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('pk'))))
+
         hasLiked = self.request.query_params.get('hasLiked')
         if hasLiked:
             queryset = queryset.filter(isLiked=True)
+
+        hasCompared = self.request.query_params.get('hasCompared')
+        if hasCompared:
+            queryset = queryset.filter(isCompared=True)
 
         others = self.request.query_params.get('others')
         guid = self.request.query_params.get('guid')
