@@ -9,6 +9,7 @@ from api.order.serializers import OrderCreateSerializer, OrderListSerializer, Or
 from api.paginator import CustomPagination
 from api.permissions import IsClient, IsAdmin
 from common.order.models import Order, Checkout
+from common.users.models import User
 
 
 class CheckoutCreateAPIView(CreateAPIView):
@@ -54,21 +55,18 @@ class OrderListAPIView(ListAPIView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        others = self.request.query_params.get('others')
-        guid = self.request.query_params.get('guid')
-        if others and guid:
-            try:
-                queryset = queryset.exclude(guid=guid)
-            except:
-                pass
-
+        if self.request.user.role == User.UserRole.CLIENT:
+            queryset = queryset.filter(checkout__user=self.request.user)
         start = self.request.query_params.get('start')
         end = self.request.query_params.get('end')
         if start and end:
-            queryset = queryset.filter(created_at__range=[start, end])
+            queryset = queryset.filter(
+                created_at__gte=start,
+                created_at__lte=end
+            )
         q = self.request.query_params.get('q')
         if q:
-            queryset = queryset.filter(Q(quantity=q))
+            queryset = queryset.filter(Q(product__title__icontains=q))
         p = self.request.query_params.get('p')
         if p:
             self.pagination_class = CustomPagination
