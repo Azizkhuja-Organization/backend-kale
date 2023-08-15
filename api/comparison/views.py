@@ -32,7 +32,8 @@ class ComparisonProductsAPIView(APIView):
         comparison, created = Comparison.objects.get_or_create(user=request.user)
         data = []
         products = comparison.products.select_related('subcategory')
-
+        if self.request.query_params.get('all'):
+            return Response(ComparisonProductDetailSerializer(products, many=True).data, status=status.HTTP_200_OK)
         subcategories = SubCategory.objects.all()
         subcategory_products_map = {subcategory.id: [] for subcategory in subcategories}
 
