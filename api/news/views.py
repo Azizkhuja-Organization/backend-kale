@@ -15,7 +15,7 @@ class NewsCreateAPIView(CreateAPIView):
 
 
 class NewsListAPIView(ListAPIView):
-    queryset = News.objects.all()
+    queryset = News.objects.all().order_by('-created_at')
     serializer_class = NewsListSerializer
 
     def get_queryset(self):
