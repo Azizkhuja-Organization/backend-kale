@@ -1,5 +1,6 @@
 from django.db.models import Q
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
+from rest_framework.response import Response
 
 from api.news.serializers import NewsCreateSerializer, NewsListSerializer, NewsDetailSerializer, NewsUpdateSerializer
 from api.paginator import CustomPagination
@@ -39,6 +40,13 @@ class NewsDetailAPIView(RetrieveAPIView):
     queryset = News.objects.all()
     serializer_class = NewsDetailSerializer
     lookup_field = 'guid'
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.viewCount += 1
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 class NewsUpdateAPIView(UpdateAPIView):

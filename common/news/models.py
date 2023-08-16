@@ -16,6 +16,7 @@ class News(BaseModel):
                                   options={'quality': 90})
     photo_small = ImageSpecField(source='photo', processors=[ResizeToFill(322, 209)], format='PNG',
                                  options={'quality': 70})
+    viewCount = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
