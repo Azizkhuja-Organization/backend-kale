@@ -4,62 +4,64 @@ from common.product.models import Product, Category, SubCategory
 from kale.utils.one_s_get_products import get_products
 
 
+@shared_task(name='deleteProducts')
+def deleteProducts():
+    for i in Product.objects.all():
+        i.delete()
+
+
 @shared_task(name='updateProducts')
 def updateProducts():
-    # for i in Product.objects.all():
-    #     i.delete()
-
     products = get_products()
     newProducts = []
     updateProducts = []
     for product in products.get("Товары"):
         category_name = product.get("Категория")
+        quantity = product.get("Остаток")
         code = product.get("Код")
         price = product.get("Цена")
         title = product.get("Наименование")
-        if not code or not price or not category_name or not title:
-            continue
         unit = product.get("ЕдиницаИзмерения")
         brand = product.get("ТорговаяМарка")
         size = product.get("Размеры")
         description = product.get("Описание")
         manufacturer = product.get("Производитель")
-        quantity = product.get("Остаток")
-        category = SubCategory.objects.filter(title_ru=category_name).first()
-        if category is None:
-            continue
+        if category_name and code and price > 0 and quantity > 0 and title:
+            category = SubCategory.objects.filter(title_ru=category_name).first()
+            if category is None:
+                continue
 
-        pr = Product.objects.filter(code=code).first()
-        if pr and pr.code == code:
-            updateProducts.append(Product(
-                id=pr.id,
-                subcategory=category,
-                # title=title,
-                title_ru=title,
-                description_ru=description,
-                price=price,
-                # material_ru=material,
-                unit=unit,
-                brand=brand,
-                size=size,
-                manufacturer_ru=manufacturer,
-                quantity=quantity
-            ))
-        else:
-            newProducts.append(Product(
-                subcategory=category,
-                code=code,
-                # title=title,
-                title_ru=title,
-                description_ru=description,
-                price=price,
-                # material_ru=material,
-                unit=unit,
-                brand=brand,
-                size=size,
-                manufacturer_ru=manufacturer,
-                quantity=quantity
-            ))
+            pr = Product.objects.filter(code=code).first()
+            if pr and pr.code == code and pr.quantity < quantity:
+                updateProducts.append(Product(
+                    id=pr.id,
+                    subcategory=category,
+                    # title=title,
+                    title_ru=title,
+                    description_ru=description,
+                    price=price,
+                    # material_ru=material,
+                    unit=unit,
+                    brand=brand,
+                    size=size,
+                    manufacturer_ru=manufacturer,
+                    quantity=quantity
+                ))
+            elif pr is None:
+                newProducts.append(Product(
+                    subcategory=category,
+                    code=code,
+                    # title=title,
+                    title_ru=title,
+                    description_ru=description,
+                    price=price,
+                    # material_ru=material,
+                    unit=unit,
+                    brand=brand,
+                    size=size,
+                    manufacturer_ru=manufacturer,
+                    quantity=quantity
+                ))
     if newProducts:
         Product.objects.bulk_create(newProducts)
     if updateProducts:
