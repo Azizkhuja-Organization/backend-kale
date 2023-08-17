@@ -18,6 +18,7 @@ class SocialListAPIView(ListAPIView):
 
     def list(self, request, *args, **kwargs):
         socialLinks = self.queryset.first()
+
         return Response(SocialLinksSerializer(socialLinks).data)
 
 

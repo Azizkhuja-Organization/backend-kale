@@ -23,7 +23,7 @@ class Portfolio(BaseModel):
 
 class PortfolioImage(BaseModel):
     portfolio = models.ForeignKey(Portfolio, related_name='portfolioImages', on_delete=models.CASCADE)
-    photo = models.ImageField(_("Image of Product"), upload_to='portfolioImage', null=True, blank=True)
+    photo = models.ImageField(_("Image of Portfolio"), upload_to='portfolioImage', null=True, blank=True)
     photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(1460, 575)], format='PNG',
                                   options={'quality': 90})
     photo_small = ImageSpecField(source='photo', processors=[ResizeToFill(350, 235)], format='PNG',
