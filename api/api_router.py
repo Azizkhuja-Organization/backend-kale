@@ -33,8 +33,9 @@ urlpatterns += [
     path('news', include("api.news.urls")),
     path('social', include("api.social.urls")),
     path('map', include("api.map.urls")),
+    path('address', include("api.address.urls")),
 
     # PAYMENTS
-    path('payme', include("api.payment.payme.urls")),
-    path('click', include("api.payment.click.urls")),
+    # path('payme', include("api.payment.payme.urls")),
+    # path('click', include("api.payment.click.urls")),
 ]

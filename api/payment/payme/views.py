@@ -4,8 +4,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from common.order.models import Checkout, Order
-from common.payment.payme.models import Payment, PaymentType
+from common.order.models import Order, PaymentTypes, OrderStatus, PaymentStatus as OrderPaymentStatus
+from common.payment.payme.models import Payment, PaymentType, PaymentStatus
 from kale.contrib.paymeuz.config import *
 from kale.contrib.paymeuz.methods import *
 from kale.contrib.paymeuz.models import Transaction
@@ -92,16 +92,16 @@ class PaymentApiView(APIView):
         return Response(result)
 
     def receipts_create(self, token, validated_data):
-        checkout = Checkout.objects.filter(user_id=validated_data.get('id')).first()
-        if checkout is None:
+        order = Order.objects.filter(id=validated_data.get('id')).first()
+        if order is None:
             return {"status": status.HTTP_400_BAD_REQUEST}
         data = dict(
             id=validated_data['id'],
             method=RECEIPTS_CREATE,
             params=dict(
-                amount=checkout.amount,
+                amount=order.totalAmount,
                 account=dict(
-                    order_id=validated_data['id']
+                    order_id=order.id
                     # KEY_1=validated_data['params']['account'][KEY_1]
                 )
             )
@@ -146,34 +146,18 @@ class PaymentApiView(APIView):
             status=trans.PAID,
         )
         if not 'error' in result:
-            checkout = Checkout.objects.filter(user=self.request.user).last()
-            if checkout.isDelivery:
-                orders = [
-                    Order(checkout=checkout,
-                          product=i.product,
-                          quantity=i.quantity,
-                          totalAmount=i.amount
-                          ) for i in checkout.products.select_related('cart', 'product').all()
-                ]
-            else:
-                orders = [
-                    Order(checkout=checkout,
-                          product=i.product,
-                          quantity=i.quantity,
-                          totalAmount=i.amount
-                          ) for i in checkout.products.select_related('cart', 'product').all()
-                ]
-            orders = Order.objects.bulk_create(orders)
+            order = Order.objects.filter(user=self.request.user).last()
+            order.status = OrderStatus.PENDING
+            order.paymentStatus = OrderPaymentStatus.PAID
+            order.paymentType = PaymentTypes.PAYME
+            order.save()
+
             payment = Payment.objects.create(
-                user=self.request.user,
-                amount=checkout.amount,
-                paymentType=PaymentType.PAYME
+                user=order.user,
+                order=order,
+                amount=order.totalAmount,
+                paymentType=PaymentType.PAYME,
+                status=PaymentStatus.CONFIRMED
             )
-            payment.orders.set(orders)
             payment.save()
-
-            # REMOVE CART PRODUCTS FROM CHECKOUT
-            # for i in checkout.products.select_related('cart', 'product').all():
-                # i.delete()
-
         return result

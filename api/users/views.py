@@ -3,7 +3,7 @@ from django.db.models import Q
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
 
 from api.paginator import CustomPagination
-from api.permissions import IsAdmin, IsClient, IsOwn
+from api.permissions import IsAdmin, IsOwn
 from api.users import serializers as _serializer
 
 User = get_user_model()

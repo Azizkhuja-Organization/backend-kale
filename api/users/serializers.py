@@ -10,7 +10,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'guid', 'name', 'phone', 'region', 'district', 'street', 'photo']
+        fields = ['id', 'guid', 'name', 'phone', 'photo']
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
@@ -18,7 +18,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'guid', 'name', 'phone', 'region', 'district', 'street', 'photo']
+        fields = ['id', 'guid', 'name', 'phone', 'photo']
 
 
 class UserListSerializer(serializers.ModelSerializer):
@@ -34,4 +34,4 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'guid', 'name', 'phone', 'region', 'district', 'street', 'photo_medium']
+        fields = ['id', 'guid', 'name', 'phone', 'photo_medium']

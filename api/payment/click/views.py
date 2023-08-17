@@ -8,8 +8,7 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.permissions import IsClient
-from common.order.models import Checkout, Order
+from common.order.models import Order, OrderStatus, PaymentTypes, PaymentStatus as OrderPaymentStatus
 from common.payment.click import utils
 from common.payment.click.models import Payment
 from common.payment.payme.models import Payment
@@ -49,7 +48,7 @@ class PaymentClick(APIView):
     # permission_classes = [IsClient]
 
     def get(self, request):
-        checkout = Checkout.objects.filter(user=request.user).last()
+        order = Order.objects.filter(user=request.user).last()
         # payment = Payment.objects.create(user_id=request.user.id,
         #                                  total=checkout.amount,
         #                                  description="o'qish uchun to'lov",
@@ -64,7 +63,8 @@ class PaymentClick(APIView):
         #                                  billing_email=request.user.email)
 
         payment = Payment.objects.create(user=request.user,
-                                         amount=checkout.amount,
+                                         order=order,
+                                         amount=order.totalAmount,
                                          paymentType=PaymentType.CLICK)
         context = {
             'merchant_id': env('CLICK_MERCHANT_ID'),
@@ -181,30 +181,12 @@ class PaymentCompleteAPIView(CreateAPIView):
             payment.status = PaymentStatus.CONFIRMED
             payment.save()
 
-            checkout = Checkout.objects.filter(user=payment.user).first()
-            if checkout.isDelivery:
-                orders = [
-                    Order(checkout=checkout,
-                          product=i.product,
-                          quantity=i.quantity,
-                          totalAmount=i.amount
-                          ) for i in checkout.products.select_related('cart', 'product').all()
-                ]
-            else:
-                orders = [
-                    Order(checkout=checkout,
-                          product=i.product,
-                          quantity=i.quantity,
-                          totalAmount=i.amount
-                          ) for i in checkout.products.select_related('cart', 'product').all()
-                ]
-            orders = Order.objects.bulk_create(orders)
-            payment.orders.set(orders)
-            payment.save()
+            order = Order.objects.get(id=payment.order.id)
+            order.status = OrderStatus.PENDING
+            order.paymentStatus = OrderPaymentStatus.PAID
+            order.paymentType = PaymentTypes.PAYME
+            order.save()
 
-            # REMOVE CART PRODUCTS FROM CHECKOUT
-            for i in checkout.products.select_related('cart', 'product').all():
-                i.delete()
         result['click_trans_id'] = request.data.get('click_trans_id', None)
         result['merchant_trans_id'] = request.data.get('merchant_trans_id', None)
         result['merchant_prepare_id'] = request.data.get('merchant_prepare_id', None)

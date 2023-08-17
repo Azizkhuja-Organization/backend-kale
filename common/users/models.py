@@ -38,9 +38,6 @@ class User(AbstractUser, BaseModel):
                                   options={'quality': 90})
     photo_small = ImageSpecField(source='photo', processors=[ResizeToFill(70, 70)], format='PNG',
                                  options={'quality': 70})
-    region = models.CharField(max_length=50, null=True, blank=True)
-    district = models.CharField(max_length=50, null=True, blank=True)
-    street = models.CharField(max_length=100, null=True, blank=True)
 
     role = models.IntegerField(_("Role"), choices=UserRole.choices, default=UserRole.CLIENT)
     is_verified = models.BooleanField(_("Is verified"), default=False)

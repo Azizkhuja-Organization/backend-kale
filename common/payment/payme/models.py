@@ -24,10 +24,9 @@ class PaymentType(models.IntegerChoices):
 
 class Payment(BaseModel):
     user = models.ForeignKey(User, related_name="userPayment", on_delete=models.CASCADE)
-    orders = models.ManyToManyField(Order, related_name="orderPayment", blank=True)
+    order = models.ForeignKey(Order, related_name="orderPayment", on_delete=models.SET_NULL, null=True, blank=True)
     amount = models.FloatField(default=0, null=True)
     paymentType = models.IntegerField(choices=PaymentType.choices)
-    discount = models.IntegerField(default=0)
     status = models.CharField(max_length=20, choices=PaymentStatus.choices, default=PaymentStatus.WAITING)
 
     def __str__(self):

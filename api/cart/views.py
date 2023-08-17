@@ -94,15 +94,15 @@ class CartProductListAPIView(ListAPIView):
             isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('product_id'))))
 
         total = queryset.aggregate(totalSum=Sum(F('orderPrice')))
-        totalDiscount = queryset.aggregate(totalDiscount=Sum(F('product__price')))
         if not self.request.query_params.get('p'):
             serializer = self.get_serializer(queryset, many=True)
 
-            return Response({"products": serializer.data, **total, **totalDiscount})
+            return Response({"products": serializer.data, **total})
 
         page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(page, many=True)
-        return Response({"products": self.get_paginated_response(serializer.data).data, **total, **totalDiscount})
+        return Response({
+            "products": self.get_paginated_response(serializer.data).data, **total})
 
 
 class CartProductDestroyAPIView(DestroyAPIView):

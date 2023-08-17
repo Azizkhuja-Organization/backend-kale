@@ -1,6 +1,5 @@
 from django.urls import path
 
-# from kale.contrib.paymeuz.views import CardCreateApiView, CardVerifyApiView, PaymentApiView
 from .views import CardCreateApiView, CardVerifyApiView, PaymentApiView
 
 urlpatterns = [

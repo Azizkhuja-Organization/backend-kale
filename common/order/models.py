@@ -2,31 +2,11 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
 
+from common.address.models import Address
 from common.product.models import Product
 from common.users.base import BaseModel
 
 User = get_user_model()
-
-
-class CheckoutProductStatus(models.IntegerChoices):
-    PENDING = 1, "PENDING"
-    WAITING = 2, "WAITING"
-    CLOSED = 3, "CLOSED"
-
-
-class OrderStatus(models.IntegerChoices):
-    PENDING = 1, "PENDING"
-    WAITING = 2, "WAITING"
-    ORDERED = 3, "ORDERED"
-
-
-class OrderedProductStatus(models.IntegerChoices):
-    PENDING = 1, "PENDING"
-    WAITING = 2, "WAITING"
-    DELIVERED = 3, "DELIVERED"
-    CANCELED = 4, "CANCELED"
-    IN_PROGRESS = 5, "IN_PROGRESS"
-    DELETED = 6, "DELETED"
 
 
 class Cart(BaseModel):
@@ -56,53 +36,67 @@ class CartProduct(BaseModel):
             self.orderPrice = self.quantity * self.product.price * (1 - self.product.discount / 100)
             self.save()
 
-    @property
-    def basePrice(self):
-        return self.product.price * self.quantity
-
     def __str__(self):
         return f"Cart #{self.cart.id} {self.product.title} {self.quantity}"
 
 
+class OrderProduct(BaseModel):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.FloatField()
+    orderPrice = models.FloatField()
+
+    def __str__(self):
+        return f"Order Product #{self.id} {self.product.title} {self.quantity}"
+
+
+class OrderStatus(models.IntegerChoices):
+    PAYMENT = 0, "PAYMENT"
+    PENDING = 1, "PENDING"
+    WAITING = 2, "WAITING"
+    DELIVERED = 3, "DELIVERED"
+    CANCELED = 4, "CANCELED"
+    IN_PROGRESS = 5, "IN_PROGRESS"
+    DELETED = 6, "DELETED"
+
+
+class PaymentStatus(models.IntegerChoices):
+    NOT_PAID = 1, "NOT_PAID"
+    WAITING = 2, "WAITING"
+    CANCELED = 3, "CANCELED"
+    ABORTED = 4, "ABORTED"
+    PAID = 5, "PAID"
+
+
 class PaymentTypes(models.IntegerChoices):
-    CASH = 0, "CASH"
     PAYME = 1, "PAYME"
     CLICK = 2, "CLICK"
     UZUM = 3, "UZUM"
-
-
-class Checkout(BaseModel):
-    user = models.ForeignKey(User, related_name='userCheckout', on_delete=models.CASCADE)
-    products = models.ManyToManyField(CartProduct, related_name='checkoutCartProduct', blank=True)
-    paymentType = models.IntegerField(choices=PaymentTypes.choices, default=PaymentTypes.CASH)
-    installation = models.BooleanField(default=False)
-    comment = models.TextField(null=True, blank=True)
-    isNewAddress = models.BooleanField(default=False)
-    region = models.CharField(max_length=50, null=True, blank=True)
-    district = models.CharField(max_length=50, null=True, blank=True)
-    street = models.CharField(max_length=100, null=True, blank=True)
-
-    @property
-    def amount(self):
-        return sum(map(lambda i: i.product.price * i.quantity, self.products.select_related('cart', 'product').all()))
-
-    def __str__(self):
-        return f"Order #{self.id} User: {self.user.phone}"
+    CASH = 4, "CASH"
 
 
 class Order(BaseModel):
-    checkout = models.ForeignKey(Checkout, related_name='checkoutOrder', on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, related_name='orderedProduct', on_delete=models.SET_NULL, null=True,
-                                blank=True)
-    quantity = models.IntegerField(null=True, blank=True)
+    user = models.ForeignKey(User, related_name="orderUser", on_delete=models.SET_NULL, null=True, blank=True)
+    code = models.CharField(max_length=50, unique=True, null=True, blank=True)
+    address = models.ForeignKey(Address, related_name="orderAddress", on_delete=models.SET_NULL, null=True, blank=True)
+    products = models.ManyToManyField(OrderProduct, related_name='orderedProducts', blank=True)
     totalAmount = models.FloatField(default=0)
-    isDelivery = models.BooleanField(default=False)
     orderedTime = models.DateTimeField(default=timezone.now)
     deliveredTime = models.DateTimeField(null=True, blank=True)
-    status = models.IntegerField(choices=OrderedProductStatus.choices, default=OrderStatus.PENDING)
+    installation = models.BooleanField(default=False)
+    comment = models.TextField(null=True, blank=True)
+
+    paymentStatus = models.IntegerField(choices=PaymentStatus.choices, default=PaymentStatus.NOT_PAID)
+    paymentType = models.IntegerField(choices=PaymentTypes.choices, default=PaymentTypes.CASH)
+    status = models.IntegerField(choices=OrderStatus.choices, default=OrderStatus.PAYMENT)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.code is None:
+            self.code = '#' + str(self.id + (10 ** 6))
+            self.save()
 
     def __str__(self):
-        return f"Order #{self.id} Status: {self.status}"
+        return f"Order #{self.id} Status: {self.status} Payment Status: {self.paymentStatus}"
 
 
 class Wishlist(BaseModel):
