@@ -15,5 +15,5 @@ class ComparisonProductDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'guid', 'code', 'title', 'price', 'material', 'size', 'brand', 'manufacturer', 'photo_small',
+        fields = ['id', 'guid', 'subcategory', 'code', 'title', 'price', 'material', 'size', 'brand', 'manufacturer', 'photo_small',
                   'cornerStatus', 'description', 'isLiked']

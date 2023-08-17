@@ -19,14 +19,17 @@ class CountersAPIView(APIView):
         if request.user.is_authenticated:
             cartProducts = CartProduct.objects.filter(cart__user=request.user).count()
             wishlistProducts, created = Wishlist.objects.get_or_create(user=request.user)
+            comparisonProducts, created = Comparison.objects.get_or_create(user=request.user)
             response = {
                 'inCart': cartProducts,
-                'inWishlist': wishlistProducts.products.count()
+                'inWishlist': wishlistProducts.products.count(),
+                'inComparison': comparisonProducts.products.count(),
             }
         else:
             response = {
                 'inCart': 0,
-                'inWishlist': 0
+                'inWishlist': 0,
+                'inComparison': 0
             }
 
         return Response(response, status=status.HTTP_200_OK)

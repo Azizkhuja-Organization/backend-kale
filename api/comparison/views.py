@@ -1,5 +1,6 @@
 from django.db.models import Exists, OuterRef
 from rest_framework import status
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -29,30 +30,20 @@ class ComparisonAddSubAPIView(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class ComparisonProductsAPIView(APIView):
+class ComparisonProductsAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        comparison, created = Comparison.objects.get_or_create(user=request.user)
-        wishlist, created = Wishlist.objects.get_or_create(user=self.request.user)
-        data = []
+    def get(self, request, *args, **kwargs):
+        comparison, created = Comparison.objects.get_or_create(user_id=2)
+        wishlist, created = Wishlist.objects.get_or_create(user_id=2)
         products = comparison.products.select_related('subcategory').annotate(
             isLiked=Exists(wishlist.products.all().filter(id__in=OuterRef('pk'))))
-        if self.request.query_params.get('all'):
-            return Response(ComparisonProductDetailSerializer(products, many=True).data, status=status.HTTP_200_OK)
-        subcategories = SubCategory.objects.all()
-        subcategory_products_map = {subcategory.id: [] for subcategory in subcategories}
+        subcategory = self.request.query_params.get('subcategory')
+        if subcategory:
+            products = products.filter(subcategory=subcategory)
+        subcategories = SubCategory.objects.filter(subcategoryProducts__in=products).distinct()
 
-        for product in products:
-            if product.subcategory:
-                subcategory_products_map[product.subcategory_id].append(product)
-
-        for subcategory in subcategories:
-            subcategory_products = subcategory_products_map[subcategory.id]
-            if subcategory_products:
-                data.append({
-                    "subcategory": SubCategoryCategoryListSerializer(subcategory).data,
-                    "products": ComparisonProductDetailSerializer(subcategory_products, many=True).data
-                })
-
-        return Response(data, status=status.HTTP_200_OK)
+        return Response({
+            "subcategories": SubCategoryCategoryListSerializer(subcategories, many=True).data,
+            "products": ComparisonProductDetailSerializer(products, many=True).data
+        }, status=status.HTTP_200_OK)
