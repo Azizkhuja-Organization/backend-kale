@@ -10,7 +10,7 @@ from api.auth.serializers import LogOutSerializer, LoginSerializer, SignUpSerial
     VerifyCodeSerializer, \
     ReSendCodeSerializer
 from common.users.models import Code
-from .tasks import send_sms
+from api.tasks import send_sms
 
 User = get_user_model()
 
