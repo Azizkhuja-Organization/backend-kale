@@ -1,3 +1,4 @@
+from django.db.models import Exists, OuterRef
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -5,7 +6,7 @@ from rest_framework.views import APIView
 
 from api.comparison.serializers import ComparisonProductDetailSerializer
 from api.products.subcategory.serializers import SubCategoryCategoryListSerializer
-from common.order.models import Comparison
+from common.order.models import Comparison, Wishlist
 from common.product.models import SubCategory, Product
 
 
@@ -33,8 +34,10 @@ class ComparisonProductsAPIView(APIView):
 
     def get(self, request):
         comparison, created = Comparison.objects.get_or_create(user=request.user)
+        wishlist, created = Wishlist.objects.get_or_create(user=self.request.user)
         data = []
-        products = comparison.products.select_related('subcategory')
+        products = comparison.products.select_related('subcategory').annotate(
+            isLiked=Exists(wishlist.products.all().filter(id__in=OuterRef('pk'))))
         if self.request.query_params.get('all'):
             return Response(ComparisonProductDetailSerializer(products, many=True).data, status=status.HTTP_200_OK)
         subcategories = SubCategory.objects.all()

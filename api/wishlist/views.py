@@ -1,11 +1,12 @@
+from django.db.models import Exists, OuterRef
 from rest_framework import status
-from rest_framework import status
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.wishlist.serializers import WishlistDetailSerializer
-from common.order.models import Wishlist
+from api.wishlist.serializers import WishlistProductDetailSerializer
+from common.order.models import Wishlist, Comparison
 from common.product.models import Product
 
 
@@ -25,9 +26,13 @@ class WishlistAddSubAPIView(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class WishlistProductsAPIView(APIView):
+class WishlistProductsAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def list(self, request, *args, **kwargs):
         wishlist, created = Wishlist.objects.get_or_create(user=request.user)
-        return Response(WishlistDetailSerializer(wishlist).data, status=status.HTTP_200_OK)
+
+        comparison, created2 = Comparison.objects.get_or_create(user_id=self.request.user.id)
+        products = wishlist.products.annotate(
+            isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('id'))))
+        return Response(WishlistProductDetailSerializer(products, many=True).data, status=status.HTTP_200_OK)

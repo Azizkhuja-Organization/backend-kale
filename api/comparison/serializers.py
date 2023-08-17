@@ -6,6 +6,7 @@ from config.settings.base import env
 
 class ComparisonProductDetailSerializer(serializers.ModelSerializer):
     photo_small = serializers.SerializerMethodField()
+    isLiked = serializers.BooleanField(default=False)
 
     def get_photo_small(self, product):
         if product.photo_small and not "http" in product.photo_small:
@@ -15,4 +16,4 @@ class ComparisonProductDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'guid', 'code', 'title', 'price', 'material', 'size', 'brand', 'manufacturer', 'photo_small',
-                  'cornerStatus', 'description']
+                  'cornerStatus', 'description', 'isLiked']

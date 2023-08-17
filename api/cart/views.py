@@ -1,4 +1,4 @@
-from django.db.models import F, Sum, Q
+from django.db.models import F, Sum, Q, Exists, OuterRef
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView, DestroyAPIView
 from rest_framework.response import Response
@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from api.cart.serializers import CartProductCreateSerializer, CartProductListSerializer
 from api.paginator import CustomPagination
 from api.permissions import IsClient
-from common.order.models import Cart, CartProduct, Wishlist
+from common.order.models import Cart, CartProduct, Wishlist, Comparison
 from common.product.models import Product
 
 
@@ -82,6 +82,14 @@ class CartProductListAPIView(ListAPIView):
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
+
+        wishlist, created = Wishlist.objects.get_or_create(user_id=self.request.user.id)
+        comparison, created2 = Comparison.objects.get_or_create(user_id=self.request.user.id)
+
+        queryset = queryset.annotate(
+            isLiked=Exists(wishlist.products.all().filter(id__in=OuterRef('product_id')))).annotate(
+            isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('product_id'))))
+
         total = queryset.aggregate(totalSum=Sum(F('orderPrice')))
         totalDiscount = queryset.aggregate(totalDiscount=Sum(F('product__price')))
         if not self.request.query_params.get('p'):
@@ -91,10 +99,7 @@ class CartProductListAPIView(ListAPIView):
 
         page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(page, many=True)
-        # if page is not None:
         return Response({"products": self.get_paginated_response(serializer.data).data, **total, **totalDiscount})
-        # elif page:
-            # return Response({"products": self.get_paginated_response(serializer.data).data, **total, **totalDiscount})
 
 
 class CartProductDestroyAPIView(DestroyAPIView):

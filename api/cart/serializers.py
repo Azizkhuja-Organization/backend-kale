@@ -46,10 +46,12 @@ class CartProductSerializer(serializers.ModelSerializer):
 
 class CartProductListSerializer(serializers.ModelSerializer):
     product = CartProductSerializer()
+    isLiked = serializers.BooleanField(default=False)
+    isCompared = serializers.BooleanField(default=False)
 
     class Meta:
         model = CartProduct
-        fields = ['id', 'guid', 'product', 'quantity', 'orderPrice']
+        fields = ['id', 'guid', 'product', 'quantity', 'orderPrice', 'isLiked', 'isCompared']
 
 
 class CartProductDetailSerializer(serializers.ModelSerializer):
