@@ -26,6 +26,7 @@ class OrderedProductStatus(models.IntegerChoices):
     DELIVERED = 3, "DELIVERED"
     CANCELED = 4, "CANCELED"
     IN_PROGRESS = 5, "IN_PROGRESS"
+    DELETED = 6, "DELETED"
 
 
 class Cart(BaseModel):
