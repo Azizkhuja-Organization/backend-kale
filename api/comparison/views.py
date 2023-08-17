@@ -15,13 +15,16 @@ class ComparisonAddSubAPIView(APIView):
     def get(self, request):
         id = request.query_params.get('id')
         product = Product.objects.filter(id=id).first()
+        if not product.subcategory:
+            return Response(status=status.HTTP_200_OK)
+
         if product is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        wishlist, created = Comparison.objects.get_or_create(user=request.user)
-        if product in wishlist.products.all():
-            wishlist.products.remove(product)
+        comparison, created = Comparison.objects.get_or_create(user=request.user)
+        if product in comparison.products.all():
+            comparison.products.remove(product)
         else:
-            wishlist.products.add(product)
+            comparison.products.add(product)
         return Response(status=status.HTTP_200_OK)
 
 
@@ -38,7 +41,8 @@ class ComparisonProductsAPIView(APIView):
         subcategory_products_map = {subcategory.id: [] for subcategory in subcategories}
 
         for product in products:
-            subcategory_products_map[product.subcategory_id].append(product)
+            if product.subcategory:
+                subcategory_products_map[product.subcategory_id].append(product)
 
         for subcategory in subcategories:
             subcategory_products = subcategory_products_map[subcategory.id]
