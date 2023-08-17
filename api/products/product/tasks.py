@@ -6,8 +6,8 @@ from kale.utils.one_s_get_products import get_products
 
 @shared_task(name='updateProducts')
 def updateProducts():
-    for i in Product.objects.all():
-        i.delete()
+    # for i in Product.objects.all():
+    #     i.delete()
 
     products = get_products()
     newProducts = []
