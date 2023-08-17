@@ -9,7 +9,6 @@ from api.permissions import IsAdmin
 from api.products.images.serializers import ProductImageCreateSerializer
 from api.products.product.serializers import ProductCreateSerializer, ProductListSerializer, ProductDetailSerializer, \
     ProductUpdateSerializer
-from api.products.product.tasks import createCategories
 from common.order.models import Wishlist, Comparison
 from common.product.models import Product, ProductImage
 
@@ -47,7 +46,6 @@ class ProductListAPIView(ListAPIView):
     filterset_fields = ['subcategory', 'unit', 'status', 'brand', 'manufacturer', 'cornerStatus', 'isTop']
 
     def get_queryset(self):
-        createCategories()
         queryset = super().get_queryset()
         if self.request.user.is_authenticated:
             wishlist, created = Wishlist.objects.get_or_create(user_id=self.request.user.id)

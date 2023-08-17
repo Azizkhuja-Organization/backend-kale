@@ -66,7 +66,8 @@ def updateProducts():
         Product.objects.bulk_create(newProducts)
     if updateProducts:
         Product.objects.bulk_update(updateProducts,
-                                    fields=['subcategory', 'title_ru', 'description_ru', 'price', 'unit', 'brand', 'size',
+                                    fields=['subcategory', 'title_ru', 'description_ru', 'price', 'unit', 'brand',
+                                            'size',
                                             'manufacturer_ru', 'quantity'])
     return
 
@@ -124,6 +125,7 @@ categories = [
 ]
 
 
+@shared_task(name='createCategories')
 def createCategories():
     subcategories = []
     for i in categories:
