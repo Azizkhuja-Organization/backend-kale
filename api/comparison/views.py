@@ -34,8 +34,8 @@ class ComparisonProductsAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        comparison, created = Comparison.objects.get_or_create(user_id=2)
-        wishlist, created = Wishlist.objects.get_or_create(user_id=2)
+        comparison, created = Comparison.objects.get_or_create(user=request.user)
+        wishlist, created = Wishlist.objects.get_or_create(user=request.user)
         products = comparison.products.select_related('subcategory').annotate(
             isLiked=Exists(wishlist.products.all().filter(id__in=OuterRef('pk'))))
         subcategory = self.request.query_params.get('subcategory')
