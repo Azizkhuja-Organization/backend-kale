@@ -23,17 +23,16 @@ urlpatterns += [
     path('product', include("api.products.product.urls")),
     path('product-image', include("api.products.images.urls")),
 
-    # ORDER
     path('order', include("api.order.urls")),
     path('cart', include("api.cart.urls")),
     path('wishlist', include("api.wishlist.urls")),
     path('comparison', include("api.comparison.urls")),
 
-    # NEWS
     path('news', include("api.news.urls")),
     path('social', include("api.social.urls")),
     path('map', include("api.map.urls")),
     path('address', include("api.address.urls")),
+    path('banner', include("api.banner.urls")),
 
     # PAYMENTS
     # path('payme', include("api.payment.payme.urls")),

@@ -105,6 +105,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     "common.users",
     "common.address",
+    "common.banner",
     "common.catalog",
     "common.chat",
     "common.news",
