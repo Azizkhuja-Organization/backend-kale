@@ -373,15 +373,19 @@ CORS_ORIGIN_ALLOW_ALL = True
 # )
 
 CSRF_TRUSTED_ORIGINS = [
+    'https://market-admin-one.vercel.app',
+    'https://kale-gallery.vercel.app',
     'https://kale.abba.uz',
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
 
 # CORS_ALLOWED_ORIGINS = [
-#     "https://kale.abba.uz",
+#     'https://market-admin-one.vercel.app',
+#     'https://kale-gallery.vercel.app',
+#     'https://kale.abba.uz',
 #     "http://localhost:5173",
-#     "http://127.0.0.1:5173",
+#     "http://127.0.0.1:5173"
 # ]
 
 
