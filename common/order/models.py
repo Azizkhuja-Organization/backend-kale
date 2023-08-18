@@ -4,7 +4,7 @@ from django.utils import timezone
 
 from common.address.models import Address
 from common.product.models import Product
-from common.users.base import BaseModel
+from common.users.base import BaseModel, BaseMeta
 
 User = get_user_model()
 
@@ -88,6 +88,9 @@ class Order(BaseModel):
     paymentStatus = models.IntegerField(choices=PaymentStatus.choices, default=PaymentStatus.NOT_PAID)
     paymentType = models.IntegerField(choices=PaymentTypes.choices, default=PaymentTypes.CASH)
     status = models.IntegerField(choices=OrderStatus.choices, default=OrderStatus.PAYMENT)
+
+    class Meta(BaseMeta):
+        pass
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

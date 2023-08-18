@@ -1,6 +1,6 @@
 from django.db import models
 
-from common.users.base import BaseModel
+from common.users.base import BaseModel, BaseMeta
 from common.users.models import User
 
 
@@ -10,6 +10,9 @@ class Address(BaseModel):
     district = models.CharField(max_length=100)
     street = models.CharField(max_length=200)
     location = models.URLField(null=True, blank=True)
+
+    class Meta(BaseMeta):
+        pass
 
     def __str__(self):
         return self.user.name

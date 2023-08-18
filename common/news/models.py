@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
-from common.users.base import BaseModel
+from common.users.base import BaseModel, BaseMeta
 
 
 class News(BaseModel):
@@ -18,6 +18,9 @@ class News(BaseModel):
                                  options={'quality': 70})
     viewCount = models.IntegerField(default=0)
     status = models.BooleanField(default=False)
+
+    class Meta(BaseMeta):
+        pass
 
     def __str__(self):
         return self.title

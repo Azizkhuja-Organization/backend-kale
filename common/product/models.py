@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
-from common.users.base import BaseModel
+from common.users.base import BaseModel, BaseMeta
 
 User = get_user_model()
 
@@ -55,8 +55,9 @@ class SubCategory(BaseModel):
 
 
 class Product(BaseModel):
-    subcategory = models.ForeignKey(SubCategory, related_name="subcategoryProducts", on_delete=models.SET_NULL, null=True,
-                                 blank=True)
+    subcategory = models.ForeignKey(SubCategory, related_name="subcategoryProducts", on_delete=models.SET_NULL,
+                                    null=True,
+                                    blank=True)
     code = models.CharField(max_length=50)
     title = models.CharField(max_length=250)
     description = RichTextField()
@@ -80,6 +81,9 @@ class Product(BaseModel):
 
     cornerStatus = models.IntegerField(choices=ProductCornerStatus.choices, null=True, blank=True)
     status = models.IntegerField(choices=ProductStatus.choices, default=ProductStatus.DRAFT)
+
+    class Meta(BaseMeta):
+        pass
 
     @property
     def amount(self):

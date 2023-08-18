@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
-from common.users.base import BaseModel
+from common.users.base import BaseModel, BaseMeta
 
 
 class Catalog(BaseModel):
@@ -16,6 +16,9 @@ class Catalog(BaseModel):
                                   options={'quality': 90})
     photo_small = ImageSpecField(source='photo', processors=[ResizeToFill(211, 298)], format='PNG',
                                  options={'quality': 90})
+
+    class Meta(BaseMeta):
+        pass
 
     def __str__(self):
         return self.title
