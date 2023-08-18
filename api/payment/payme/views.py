@@ -152,12 +152,11 @@ class PaymentApiView(APIView):
             order.paymentType = PaymentTypes.PAYME
             order.save()
 
-            payment = Payment.objects.create(
+            Payment.objects.create(
                 user=order.user,
                 order=order,
                 amount=order.totalAmount,
                 paymentType=PaymentType.PAYME,
                 status=PaymentStatus.CONFIRMED
             )
-            payment.save()
         return result

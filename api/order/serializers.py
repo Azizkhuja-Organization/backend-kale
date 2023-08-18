@@ -43,7 +43,8 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 class OrderUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['id', 'guid', 'user', 'products', 'address', 'installation', 'comment', 'paymentType']
+        fields = ['id', 'guid', 'user', 'products', 'address', 'installation', 'comment', 'paymentType', 'totalAmount',
+                  'deliveredTime', 'paymentStatus', 'paymentType', 'status']
 
 
 class OrderListSerializer(serializers.ModelSerializer):

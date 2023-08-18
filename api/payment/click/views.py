@@ -8,11 +8,11 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from api.permissions import IsClient
 from common.order.models import Order, OrderStatus, PaymentTypes, PaymentStatus as OrderPaymentStatus
 from common.payment.click import utils
 from common.payment.click.models import Payment
-from common.payment.payme.models import Payment
-from common.payment.payme.models import PaymentType
+from common.payment.payme.models import PaymentType, PaymentStatus as PPaymentStatus
 from config.settings.base import env
 
 
@@ -34,7 +34,10 @@ def isset(data, columns):
 
 
 def paymentLoad(id):
-    return Payment.objects.get(id=id)
+    try:
+        return Payment.objects.get(id=id)
+    except:
+        return None
 
 
 def click_secret_key():
@@ -45,33 +48,36 @@ def click_secret_key():
 
 
 class PaymentClick(APIView):
-    # permission_classes = [IsClient]
+    permission_classes = [IsClient]
 
     def get(self, request):
-        order = Order.objects.filter(user=request.user).last()
-        # payment = Payment.objects.create(user_id=request.user.id,
-        #                                  total=checkout.amount,
-        #                                  description="o'qish uchun to'lov",
-        #                                  billing_first_name=request.user.first_name,
-        #                                  billing_last_name=request.user.last_name,
-        #                                  billing_address_1="Toshkent",
-        #                                  billing_address_2='Toshkent',
-        #                                  billing_city='Tashkent',
-        #                                  billing_postcode='1000000',
-        #                                  billing_country_code='47',
-        #                                  billing_country_area='Asia',
-        #                                  billing_email=request.user.email)
-
-        payment = Payment.objects.create(user=request.user,
+        id = request.query_params.get('id')
+        if id is None:
+            return Response({"error": "Order id does not found"}, status=status.HTTP_400_BAD_REQUEST)
+        order = Order.objects.filter(id=id, user=request.user)
+        payment = Payment.objects.create(user_id=request.user.id,
                                          order=order,
-                                         amount=order.totalAmount,
-                                         paymentType=PaymentType.CLICK)
+                                         total=order.totalAmount,
+                                         description="Kale Gallery",
+                                         billing_first_name=request.user.name,
+                                         billing_last_name=request.user.name,
+                                         billing_address_1="Toshkent",
+                                         billing_address_2='Toshkent',
+                                         billing_city='Tashkent',
+                                         billing_postcode='1000000',
+                                         billing_country_code='47',
+                                         billing_country_area='Asia',
+                                         billing_email='kale@gmail.com')
+
+        # payment = Payment.objects.create(user=request.user,
+        #                                  order=order,
+        #                                  amount=order.totalAmount,
+        #                                  paymentType=PaymentType.CLICK)
         context = {
             'merchant_id': env('CLICK_MERCHANT_ID'),
             'service_id': env('CLICK_SERVICE_ID'),
             'amount': payment.amount,
-            'transaction_param': payment.id,
-            'return_url': 'https://api.kale.uz/payment-click-complete/',
+            'transaction_param': payment.id
         }
         return Response(context, status=status.HTTP_200_OK)
 
@@ -82,7 +88,7 @@ class PaymentPrepareAPIView(CreateAPIView):
         paymentID = request.data.get('merchant_trans_id', None)
         result = self.click_webhook_errors(request)
         payment = paymentLoad(paymentID)
-        if result['error'] == '0':
+        if result['error'] == '0' and payment:
             payment.status = PaymentStatus.WAITING
             payment.save()
         result['click_trans_id'] = request.data.get('click_trans_id', None)
@@ -132,7 +138,7 @@ class PaymentPrepareAPIView(CreateAPIView):
             }
 
         payment = paymentLoad(paymentID)
-        if not payment:
+        if payment is None:
             return {
                 'error': '-5',
                 'error_note': 'User does not exist'
@@ -174,10 +180,10 @@ class PaymentCompleteAPIView(CreateAPIView):
         paymentID = request.data.get('merchant_trans_id', None)
         payment = paymentLoad(paymentID)
         result = self.click_webhook_errors(request)
-        if request.data.get('error', None) != None and int(request.data.get('error', None)) < 0:
+        if request.data.get('error', None) != None and int(request.data.get('error', None)) < 0 and payment:
             payment.status = PaymentStatus.REJECTED
             payment.save()
-        if result['error'] == '0':
+        if result['error'] == '0' and payment:
             payment.status = PaymentStatus.CONFIRMED
             payment.save()
 
@@ -186,6 +192,14 @@ class PaymentCompleteAPIView(CreateAPIView):
             order.paymentStatus = OrderPaymentStatus.PAID
             order.paymentType = PaymentTypes.PAYME
             order.save()
+
+            Payment.objects.create(
+                user=order.user,
+                order=order,
+                amount=payment.amount,
+                paymentType=PaymentType.PAYME,
+                status=PPaymentStatus.CONFIRMED
+            )
 
         result['click_trans_id'] = request.data.get('click_trans_id', None)
         result['merchant_trans_id'] = request.data.get('merchant_trans_id', None)

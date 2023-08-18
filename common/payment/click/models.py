@@ -1,6 +1,8 @@
 from django.utils.translation import gettext_lazy as _
 from payments.models import *
 
+from common.order.models import Order
+
 
 class PaymentAttributeProxy:
     def __init__(self, payment):
@@ -41,6 +43,7 @@ class paymentBase(models.Model):
         choices=FraudStatus.CHOICES,
         default=FraudStatus.UNKNOWN,
     )
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)
     fraud_message = models.TextField(blank=True, default="")
     #: Creation date and time
     created = models.DateTimeField(auto_now_add=True)
