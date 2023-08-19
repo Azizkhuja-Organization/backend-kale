@@ -53,7 +53,10 @@ class PaymentClick(APIView):
         id = request.query_params.get('id')
         if id is None:
             return Response({"error": "Order id does not found"}, status=status.HTTP_400_BAD_REQUEST)
-        order = Order.objects.filter(id=id, user=request.user)
+        order = Order.objects.filter(id=id, user=request.user).first()
+        if order is None:
+            return Response({"error": "Order does not found"}, status=status.HTTP_400_BAD_REQUEST)
+
         payment = Payment.objects.create(user_id=request.user.id,
                                          order=order,
                                          total=order.totalAmount,
