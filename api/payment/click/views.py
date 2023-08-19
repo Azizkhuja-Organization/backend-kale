@@ -78,7 +78,7 @@ class PaymentClick(APIView):
         context = {
             'merchant_id': env('CLICK_MERCHANT_ID'),
             'service_id': env('CLICK_SERVICE_ID'),
-            'amount': payment.amount,
+            'amount': payment.total,
             'transaction_param': payment.id
         }
         return Response(context, status=status.HTTP_200_OK)
