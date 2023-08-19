@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 from api.permissions import IsClient
 from common.order.models import Order, OrderStatus, PaymentTypes, PaymentStatus as OrderPaymentStatus
 from common.payment.click.models import Payment
+from common.payment.payme.models import Payment as AsPayment
 from common.payment.payme.models import PaymentType, PaymentStatus as PPaymentStatus
 from config.settings.base import env
 
@@ -195,7 +196,7 @@ class PaymentCompleteAPIView(CreateAPIView):
             order.paymentType = PaymentTypes.PAYME
             order.save()
 
-            Payment.objects.create(
+            AsPayment.objects.create(
                 user=order.user,
                 order=order,
                 amount=payment.amount,
