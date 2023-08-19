@@ -10,20 +10,19 @@ from rest_framework.views import APIView
 
 from api.permissions import IsClient
 from common.order.models import Order, OrderStatus, PaymentTypes, PaymentStatus as OrderPaymentStatus
-from common.payment.click import utils
 from common.payment.click.models import Payment
 from common.payment.payme.models import PaymentType, PaymentStatus as PPaymentStatus
 from config.settings.base import env
 
 
-@csrf_exempt
-def prepare(request):
-    return utils.prepare(request)
-
-
-@csrf_exempt
-def complete(request):
-    return utils.complete(request)
+# @csrf_exempt
+# def prepare(request):
+#     return utils.prepare(request)
+#
+#
+# @csrf_exempt
+# def complete(request):
+#     return utils.complete(request)
 
 
 def isset(data, columns):

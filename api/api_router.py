@@ -36,5 +36,5 @@ urlpatterns += [
 
     # PAYMENTS
     # path('payme', include("api.payment.payme.urls")),
-    # path('click', include("api.payment.click.urls")),
+    path('click', include("api.payment.click.urls")),
 ]
