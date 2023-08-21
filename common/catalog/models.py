@@ -8,7 +8,7 @@ from common.users.base import BaseModel, BaseMeta
 
 
 class Catalog(BaseModel):
-    title = models.CharField(max_length=250)
+    title = models.CharField(max_length=250, null=True, blank=True)
     description = RichTextField()
 
     photo = models.ImageField(_("Image of Catalog"), upload_to='catalogImage')
@@ -21,7 +21,7 @@ class Catalog(BaseModel):
         pass
 
     def __str__(self):
-        return self.title
+        return self.title_ru
 
 
 class CatalogImage(BaseModel):

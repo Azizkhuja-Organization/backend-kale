@@ -33,7 +33,7 @@ class ProductUnit(models.TextChoices):
 
 
 class Category(BaseModel):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, null=True, blank=True)
     photo = models.ImageField(_("Image of Category"), upload_to='categoryImage', null=True, blank=True)
     photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(500, 500)], format='PNG',
                                   options={'quality': 90})
@@ -47,7 +47,7 @@ class Category(BaseModel):
 
 class SubCategory(BaseModel):
     category = models.ForeignKey(Category, related_name="categorySubCategory", on_delete=models.CASCADE)
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return self.title_ru
@@ -59,10 +59,10 @@ class Product(BaseModel):
                                     null=True,
                                     blank=True)
     code = models.CharField(max_length=50)
-    title = models.CharField(max_length=250)
-    description = RichTextField()
+    title = models.CharField(max_length=250, null=True, blank=True)
+    description = RichTextField(null=True, blank=True)
     price = models.FloatField(default=0)
-    material = models.CharField(max_length=100)
+    material = models.CharField(max_length=100, null=True, blank=True)
     unit = models.CharField(max_length=5, choices=ProductUnit.choices, default=ProductUnit.PIECE)
     file3D = models.URLField(blank=True, null=True)
 

@@ -18,9 +18,9 @@ class Social(BaseModel):
 
 class Filial(BaseModel):
     social = models.ForeignKey(Social, related_name="filial", on_delete=models.CASCADE)
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    location = models.URLField()
+    location = models.URLField(null=True, blank=True)
     phone = models.CharField(max_length=14)
 
     def __str__(self):
@@ -37,9 +37,9 @@ class Filial(BaseModel):
 
 
 class Map(BaseModel):
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=200, null=True, blank=True)
     phone = models.CharField(max_length=20)
-    text = models.TextField()
+    text = models.TextField(null=True, blank=True)
     location = models.TextField()
     isMap = models.BooleanField(default=False)
 

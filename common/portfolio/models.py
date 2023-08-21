@@ -8,8 +8,8 @@ from common.users.base import BaseModel, BaseMeta
 
 
 class Portfolio(BaseModel):
-    title = models.CharField(max_length=250)
-    description = RichTextField()
+    title = models.CharField(max_length=250, null=True, blank=True)
+    description = RichTextField(null=True, blank=True)
     file3D = models.URLField(null=True, blank=True)
     photo = models.ImageField(_("Image of Portfolio"), upload_to='portfolioImage')
     photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(1460, 575)], format='PNG',
