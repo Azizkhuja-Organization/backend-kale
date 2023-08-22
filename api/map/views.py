@@ -21,7 +21,7 @@ class MapListAPIView(ListAPIView):
         queryset = super().get_queryset()
         q = self.request.query_params.get('q')
         if q:
-            queryset = queryset.filter(Q(name__icontains=q) | Q(phone__icontains=q))
+            queryset = queryset.filter(Q(title__icontains=q) | Q(text__icontains=q))
         p = self.request.query_params.get('p')
         if p:
             self.pagination_class = CustomPagination
