@@ -21,18 +21,18 @@ class OrderCreateAPIView(CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         cartProducts = CartProduct.objects.filter(id__in=products)
-        if not cartProducts:
+        if not cartProducts or type(cartProducts) != list:
             return Response({"products": ["This field is required."]}, status=status.HTTP_400_BAD_REQUEST)
         orderProducts = []
         totalAmount = 0
         for p in cartProducts:
             orderProducts.append(OrderProduct(product=p.product, quantity=p.quantity, orderPrice=p.orderPrice))
             totalAmount += p.orderPrice
-        ordProd = OrderProduct.objects.bulk_create(orderProducts)
+        OrderProduct.objects.bulk_create(orderProducts)
         order = serializer.save()
         if order.paymentType == PaymentTypes.CASH:
             order.status = OrderStatus.PENDING
-        order.products.set(ordProd)
+        order.products.set(orderProducts)
         order.totalAmount = totalAmount
         order.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)

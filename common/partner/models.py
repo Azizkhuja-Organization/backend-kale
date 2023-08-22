@@ -8,8 +8,8 @@ from common.users.base import BaseModel, BaseMeta
 
 
 class Partner(BaseModel):
-    title = models.CharField(max_length=250)
-    description = RichTextField()
+    title = models.CharField(max_length=250, null=True, blank=True)
+    description = RichTextField(null=True, blank=True)
 
     photo = models.ImageField(_("Image of News"), upload_to='newsImage')
     photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(1460, 575)], format='PNG',

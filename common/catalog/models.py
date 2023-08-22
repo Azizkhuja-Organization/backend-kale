@@ -9,7 +9,7 @@ from common.users.base import BaseModel, BaseMeta
 
 class Catalog(BaseModel):
     title = models.CharField(max_length=250, null=True, blank=True)
-    description = RichTextField()
+    description = RichTextField(null=True, blank=True)
 
     photo = models.ImageField(_("Image of Catalog"), upload_to='catalogImage')
     photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(422, 600)], format='PNG',
