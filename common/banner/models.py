@@ -7,6 +7,7 @@ from common.users.base import BaseModel, BaseMeta
 
 
 class Banner(BaseModel):
+    link = models.URLField()
     photo = models.ImageField(_("Image of Banner"), upload_to='bannerImage')
     photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(1463, 420)], format='PNG',
                                   options={'quality': 100})
@@ -21,6 +22,7 @@ class Banner(BaseModel):
 
 
 class SmallBanner(BaseModel):
+    link = models.URLField()
     photo = models.ImageField(_("Image of SmallBanner"), upload_to='smallBannerImage')
     photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(967, 265)], format='PNG',
                                   options={'quality': 100})
