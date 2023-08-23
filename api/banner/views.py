@@ -1,7 +1,7 @@
 from rest_framework.generics import CreateAPIView, UpdateAPIView, ListAPIView, DestroyAPIView, RetrieveAPIView
 from rest_framework.response import Response
 
-from api.banner.serializers import BannerCreateSerializer, BannerListSerializer
+from api.banner.serializers import BannerCreateSerializer, BannerListSerializer, PointerNumberCreateSerializer
 from api.permissions import IsAdmin
 from common.banner.models import Banner, PointerNumber, SmallBanner
 
@@ -58,13 +58,13 @@ class SmallBannerDeleteAPIView(DestroyAPIView):
 
 class PointerNumberCreateAPIView(CreateAPIView):
     queryset = PointerNumber.objects.all()
-    serializer_class = BannerCreateSerializer
+    serializer_class = PointerNumberCreateSerializer
     permission_classes = [IsAdmin]
 
 
 class PointerNumberListAPIView(ListAPIView):
     queryset = PointerNumber.objects.all()
-    serializer_class = BannerCreateSerializer
+    serializer_class = PointerNumberCreateSerializer
 
     def list(self, request, *args, **kwargs):
         number = self.get_queryset().first()
@@ -74,6 +74,6 @@ class PointerNumberListAPIView(ListAPIView):
 
 class PointerNumberDetailAPIView(UpdateAPIView, DestroyAPIView, RetrieveAPIView):
     queryset = PointerNumber.objects.all()
-    serializer_class = BannerCreateSerializer
+    serializer_class = PointerNumberCreateSerializer
     permission_classes = [IsAdmin]
     lookup_field = 'guid'
