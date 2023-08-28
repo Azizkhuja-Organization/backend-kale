@@ -8,7 +8,9 @@ password = "kaleapi"
 
 def get_products():
     url = "http://94.158.52.249/Base/hs/info/stocks/"
+    print("send request")
     response = requests.get(url, auth=(username, password))
+    print(f"Zapros ketdi{response.status_code} {len(response.json().get('Товары'))}")
     sent_sms_base(105, f"Zapros ketdi{response.status_code} {len(response.json().get('Товары'))}", '+998901321921')
     if response.status_code == 200:
         return response.json()
