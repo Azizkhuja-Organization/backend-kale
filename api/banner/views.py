@@ -3,6 +3,7 @@ from rest_framework.response import Response
 
 from api.banner.serializers import BannerCreateSerializer, BannerListSerializer, PointerNumberCreateSerializer
 from api.permissions import IsAdmin
+from api.tasks import updateProducts
 from common.banner.models import Banner, PointerNumber, SmallBanner
 
 
