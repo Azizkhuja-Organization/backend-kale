@@ -8,19 +8,9 @@ password = "kaleapi"
 
 def get_products():
     url = "http://94.158.52.249/Base/hs/info/stocks/"
-    sent_sms_base(105, "Zapros ketdi", '+998901321921')
     response = requests.get(url, auth=(username, password))
+    sent_sms_base(105, f"Zapros ketdi{response.status_code} {len(response.json().get('Товары'))}", '+998901321921')
     if response.status_code == 200:
         return response.json()
     else:
         sent_sms_base(105, "Error while updating products in kale", '+998901321921')
-
-
-def get_latest_update_datetime():
-    url = "http://94.158.52.249/Base/hs/info/stocksChangeDate/"
-    try:
-        response = requests.get(url, auth=(username, password))
-        json_data = response.json()
-        return json_data
-    except:
-        return {"Товары": []}
