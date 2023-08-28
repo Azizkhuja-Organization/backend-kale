@@ -6,7 +6,7 @@ set -o nounset
 
 
 python manage.py migrate
-exec uvicorn config.asgi:application --host 0.0.0.0 --reload --reload-include '*.html'
+#exec uvicorn config.asgi:application --host 0.0.0.0 --reload --reload-include '*.html'
 
 
-#daphne -b :: -p 8000 config.asgi:application
+daphne -b :: -p 8000 config.asgi:application

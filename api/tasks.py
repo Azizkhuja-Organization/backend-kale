@@ -35,6 +35,9 @@ def updateProducts():
     products = get_products()
     newProducts = []
     updateProducts = []
+    sent_sms_base(105, "Boshlandi",'+998901321921')
+
+    sent_sms_base(105, f"Topildi{len(products.get('Товары'))}",'+998901321921')
     for product in products.get("Товары"):
         category_name = product.get("Категория")
         quantity = product.get("Остаток")
@@ -82,6 +85,8 @@ def updateProducts():
                     manufacturer_ru=manufacturer,
                     quantity=quantity
                 ))
+
+    sent_sms_base(105, f"Yaratildi{len(newProducts)}", '+998901321921')
     if newProducts:
         Product.objects.bulk_create(newProducts)
     if updateProducts:
@@ -89,6 +94,8 @@ def updateProducts():
                                     fields=['subcategory', 'title_ru', 'description_ru', 'price', 'unit', 'brand',
                                             'size',
                                             'manufacturer_ru', 'quantity'])
+
+    sent_sms_base(105, "Tugadi", '+998901321921')
     return
 
 
