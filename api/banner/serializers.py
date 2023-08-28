@@ -9,7 +9,7 @@ class BannerCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Banner
-        fields = ['id', 'guid', 'photo', 'link']
+        fields = ['id', 'guid', 'photo', 'url']
 
 
 class BannerListSerializer(serializers.ModelSerializer):
@@ -17,7 +17,7 @@ class BannerListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Banner
-        fields = ['id', 'guid', 'photo_medium', 'link']
+        fields = ['id', 'guid', 'photo_medium', 'url']
 
 
 class SmallBannerCreateSerializer(serializers.ModelSerializer):
@@ -25,7 +25,7 @@ class SmallBannerCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SmallBanner
-        fields = ['id', 'guid', 'photo', 'link']
+        fields = ['id', 'guid', 'photo', 'url']
 
 
 class SmallBannerListSerializer(serializers.ModelSerializer):
@@ -33,7 +33,7 @@ class SmallBannerListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SmallBanner
-        fields = ['id', 'guid', 'photo_medium', 'link']
+        fields = ['id', 'guid', 'photo_medium', 'url']
 
 
 class PointerNumberCreateSerializer(serializers.ModelSerializer):
