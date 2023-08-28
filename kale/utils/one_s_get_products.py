@@ -2,8 +2,8 @@ import requests
 
 from config.settings.base import env
 
-username = env("ONE_C_USERNAME")
-password = env("ONE_C_PASSWORD")
+username = "kaleapi"
+password = "kaleapi"
 
 
 def get_products():
