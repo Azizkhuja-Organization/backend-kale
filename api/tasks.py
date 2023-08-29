@@ -1,4 +1,5 @@
 from celery import shared_task
+import requests
 from django.contrib.auth import get_user_model
 
 from api.auth.send_sms_func import sent_sms_base
@@ -32,7 +33,14 @@ def deleteProducts():
 
 @shared_task(name='updateProducts')
 def updateProducts():
-    products = get_products()
+    # products = get_products()
+
+    url = "http://94.158.52.249/Base/hs/info/stocks/"
+    response = requests.get(url, auth=('kaleapi', 'kaleapi'))
+    if response.status_code != 200:
+        sent_sms_base(105, "Error while updating products in kale", '+998901321921')
+        return
+    products = response.json()
     newProducts = []
     updateProducts = []
     for product in products.get("Товары"):
