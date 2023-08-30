@@ -21,7 +21,7 @@ class OrderCreateAPIView(CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         cartProducts = CartProduct.objects.filter(id__in=products)
-        if not cartProducts or type(cartProducts) != list:
+        if not cartProducts or not products:
             return Response({"products": ["This field is required."]}, status=status.HTTP_400_BAD_REQUEST)
         orderProducts = []
         totalAmount = 0
