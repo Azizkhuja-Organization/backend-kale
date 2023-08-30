@@ -5,7 +5,7 @@ from common.banner.models import Banner, SmallBanner, PointerNumber
 
 
 class BannerCreateSerializer(serializers.ModelSerializer):
-    photo = Base64ImageField(required=True)
+    photo = Base64ImageField()
 
     class Meta:
         model = Banner
@@ -21,7 +21,7 @@ class BannerListSerializer(serializers.ModelSerializer):
 
 
 class SmallBannerCreateSerializer(serializers.ModelSerializer):
-    photo = Base64ImageField(required=True)
+    photo = Base64ImageField()
 
     class Meta:
         model = SmallBanner

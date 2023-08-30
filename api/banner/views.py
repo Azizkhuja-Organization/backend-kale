@@ -1,7 +1,8 @@
 from rest_framework.generics import CreateAPIView, UpdateAPIView, ListAPIView, DestroyAPIView, RetrieveAPIView
 from rest_framework.response import Response
 
-from api.banner.serializers import BannerCreateSerializer, BannerListSerializer, PointerNumberCreateSerializer
+from api.banner.serializers import BannerCreateSerializer, BannerListSerializer, PointerNumberCreateSerializer, \
+    SmallBannerCreateSerializer, SmallBannerListSerializer
 from api.permissions import IsAdmin
 from api.tasks import updateProducts
 from common.banner.models import Banner, PointerNumber, SmallBanner
@@ -34,25 +35,25 @@ class BannerDeleteAPIView(DestroyAPIView):
 
 class SmallBannerCreateAPIView(CreateAPIView):
     queryset = SmallBanner.objects.all()
-    serializer_class = BannerCreateSerializer
+    serializer_class = SmallBannerCreateSerializer
     permission_classes = [IsAdmin]
 
 
 class SmallBannerListAPIView(ListAPIView):
     queryset = SmallBanner.objects.all()
-    serializer_class = BannerListSerializer
+    serializer_class = SmallBannerListSerializer
 
 
 class SmallBannerUpdateAPIView(UpdateAPIView):
     queryset = SmallBanner.objects.all()
-    serializer_class = BannerCreateSerializer
+    serializer_class = SmallBannerCreateSerializer
     permission_classes = [IsAdmin]
     lookup_field = 'guid'
 
 
 class SmallBannerDeleteAPIView(DestroyAPIView):
     queryset = SmallBanner.objects.all()
-    serializer_class = BannerCreateSerializer
+    serializer_class = SmallBannerCreateSerializer
     permission_classes = [IsAdmin]
     lookup_field = 'guid'
 
