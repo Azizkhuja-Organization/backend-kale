@@ -1,6 +1,7 @@
 import requests
 from django.contrib.auth import get_user_model
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -17,6 +18,7 @@ AUTHORIZATION1 = {'X-Auth': AUTHORIZATION['X-Auth'].split(':')[0]}
 
 
 class CardCreateApiView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         serializer = SubscribeSerializer(data=request.data, many=False)
@@ -61,6 +63,7 @@ class CardCreateApiView(APIView):
 
 
 class CardVerifyApiView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         serializer = SubscribeSerializer(data=request.data, many=False)
@@ -83,6 +86,7 @@ class CardVerifyApiView(APIView):
 
 
 class PaymentApiView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         serializer = SubscribeSerializer(data=request.data, many=False)
@@ -95,11 +99,14 @@ class PaymentApiView(APIView):
         order = Order.objects.filter(id=validated_data.get('id')).first()
         if order is None:
             return {"status": status.HTTP_400_BAD_REQUEST}
+        if order.totalAmount * 100 <= 0:
+            return {"message": "Amount must be grater then zero", "status": status.HTTP_400_BAD_REQUEST}
+
         data = dict(
             id=validated_data['id'],
             method=RECEIPTS_CREATE,
             params=dict(
-                amount=order.totalAmount,
+                amount=order.totalAmount * 100,
                 account=dict(
                     order_id=order.id
                     # KEY_1=validated_data['params']['account'][KEY_1]
@@ -128,7 +135,8 @@ class PaymentApiView(APIView):
             method=RECEIPTS_PAY,
             params=dict(
                 id=trans_id,
-                token=token)
+                token=token
+            )
         )
         response = requests.post(URL, json=data, headers=AUTHORIZATION)
         result = response.json()
