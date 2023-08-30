@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
@@ -7,7 +8,7 @@ from api.order.serializers import OrderCreateSerializer, OrderListSerializer, Or
     OrderUpdateSerializer
 from api.paginator import CustomPagination
 from api.permissions import IsClient, IsAdmin
-from common.order.models import Order, CartProduct, OrderProduct, OrderStatus, PaymentTypes
+from common.order.models import Order, CartProduct, OrderProduct, OrderStatus, PaymentTypes, PaymentStatus
 from common.users.models import User
 
 
@@ -48,7 +49,8 @@ class OrderListAPIView(ListAPIView):
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.request.user.role == User.UserRole.CLIENT:
-            queryset = queryset.filter(user=self.request.user)
+            queryset = queryset.filter(Q(user=self.request.user) & (
+                    Q(paymentStatus=PaymentStatus.PAID) | Q(paymentType=PaymentTypes)))
         start = self.request.query_params.get('start')
         end = self.request.query_params.get('end')
         if start and end:
