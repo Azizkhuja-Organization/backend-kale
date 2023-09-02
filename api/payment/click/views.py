@@ -83,7 +83,6 @@ class PaymentClick(APIView):
             'amount': payment.total,
             'transaction_param': payment.id
         }
-        #https://my.click.uz/services/pay?service_id=28420&merchant_id=11369&amount=6000&transaction_param=2&return_url=https://www.youtube.com/watch?v=lF5jQkz_OyY&card_type=humo
         return Response(context, status=status.HTTP_200_OK)
 
 
@@ -202,7 +201,7 @@ class PaymentCompleteAPIView(CreateAPIView):
             AsPayment.objects.create(
                 user=order.user,
                 order=order,
-                amount=payment.amount,
+                amount=payment.total,
                 paymentType=PaymentType.CLICK,
                 status=PPaymentStatus.CONFIRMED
             )
