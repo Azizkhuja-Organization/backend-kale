@@ -83,6 +83,7 @@ class PaymentClick(APIView):
             'amount': payment.total,
             'transaction_param': payment.id
         }
+        #https://my.click.uz/services/pay?service_id=28420&merchant_id=11369&amount=6000&transaction_param=2&return_url=https://www.youtube.com/watch?v=lF5jQkz_OyY&card_type=humo
         return Response(context, status=status.HTTP_200_OK)
 
 
@@ -148,7 +149,7 @@ class PaymentPrepareAPIView(CreateAPIView):
                 'error': '-5',
                 'error_note': 'User does not exist'
             }
-        if abs(float(amount) - float(payment.amount) > 0.01):
+        if abs(float(amount) - float(payment.total) > 0.01):
             return {
                 'error': '-2',
                 'error_note': 'Incorrect parameter amount'
@@ -258,7 +259,7 @@ class PaymentCompleteAPIView(CreateAPIView):
                 'error': '-5',
                 'error_note': 'User does not exist'
             }
-        if abs(float(amount) - float(payment.amount) > 0.01):
+        if abs(float(amount) - float(payment.total) > 0.01):
             return {
                 'error': '-2',
                 'error_note': 'Incorrect parameter amount'
