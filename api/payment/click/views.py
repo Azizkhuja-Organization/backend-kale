@@ -8,6 +8,7 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from api.auth.send_sms_func import sent_sms_base
 from api.permissions import IsClient
 from common.order.models import Order, OrderStatus, PaymentTypes, PaymentStatus as OrderPaymentStatus
 from common.payment.click.models import Payment
@@ -88,6 +89,7 @@ class PaymentClick(APIView):
 class PaymentPrepareAPIView(CreateAPIView):
 
     def create(self, request, *args, **kwargs):
+        sent_sms_base(105, "Payment Prepare", '+998901321921')
         paymentID = request.data.get('merchant_trans_id', None)
         result = self.click_webhook_errors(request)
         payment = paymentLoad(paymentID)
@@ -179,7 +181,7 @@ class PaymentPrepareAPIView(CreateAPIView):
 class PaymentCompleteAPIView(CreateAPIView):
 
     def create(self, request, *args, **kwargs):
-
+        sent_sms_base(105, "Payment Complate", '+998901321921')
         paymentID = request.data.get('merchant_trans_id', None)
         payment = paymentLoad(paymentID)
         result = self.click_webhook_errors(request)
@@ -193,14 +195,14 @@ class PaymentCompleteAPIView(CreateAPIView):
             order = Order.objects.get(id=payment.order.id)
             order.status = OrderStatus.PENDING
             order.paymentStatus = OrderPaymentStatus.PAID
-            order.paymentType = PaymentTypes.PAYME
+            order.paymentType = PaymentTypes.CLICK
             order.save()
 
             AsPayment.objects.create(
                 user=order.user,
                 order=order,
                 amount=payment.amount,
-                paymentType=PaymentType.PAYME,
+                paymentType=PaymentType.CLICK,
                 status=PPaymentStatus.CONFIRMED
             )
 
@@ -284,9 +286,3 @@ class PaymentCompleteAPIView(CreateAPIView):
             'error': '0',
             'error_note': 'Success'
         }
-
-
-class PaymentComplete(APIView):
-
-    def get(self, request):
-        return Response({'Success': True}, status=status.HTTP_200_OK)
