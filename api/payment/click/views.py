@@ -53,25 +53,6 @@ class PaymentClick(APIView):
         order = Order.objects.filter(id=id, user=request.user).first()
         if order is None:
             return Response({"error": "Order does not found"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # payment = Payment.objects.create(user_id=request.user.id,
-        #                                  order=order,
-        #                                  total=order.totalAmount,
-        #                                  description="Kale Gallery",
-        #                                  billing_first_name=request.user.name,
-        #                                  billing_last_name=request.user.name,
-        #                                  billing_address_1="Toshkent",
-        #                                  billing_address_2='Toshkent',
-        #                                  billing_city='Tashkent',
-        #                                  billing_postcode='1000000',
-        #                                  billing_country_code='47',
-        #                                  billing_country_area='Asia',
-        #                                  billing_email='kale@gmail.com')
-
-        # payment = Payment.objects.create(user=request.user,
-        #                                  order=order,
-        #                                  amount=order.totalAmount,
-        #                                  paymentType=PaymentType.CLICK)
         context = {
             'merchant_id': env('CLICK_MERCHANT_ID'),
             'service_id': env('CLICK_SERVICE_ID'),
@@ -142,7 +123,7 @@ class PaymentPrepareAPIView(CreateAPIView):
                 'error': '-5',
                 'error_note': 'User does not exist'
             }
-        if abs(float(amount) - float(order.totalAmount) > 0.01):
+        if float(order.totalAmount) - float(amount) > 0.01 or order.totalAmount < amount or order.totalAmount <= 0:
             return {
                 'error': '-2',
                 'error_note': 'Incorrect parameter amount'
@@ -247,7 +228,7 @@ class PaymentCompleteAPIView(CreateAPIView):
                 'error': '-5',
                 'error_note': 'User does not exist'
             }
-        if abs(float(amount) - float(order.totalAmount) > 0.01):
+        if float(order.totalAmount) - float(amount) > 0.01 or order.totalAmount < amount or order.totalAmount <= 0:
             return {
                 'error': '-2',
                 'error_note': 'Incorrect parameter amount'
