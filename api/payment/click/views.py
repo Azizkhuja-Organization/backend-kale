@@ -254,7 +254,7 @@ class PaymentCompleteAPIView(CreateAPIView):
                 'error': '-5',
                 'error_note': 'User does not exist'
             }
-        if abs(float(amount) - float(payment.total) > 0.01):
+        if not (float(amount) >= float(payment.total)) or abs(float(amount) - float(payment.total) > 0.01) or float(amount) - float(payment.total) > 0.01:
             return {
                 'error': '-2',
                 'error_note': 'Incorrect parameter amount'
