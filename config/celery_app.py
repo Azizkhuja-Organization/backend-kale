@@ -2,8 +2,13 @@ import os
 
 from celery import Celery
 
+from config.settings.base import DEBUG
+
 # set the default Django settings module for the 'celery' program.
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
+if DEBUG:
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
+else:
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.production")
 
 app = Celery("kale")
 
