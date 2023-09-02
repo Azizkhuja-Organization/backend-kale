@@ -9,8 +9,7 @@ from api.permissions import IsAdmin
 from api.products.images.serializers import ProductImageCreateSerializer
 from api.products.product.serializers import ProductCreateSerializer, ProductListSerializer, ProductDetailSerializer, \
     ProductUpdateSerializer
-from api.tasks import updateProducts
-from common.order.models import Wishlist, Comparison
+from common.order.models import Wishlist, Comparison, CartProduct
 from common.product.models import Product, ProductImage
 
 
@@ -47,7 +46,6 @@ class ProductListAPIView(ListAPIView):
     filterset_fields = ['subcategory', 'unit', 'status', 'brand', 'manufacturer', 'cornerStatus', 'isTop']
 
     def get_queryset(self):
-        updateProducts.apply_async()
         queryset = super().get_queryset()
         if self.request.user.is_authenticated:
             wishlist, created = Wishlist.objects.get_or_create(user_id=self.request.user.id)
@@ -56,12 +54,15 @@ class ProductListAPIView(ListAPIView):
             comparison, created2 = Comparison.objects.get_or_create(user_id=self.request.user.id)
             queryset = queryset.annotate(isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('pk'))))
 
+            queryset = queryset.annotate(isCart=Exists(
+                CartProduct.objects.filter(product_id=OuterRef('pk'), cart__user_id=self.request.user.id)))
+
         hasLiked = self.request.query_params.get('hasLiked')
-        if hasLiked:
+        if hasLiked and self.request.user.is_authenticated:
             queryset = queryset.filter(isLiked=True)
 
         hasCompared = self.request.query_params.get('hasCompared')
-        if hasCompared:
+        if hasCompared and self.request.user.is_authenticated:
             queryset = queryset.filter(isCompared=True)
 
         others = self.request.query_params.get('others')
@@ -98,6 +99,19 @@ class ProductDetailAPIView(RetrieveAPIView):
     queryset = Product.objects.select_related('subcategory').all()
     serializer_class = ProductDetailSerializer
     lookup_field = 'guid'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.user.is_authenticated:
+            wishlist, created = Wishlist.objects.get_or_create(user_id=self.request.user.id)
+            queryset = queryset.annotate(isLiked=Exists(wishlist.products.all().filter(id__in=OuterRef('pk'))))
+
+            comparison, created2 = Comparison.objects.get_or_create(user_id=self.request.user.id)
+            queryset = queryset.annotate(isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('pk'))))
+
+            queryset = queryset.annotate(isCart=Exists(
+                CartProduct.objects.filter(product_id=OuterRef('pk'), cart__user_id=self.request.user.id)))
+        return queryset
 
 
 class ProductUpdateAPIView(UpdateAPIView):

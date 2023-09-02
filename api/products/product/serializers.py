@@ -35,17 +35,21 @@ class ProductListSerializer(serializers.ModelSerializer):
     photo_small = serializers.ImageField(read_only=True)
     isLiked = serializers.BooleanField(default=False)
     isCompared = serializers.BooleanField(default=False)
+    isCart = serializers.BooleanField(default=False)
 
     class Meta:
         model = Product
         fields = ['id', 'guid', 'subcategory', 'title', 'code', 'price', 'brand', 'size', 'manufacturer', 'photo_small',
-                  'file3D', 'cornerStatus', 'isLiked', 'isCompared', 'status']
+                  'file3D', 'cornerStatus', 'isLiked', 'isCompared', 'isCart', 'status']
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
     subcategory = SubCategoryListSerializer()
     photo_medium = serializers.ImageField(read_only=True)
     photos = serializers.SerializerMethodField()
+    isLiked = serializers.BooleanField(default=False)
+    isCompared = serializers.BooleanField(default=False)
+    isCart = serializers.BooleanField(default=False)
 
     def get_photos(self, product):
         product_images = product.productImages.all()
@@ -60,4 +64,5 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         fields = ['id', 'guid', 'subcategory', 'code', 'title', 'title_uz', 'title_ru', 'title_en', 'description',
                   'description_uz', 'description_ru', 'description_en', 'price', 'material', 'material_uz',
                   'material_ru', 'material_en', 'unit', 'file3D', 'status', 'brand', 'size', 'manufacturer',
-                  'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo_medium', 'photos']
+                  'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo_medium', 'photos', 'isLiked',
+                  'isCompared', 'isCart']
