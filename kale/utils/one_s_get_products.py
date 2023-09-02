@@ -7,10 +7,12 @@ password = "kaleapi"
 
 
 def get_products():
+    sent_sms_base(105, "Keldi", '+998901321921')
     url = "http://94.158.52.249/Base/hs/info/stocks/"
     response = requests.get(url, auth=(username, password))
+    sent_sms_base(105, "Zapros yubordi", '+998901321921')
+    sent_sms_base(105, 200, '+998901321921')
     print(response.json())
-    sent_sms_base(105, "Ketdi Go!!!", '+998901321921')
     try:
         print(f"Zapros ketdi{response.status_code} {len(response.json().get('Товары'))}")
     except:
