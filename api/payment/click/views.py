@@ -1,17 +1,14 @@
 import hashlib
 
 from django.conf import settings
-from payments import PaymentStatus
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.permissions import IsClient
-from common.order.models import Order, OrderStatus, PaymentTypes, PaymentStatus as OrderPaymentStatus
-from common.payment.click.models import Payment
-from common.payment.payme.models import Payment as AsPayment
-from common.payment.payme.models import PaymentType, PaymentStatus as PPaymentStatus
+from common.order.models import Order, OrderStatus, PaymentTypes, PaymentStatus
+from common.payment.payme.models import Payment, PaymentType
 from config.settings.base import env
 
 
@@ -32,9 +29,9 @@ def isset(data, columns):
     return True
 
 
-def paymentLoad(id):
+def orderLoad(id):
     try:
-        return Payment.objects.get(id=id)
+        return Order.objects.get(id=id)
     except:
         return None
 
@@ -57,19 +54,19 @@ class PaymentClick(APIView):
         if order is None:
             return Response({"error": "Order does not found"}, status=status.HTTP_400_BAD_REQUEST)
 
-        payment = Payment.objects.create(user_id=request.user.id,
-                                         order=order,
-                                         total=order.totalAmount,
-                                         description="Kale Gallery",
-                                         billing_first_name=request.user.name,
-                                         billing_last_name=request.user.name,
-                                         billing_address_1="Toshkent",
-                                         billing_address_2='Toshkent',
-                                         billing_city='Tashkent',
-                                         billing_postcode='1000000',
-                                         billing_country_code='47',
-                                         billing_country_area='Asia',
-                                         billing_email='kale@gmail.com')
+        # payment = Payment.objects.create(user_id=request.user.id,
+        #                                  order=order,
+        #                                  total=order.totalAmount,
+        #                                  description="Kale Gallery",
+        #                                  billing_first_name=request.user.name,
+        #                                  billing_last_name=request.user.name,
+        #                                  billing_address_1="Toshkent",
+        #                                  billing_address_2='Toshkent',
+        #                                  billing_city='Tashkent',
+        #                                  billing_postcode='1000000',
+        #                                  billing_country_code='47',
+        #                                  billing_country_area='Asia',
+        #                                  billing_email='kale@gmail.com')
 
         # payment = Payment.objects.create(user=request.user,
         #                                  order=order,
@@ -78,8 +75,8 @@ class PaymentClick(APIView):
         context = {
             'merchant_id': env('CLICK_MERCHANT_ID'),
             'service_id': env('CLICK_SERVICE_ID'),
-            'amount': payment.total,
-            'transaction_param': payment.id
+            'amount': order.totalAmount,
+            'transaction_param': order.id
         }
         return Response(context, status=status.HTTP_200_OK)
 
@@ -87,12 +84,12 @@ class PaymentClick(APIView):
 class PaymentPrepareAPIView(CreateAPIView):
 
     def create(self, request, *args, **kwargs):
-        paymentID = request.data.get('merchant_trans_id', None)
+        orderID = request.data.get('merchant_trans_id', None)
         result = self.click_webhook_errors(request)
-        payment = paymentLoad(paymentID)
-        if result['error'] == '0' and payment:
-            payment.status = PaymentStatus.WAITING
-            payment.save()
+        order = orderLoad(orderID)
+        if result['error'] == '0' and order:
+            order.status = OrderStatus.PAYMENT
+            order.save()
         result['click_trans_id'] = request.data.get('click_trans_id', None)
         result['merchant_trans_id'] = request.data.get('merchant_trans_id', None)
         result['merchant_prepare_id'] = request.data.get('merchant_trans_id', None)
@@ -103,7 +100,7 @@ class PaymentPrepareAPIView(CreateAPIView):
         click_trans_id = request.data.get('click_trans_id', None)
         service_id = request.data.get('service_id', None)
         click_paydoc_id = request.data.get('click_paydoc_id', None)
-        paymentID = request.data.get('merchant_trans_id', None)
+        orderID = request.data.get('merchant_trans_id', None)
         amount = request.data.get('amount', None)
         action = request.data.get('action', None)
         error = request.data.get('error', None)
@@ -122,7 +119,7 @@ class PaymentPrepareAPIView(CreateAPIView):
             }
 
         signString = '{}{}{}{}{}{}{}{}'.format(
-            click_trans_id, service_id, click_secret_key(), paymentID, merchant_prepare_id, amount, action, sign_time
+            click_trans_id, service_id, click_secret_key(), orderID, merchant_prepare_id, amount, action, sign_time
         )
         encoder = hashlib.md5(signString.encode('utf-8'))
         signString = encoder.hexdigest()
@@ -139,32 +136,32 @@ class PaymentPrepareAPIView(CreateAPIView):
                 'error_note': 'Action not found'
             }
 
-        payment = paymentLoad(paymentID)
-        if payment is None:
+        order = orderLoad(orderID)
+        if order is None:
             return {
                 'error': '-5',
                 'error_note': 'User does not exist'
             }
-        if abs(float(amount) - float(payment.total) > 0.01):
+        if abs(float(amount) - float(order.totalAmount) > 0.01):
             return {
                 'error': '-2',
                 'error_note': 'Incorrect parameter amount'
             }
 
-        if payment.status == PaymentStatus.CONFIRMED:
+        if order.paymentStatus == PaymentStatus.PAID:
             return {
                 'error': '-4',
                 'error_note': 'Already paid'
             }
 
         if action == '1':
-            if paymentID != merchant_prepare_id:
+            if orderID != merchant_prepare_id:
                 return {
                     'error': '-6',
                     'error_note': 'Transaction not found'
                 }
 
-        if payment.status == PaymentStatus.REJECTED or int(error) < 0:
+        if order.paymentStatus == PaymentStatus.CANCELED or int(error) < 0:
             return {
                 'error': '-9',
                 'error_note': 'Transaction cancelled'
@@ -178,28 +175,24 @@ class PaymentPrepareAPIView(CreateAPIView):
 class PaymentCompleteAPIView(CreateAPIView):
 
     def create(self, request, *args, **kwargs):
-        paymentID = request.data.get('merchant_trans_id', None)
-        payment = paymentLoad(paymentID)
+        orderID = request.data.get('merchant_trans_id', None)
+        order = orderLoad(orderID)
         result = self.click_webhook_errors(request)
-        if request.data.get('error', None) != None and int(request.data.get('error', None)) < 0 and payment:
-            payment.status = PaymentStatus.REJECTED
-            payment.save()
-        if result['error'] == '0' and payment:
-            payment.status = PaymentStatus.CONFIRMED
-            payment.save()
-
-            order = Order.objects.get(id=payment.order.id)
+        if request.data.get('error', None) != None and int(request.data.get('error', None)) < 0 and order:
+            order.paymentStatus = PaymentStatus.CANCELED
+            order.save()
+        if result['error'] == '0' and order:
             order.status = OrderStatus.PENDING
-            order.paymentStatus = OrderPaymentStatus.PAID
+            order.paymentStatus = PaymentStatus.PAID
             order.paymentType = PaymentTypes.CLICK
             order.save()
 
-            AsPayment.objects.create(
+            Payment.objects.create(
                 user=order.user,
                 order=order,
-                amount=payment.total,
+                amount=order.totalAmount,
                 paymentType=PaymentType.CLICK,
-                status=PPaymentStatus.CONFIRMED
+                status=PaymentStatus.PAID
             )
 
         result['click_trans_id'] = request.data.get('click_trans_id', None)
@@ -212,7 +205,7 @@ class PaymentCompleteAPIView(CreateAPIView):
         click_trans_id = request.data.get('click_trans_id', None)
         service_id = request.data.get('service_id', None)
         click_paydoc_id = request.data.get('click_paydoc_id', None)
-        paymentID = request.data.get('merchant_trans_id', None)
+        orderID = request.data.get('merchant_trans_id', None)
         amount = request.data.get('amount', None)
         action = request.data.get('action', None)
         error = request.data.get('error', None)
@@ -231,7 +224,7 @@ class PaymentCompleteAPIView(CreateAPIView):
             }
 
         signString = '{}{}{}{}{}{}{}{}'.format(
-            click_trans_id, service_id, click_secret_key(), paymentID, merchant_prepare_id, amount, action, sign_time
+            click_trans_id, service_id, click_secret_key(), orderID, merchant_prepare_id, amount, action, sign_time
         )
         encoder = hashlib.md5(signString.encode('utf-8'))
         signString = encoder.hexdigest()
@@ -248,32 +241,32 @@ class PaymentCompleteAPIView(CreateAPIView):
                 'error_note': 'Action not found'
             }
 
-        payment = paymentLoad(paymentID)
-        if not payment:
+        order = orderLoad(orderID)
+        if order is None:
             return {
                 'error': '-5',
                 'error_note': 'User does not exist'
             }
-        if not (float(amount) >= float(payment.total)) or abs(float(amount) - float(payment.total) > 0.01) or float(amount) - float(payment.total) > 0.01:
+        if abs(float(amount) - float(order.totalAmount) > 0.01):
             return {
                 'error': '-2',
                 'error_note': 'Incorrect parameter amount'
             }
 
-        if payment.status == PaymentStatus.CONFIRMED:
+        if order.paymentStatus == PaymentStatus.PAID:
             return {
                 'error': '-4',
                 'error_note': 'Already paid'
             }
 
         if action == '1':
-            if paymentID != merchant_prepare_id:
+            if orderID != merchant_prepare_id:
                 return {
                     'error': '-6',
                     'error_note': 'Transaction not found'
                 }
 
-        if payment.status == PaymentStatus.REJECTED or int(error) < 0:
+        if order.paymentStatus == PaymentStatus.CANCELED or int(error) < 0:
             return {
                 'error': '-9',
                 'error_note': 'Transaction cancelled'
