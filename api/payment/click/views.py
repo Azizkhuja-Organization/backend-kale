@@ -123,7 +123,8 @@ class PaymentPrepareAPIView(CreateAPIView):
                 'error': '-5',
                 'error_note': 'User does not exist'
             }
-        if float(order.totalAmount) - float(amount) > 0.01 or order.totalAmount < amount or order.totalAmount <= 0:
+        if abs(float(order.totalAmount) - float(amount) > 0.01) or float(order.totalAmount) > float(amount) or float(
+            order.totalAmount) <= 0:
             return {
                 'error': '-2',
                 'error_note': 'Incorrect parameter amount'
@@ -228,7 +229,8 @@ class PaymentCompleteAPIView(CreateAPIView):
                 'error': '-5',
                 'error_note': 'User does not exist'
             }
-        if float(order.totalAmount) - float(amount) > 0.01 or order.totalAmount < amount or order.totalAmount <= 0:
+        if abs(float(order.totalAmount) - float(amount) > 0.01) or float(order.totalAmount) > float(amount) or float(
+            order.totalAmount) <= 0:
             return {
                 'error': '-2',
                 'error_note': 'Incorrect parameter amount'
