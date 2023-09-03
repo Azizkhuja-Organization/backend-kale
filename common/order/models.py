@@ -44,6 +44,7 @@ class OrderProduct(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.FloatField()
     orderPrice = models.FloatField()
+    discount = models.FloatField(default=0)
 
     def __str__(self):
         return f"Order Product #{self.id} {self.product.title} {self.quantity}"

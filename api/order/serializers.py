@@ -16,7 +16,7 @@ class OrderProductProductDetailSerializer(serializers.ModelSerializer):
 class OrderProductCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderProduct
-        fields = ['id', 'guid', 'product', 'quantity', 'orderPrice']
+        fields = ['id', 'guid', 'product', 'quantity', 'orderPrice', 'discount']
 
 
 class OrderProductListSerializer(serializers.ModelSerializer):
@@ -24,7 +24,7 @@ class OrderProductListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderProduct
-        fields = ['id', 'guid', 'product', 'quantity', 'orderPrice']
+        fields = ['id', 'guid', 'product', 'quantity', 'orderPrice', 'discount']
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):

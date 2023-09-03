@@ -27,7 +27,7 @@ class OrderCreateAPIView(CreateAPIView):
         orderProducts = []
         totalAmount = 0
         for p in cartProducts:
-            orderProducts.append(OrderProduct(product=p.product, quantity=p.quantity, orderPrice=p.orderPrice))
+            orderProducts.append(OrderProduct(product=p.product, quantity=p.quantity, orderPrice=p.orderPrice, discount=p.product.discount))
             totalAmount += p.orderPrice
         OrderProduct.objects.bulk_create(orderProducts)
         order = serializer.save()
