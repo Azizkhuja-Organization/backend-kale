@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from api.comparison.serializers import ComparisonProductDetailSerializer
 from api.products.subcategory.serializers import SubCategoryCategoryListSerializer
-from common.order.models import Comparison, Wishlist
+from common.order.models import Comparison, Wishlist, CartProduct
 from common.product.models import SubCategory, Product
 
 
@@ -37,7 +37,8 @@ class ComparisonProductsAPIView(ListAPIView):
         comparison, created = Comparison.objects.get_or_create(user=request.user)
         wishlist, created = Wishlist.objects.get_or_create(user=request.user)
         products = comparison.products.select_related('subcategory').annotate(
-            isLiked=Exists(wishlist.products.all().filter(id__in=OuterRef('pk'))))
+            isLiked=Exists(wishlist.products.all().filter(id__in=OuterRef('pk')))).annotate(
+            isCart=Exists(CartProduct.objects.filter(product_id=OuterRef('pk'), cart__user_id=self.request.user.id)))
         subcategory = self.request.query_params.get('subcategory')
         if subcategory:
             products = products.filter(subcategory=subcategory)

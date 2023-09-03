@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.wishlist.serializers import WishlistProductDetailSerializer
-from common.order.models import Wishlist, Comparison
+from common.order.models import Wishlist, Comparison, CartProduct
 from common.product.models import Product
 
 
@@ -34,5 +34,6 @@ class WishlistProductsAPIView(ListAPIView):
 
         comparison, created2 = Comparison.objects.get_or_create(user_id=self.request.user.id)
         products = wishlist.products.annotate(
-            isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('id'))))
+            isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('id')))).annotate(
+            isCart=Exists(CartProduct.objects.filter(product_id=OuterRef('pk'), cart__user_id=self.request.user.id)))
         return Response(WishlistProductDetailSerializer(products, many=True).data, status=status.HTTP_200_OK)
