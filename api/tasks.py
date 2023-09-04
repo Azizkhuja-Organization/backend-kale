@@ -1,5 +1,4 @@
 from celery import shared_task
-import requests
 from django.contrib.auth import get_user_model
 
 from api.auth.send_sms_func import sent_sms_base
@@ -33,7 +32,6 @@ def deleteProducts():
 
 @shared_task(name='updateProducts')
 def updateProducts():
-    print("Task started")
     products = get_products()
     newProducts = []
     updateProducts = []
@@ -91,9 +89,7 @@ def updateProducts():
                                     fields=['subcategory', 'title_ru', 'description_ru', 'price', 'unit', 'brand',
                                             'size',
                                             'manufacturer_ru', 'quantity'])
-    print("TASK ENDED")
     return
-
 
 
 categories = [
