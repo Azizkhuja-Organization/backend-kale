@@ -17,11 +17,10 @@ class ComparisonAddSubAPIView(APIView):
     def get(self, request):
         id = request.query_params.get('id')
         product = Product.objects.filter(id=id).first()
+        if product is None:
+            return Response({"message": "Product does not found"}, status=status.HTTP_400_BAD_REQUEST)
         if not product.subcategory:
             return Response(status=status.HTTP_200_OK)
-
-        if product is None:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
         comparison, created = Comparison.objects.get_or_create(user=request.user)
         if product in comparison.products.all():
             comparison.products.remove(product)

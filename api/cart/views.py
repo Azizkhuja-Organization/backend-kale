@@ -74,7 +74,7 @@ class CartProductListAPIView(ListAPIView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.filter(cart__user=self.request.user)
+        queryset = queryset.filter(cart__user=self.request.user).order_by('-id')
         q = self.request.query_params.get('q')
         if q:
             queryset = queryset.filter(Q(title__icontains=q) | Q(description__icontains=q))

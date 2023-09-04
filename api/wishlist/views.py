@@ -17,7 +17,7 @@ class WishlistAddSubAPIView(APIView):
         id = request.query_params.get('id')
         product = Product.objects.filter(id=id).first()
         if product is None:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Product does not found"}, status=status.HTTP_400_BAD_REQUEST)
         wishlist, created = Wishlist.objects.get_or_create(user=request.user)
         if product in wishlist.products.all():
             wishlist.products.remove(product)
@@ -35,5 +35,7 @@ class WishlistProductsAPIView(ListAPIView):
         comparison, created2 = Comparison.objects.get_or_create(user_id=self.request.user.id)
         products = wishlist.products.annotate(
             isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('id')))).annotate(
-            isCart=Exists(CartProduct.objects.filter(product_id=OuterRef('pk'), cart__user_id=self.request.user.id)))
+            isCart=Exists(
+                CartProduct.objects.filter(product_id=OuterRef('pk'), cart__user_id=self.request.user.id))).order_by(
+            '-id')
         return Response(WishlistProductDetailSerializer(products, many=True).data, status=status.HTTP_200_OK)
