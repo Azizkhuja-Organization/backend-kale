@@ -8,5 +8,5 @@ set -o nounset
 python /app/manage_prod.py collectstatic --noinput
 python /app/manage_prod.py migrate
 
-#exec /usr/local/bin/uvicorn config.asgi:application --host 0.0.0.0 --port 7000 --app-dir=/app --env-file .env
-daphne -b :: -p 7000 config.asgi:application
+# exec /usr/local/bin/uvicorn config.asgi_production:application --host 0.0.0.0 --port 7000 --app-dir=/app --env-file .env
+daphne -b :: -p 7000 config.asgi_production:application

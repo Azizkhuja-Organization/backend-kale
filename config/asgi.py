@@ -12,19 +12,18 @@ from config.customauth import TokenAuthMiddlewareStack
 from config.settings.base import DEBUG
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+print(BASE_DIR, "EEEEEEEEEEE")
 sys.path.append(str(BASE_DIR / "kale"))
-if DEBUG:
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
-else:
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.production")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 django_application = get_asgi_application()
 
 application = ProtocolTypeRouter(
     {
         "http": django_application,
-        "websocket": AllowedHostsOriginValidator(
-            # TokenAuthMiddlewareStack(URLRouter(config.routing.websocket_urlpatterns))
-            AuthMiddlewareStack(URLRouter(config.routing.websocket_urlpatterns))
-        ),
+        "websocket": URLRouter(config.routing.websocket_urlpatterns),
+        #"websocket": AllowedHostsOriginValidator(
+           ## TokenAuthMiddlewareStack(URLRouter(config.routing.websocket_urlpatterns))
+           # AuthMiddlewareStack(URLRouter(config.routing.websocket_urlpatterns))
+        #),
     }
 )

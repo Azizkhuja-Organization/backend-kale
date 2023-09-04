@@ -33,6 +33,7 @@ def deleteProducts():
 
 @shared_task(name='updateProducts')
 def updateProducts():
+    print("Task started")
     products = get_products()
     newProducts = []
     updateProducts = []
@@ -90,7 +91,9 @@ def updateProducts():
                                     fields=['subcategory', 'title_ru', 'description_ru', 'price', 'unit', 'brand',
                                             'size',
                                             'manufacturer_ru', 'quantity'])
+    print("TASK ENDED")
     return
+
 
 
 categories = [

@@ -5,6 +5,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
+from django.http import HttpResponse
 
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
@@ -30,6 +31,7 @@ urlpatterns = [
                   # User management
                   path("accounts/", include("allauth.urls")),
                   # Your stuff: custom urls includes go here
+                  path('favicon.ico', lambda request: HttpResponse(status=404)),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG:
     # Static file serving when using Gunicorn + Uvicorn for local web socket development
