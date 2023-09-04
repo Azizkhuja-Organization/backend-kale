@@ -9,12 +9,13 @@ from sentry_sdk.integrations.redis import RedisIntegration
 from .base import *  # noqa
 from .base import env
 
+DEBUG = False
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["kale.abba.uz", "167.99.142.237", "167.99.142.237:7000", "localhost:7000"]
+ALLOWED_HOSTS = ["kale.abba.uz", "localhost:7000"]
 
 # DATABASES
 # ------------------------------------------------------------------------------
@@ -157,4 +158,7 @@ sentry_sdk.init(
 # ]
 # Your stuff...
 # ------------------------------------------------------------------------------
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = (
+    os.path.join(APPS_DIR, 'static'),
+)
