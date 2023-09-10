@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from common.order.models import Order, PaymentTypes, OrderStatus, PaymentStatus as OrderPaymentStatus
+from common.order.models import Order, PaymentTypes, OrderStatus, PaymentStatus as OrderPaymentStatus, CartProduct
 from common.payment.payme.models import Payment, PaymentType, PaymentStatus
 from kale.contrib.paymeuz.config import *
 from kale.contrib.paymeuz.methods import *
@@ -167,4 +167,8 @@ class PaymentApiView(APIView):
                 paymentType=PaymentType.PAYME,
                 status=PaymentStatus.CONFIRMED
             )
+            cartProducts = CartProduct.objects.filter(cart__user=order.user,
+                                                      product_id__in=order.products.all().select_related(
+                                                          'product').values_list('product_id'))
+            cartProducts.delete()
         return result

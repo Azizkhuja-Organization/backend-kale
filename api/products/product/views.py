@@ -85,7 +85,13 @@ class ProductListAPIView(ListAPIView):
         min = self.request.query_params.get('min')
         max = self.request.query_params.get('max')
         if min and max:
-            queryset = queryset.filter(price__range=[min, max])
+            queryset = queryset.filter(price__gte=min, price__lte=max)
+
+        elif min:
+            queryset = queryset.filter(price__gte=min)
+
+        elif max:
+            queryset = queryset.filter(price__lte=max)
         q = self.request.query_params.get('q')
         if q:
             queryset = queryset.filter(Q(title__icontains=q))
