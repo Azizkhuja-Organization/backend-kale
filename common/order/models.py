@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 
 from common.address.models import Address
+from common.payment.payme.models import PaymentStatus
 from common.product.models import Product
 from common.users.base import BaseModel, BaseMeta
 
@@ -60,19 +61,10 @@ class OrderStatus(models.IntegerChoices):
     DELETED = 6, "DELETED"
 
 
-class PaymentStatus(models.IntegerChoices):
-    NOT_PAID = 1, "NOT_PAID"
-    WAITING = 2, "WAITING"
-    CANCELED = 3, "CANCELED"
-    ABORTED = 4, "ABORTED"
-    PAID = 5, "PAID"
-
-
 class PaymentTypes(models.IntegerChoices):
     PAYME = 1, "PAYME"
     CLICK = 2, "CLICK"
-    UZUM = 3, "UZUM"
-    CASH = 4, "CASH"
+    CASH = 3, "CASH"
 
 
 class Order(BaseModel):
@@ -86,7 +78,7 @@ class Order(BaseModel):
     installation = models.BooleanField(default=False)
     comment = models.TextField(null=True, blank=True)
 
-    paymentStatus = models.IntegerField(choices=PaymentStatus.choices, default=PaymentStatus.NOT_PAID)
+    paymentStatus = models.IntegerField(choices=PaymentStatus.choices, default=PaymentStatus.WAITING)
     paymentType = models.IntegerField(choices=PaymentTypes.choices, default=PaymentTypes.CASH)
     status = models.IntegerField(choices=OrderStatus.choices, default=OrderStatus.PAYMENT)
 

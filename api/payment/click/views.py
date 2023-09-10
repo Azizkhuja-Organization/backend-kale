@@ -130,7 +130,7 @@ class PaymentPrepareAPIView(CreateAPIView):
                 'error_note': 'Incorrect parameter amount'
             }
 
-        if order.paymentStatus == PaymentStatus.PAID:
+        if order.paymentStatus == PaymentStatus.CONFIRMED:
             return {
                 'error': '-4',
                 'error_note': 'Already paid'
@@ -143,7 +143,7 @@ class PaymentPrepareAPIView(CreateAPIView):
                     'error_note': 'Transaction not found'
                 }
 
-        if order.paymentStatus == PaymentStatus.CANCELED or int(error) < 0:
+        if order.paymentStatus == PaymentStatus.REJECTED or int(error) < 0:
             return {
                 'error': '-9',
                 'error_note': 'Transaction cancelled'
@@ -161,11 +161,11 @@ class PaymentCompleteAPIView(CreateAPIView):
         order = orderLoad(orderID)
         result = self.click_webhook_errors(request)
         if request.data.get('error', None) != None and int(request.data.get('error', None)) < 0 and order:
-            order.paymentStatus = PaymentStatus.CANCELED
+            order.paymentStatus = PaymentStatus.ERROR
             order.save()
         if result['error'] == '0' and order:
             order.status = OrderStatus.PENDING
-            order.paymentStatus = PaymentStatus.PAID
+            order.paymentStatus = PaymentStatus.CONFIRMED
             order.paymentType = PaymentTypes.CLICK
             order.save()
 
@@ -174,7 +174,7 @@ class PaymentCompleteAPIView(CreateAPIView):
                 order=order,
                 amount=order.totalAmount,
                 paymentType=PaymentType.CLICK,
-                status=PaymentStatus.PAID
+                status=PaymentStatus.CONFIRMED
             )
             cartProducts = CartProduct.objects.filter(cart__user=order.user,
                                                       product_id__in=order.products.all().select_related(
@@ -240,7 +240,7 @@ class PaymentCompleteAPIView(CreateAPIView):
                 'error_note': 'Incorrect parameter amount'
             }
 
-        if order.paymentStatus == PaymentStatus.PAID:
+        if order.paymentStatus == PaymentStatus.CONFIRMED:
             return {
                 'error': '-4',
                 'error_note': 'Already paid'
@@ -253,7 +253,7 @@ class PaymentCompleteAPIView(CreateAPIView):
                     'error_note': 'Transaction not found'
                 }
 
-        if order.paymentStatus == PaymentStatus.CANCELED or int(error) < 0:
+        if order.paymentStatus == PaymentStatus.REJECTED or int(error) < 0:
             return {
                 'error': '-9',
                 'error_note': 'Transaction cancelled'

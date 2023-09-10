@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from common.order.models import Order, PaymentTypes, OrderStatus, PaymentStatus as OrderPaymentStatus, CartProduct
+from common.order.models import Order, PaymentTypes, OrderStatus, CartProduct
 from common.payment.payme.models import Payment, PaymentType, PaymentStatus
 from kale.contrib.paymeuz.config import *
 from kale.contrib.paymeuz.methods import *
@@ -156,7 +156,7 @@ class PaymentApiView(APIView):
         if not 'error' in result:
             order = Order.objects.filter(user=self.request.user).last()
             order.status = OrderStatus.PENDING
-            order.paymentStatus = OrderPaymentStatus.PAID
+            order.paymentStatus = PaymentStatus.CONFIRMED
             order.paymentType = PaymentTypes.PAYME
             order.save()
 

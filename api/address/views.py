@@ -4,6 +4,7 @@ from api.address.serializers import AddressCreateSerializer
 from api.paginator import CustomPagination
 from api.permissions import IsAdmin, IsClient
 from common.address.models import Address
+from common.users.models import User
 
 
 class AddressCreateAPIView(CreateAPIView):
@@ -19,6 +20,9 @@ class AddressListAPIView(ListAPIView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        if self.request.user.role == User.UserRole.CLIENT:
+            queryset = queryset.filter(user=self.request.user)
+
         p = self.request.query_params.get('p')
         if p:
             self.pagination_class = CustomPagination

@@ -50,7 +50,10 @@ class OrderListAPIView(ListAPIView):
         queryset = super().get_queryset()
         if self.request.user.role == User.UserRole.CLIENT:
             queryset = queryset.filter(Q(user=self.request.user) & (
-                    Q(paymentStatus=PaymentStatus.PAID) | Q(paymentType=PaymentTypes.CASH)))
+                    Q(paymentStatus=PaymentStatus.REJECTED) |
+                    Q(paymentStatus=PaymentStatus.REFUNDED) |
+                    Q(paymentStatus=PaymentStatus.CONFIRMED) |
+                    Q(paymentType=PaymentTypes.CASH)))
         start = self.request.query_params.get('start')
         end = self.request.query_params.get('end')
         if start and end:
