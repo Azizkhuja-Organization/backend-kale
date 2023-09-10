@@ -6,13 +6,13 @@ from common.users.base import BaseModel
 User = get_user_model()
 
 
-class PaymentStatus(models.IntegerChoices):
-    WAITING = 1, "WAITING"
-    PREAUTH = 2, "PREAUTH"
-    CONFIRMED = 3, "CONFIRMED"
-    REJECTED = 4, "REJECTED"
-    REFUNDED = 5, "REFUNDED"
-    ERROR = 6, "ERROR"
+class PaymentStatus(models.TextChoices):
+    WAITING = "waiting", "WAITING"
+    PREAUTH = "preauth", "PREAUTH"
+    CONFIRMED = "confirmed", "CONFIRMED"
+    REJECTED = "rejected", "REJECTED"
+    REFUNDED = "refunded", "REFUNDED"
+    ERROR = "error", "ERROR"
 
 
 class PaymentType(models.IntegerChoices):
@@ -26,7 +26,7 @@ class Payment(BaseModel):
                               blank=True)
     amount = models.FloatField(default=0, null=True)
     paymentType = models.IntegerField(choices=PaymentType.choices)
-    status = models.IntegerField(choices=PaymentStatus.choices, default=PaymentStatus.WAITING)
+    status = models.CharField(max_length=20, choices=PaymentStatus.choices, default=PaymentStatus.WAITING)
 
     def __str__(self):
         return f"{self.user.name} | {self.amount} | {self.paymentType}"

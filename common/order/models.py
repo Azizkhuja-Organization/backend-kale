@@ -78,7 +78,7 @@ class Order(BaseModel):
     installation = models.BooleanField(default=False)
     comment = models.TextField(null=True, blank=True)
 
-    paymentStatus = models.IntegerField(choices=PaymentStatus.choices, default=PaymentStatus.WAITING)
+    paymentStatus = models.CharField(max_length=20, choices=PaymentStatus.choices, default=PaymentStatus.WAITING)
     paymentType = models.IntegerField(choices=PaymentTypes.choices, default=PaymentTypes.CASH)
     status = models.IntegerField(choices=OrderStatus.choices, default=OrderStatus.PAYMENT)
 
