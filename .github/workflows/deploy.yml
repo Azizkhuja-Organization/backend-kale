@@ -20,17 +20,17 @@ jobs:
         host: ${{ secrets.NEW_HOST }}
         username: ${{ secrets.NEW_USERNAME }}
         port: ${{ secrets.NEW_PORT }}
-        password: ${{ secrets.NEW_KEY }}
+        key: ${{ secrets.NEW_KEY }}
         source: "."
         target: "/home/user/projects/kale/backend"
 
     - name: Command using from script
       uses: appleboy/ssh-action@master
       with:
-        ORIGIN: ${{ secrets.NEW_HOST }}
-        USER: ${{ secrets.NEW_USERNAME }}
-        PORT: ${{ secrets.NEW_PORT }}
-        SSHKEY: ${{ secrets.NEW_KEY }}
+        host: ${{ secrets.NEW_HOST }}
+        username: ${{ secrets.NEW_USERNAME }}
+        port: ${{ secrets.NEW_PORT }}
+        key: ${{ secrets.NEW_KEY }}
         script: |
           git --work-tree=/home/user/projects/kale/backend --git-dir=/home/user/projects/kale/backend/.git clean -f .
           /usr/bin/docker-compose -f /home/user/projects/kale/backend/production.yml restart
