@@ -13,7 +13,7 @@ jobs:
     steps:
     - name: Checking env variables
       if: ${{env.NEW_HOST}} != ""
-      run: echo multiline not null ${{env.NEW_HOST}}  
+      run: echo "multiline not null ${{env.NEW_HOST}}"
     - name: GIT pulling from github repository
       uses: appleboy/scp-action@master
       with:
