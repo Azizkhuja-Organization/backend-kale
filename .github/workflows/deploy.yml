@@ -14,20 +14,20 @@ jobs:
     - name: GIT pulling from github repository
       uses: appleboy/scp-action@master
       with:
-        HOST: ${{ secrets.NEW_HOST }}
-        USERNAME: ${{ secrets.NEW_USERNAME }}
+        ORIGIN: ${{ secrets.NEW_HOST }}
+        USER: ${{ secrets.NEW_USERNAME }}
         PORT: ${{ secrets.NEW_PORT }}
-        KEY: ${{ secrets.NEW_KEY }}
+        SSHKEY: ${{ secrets.NEW_KEY }}
         source: "."
         target: "/home/user/projects/kale/backend"
 
     - name: Command using from script
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.NEW_HOST }}
-        USERNAME: ${{ secrets.NEW_USERNAME }}
+        ORIGIN: ${{ secrets.NEW_HOST }}
+        USER: ${{ secrets.NEW_USERNAME }}
         PORT: ${{ secrets.NEW_PORT }}
-        KEY: ${{ secrets.NEW_KEY }}
+        SSHKEY: ${{ secrets.NEW_KEY }}
         script: |
           git --work-tree=/home/user/projects/kale/backend --git-dir=/home/user/projects/kale/backend/.git clean -f .
           /usr/bin/docker-compose -f /home/user/projects/kale/backend/production.yml restart
