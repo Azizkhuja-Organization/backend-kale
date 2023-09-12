@@ -14,10 +14,10 @@ jobs:
     - name: GIT pulling from github repository
       uses: appleboy/scp-action@master
       with:
-        ORIGIN: ${{ secrets.NEW_HOST }}
-        USER: ${{ secrets.NEW_USERNAME }}
-        PORT: ${{ secrets.NEW_PORT }}
-        SSHKEY: ${{ secrets.NEW_KEY }}
+        host: ${{ secrets.NEW_HOST }}
+        username: ${{ secrets.NEW_USERNAME }}
+        port: ${{ secrets.NEW_PORT }}
+        password: ${{ secrets.NEW_KEY }}
         source: "."
         target: "/home/user/projects/kale/backend"
 
