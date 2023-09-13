@@ -1,6 +1,5 @@
 from drf_base64.fields import Base64ImageField
 from rest_framework import serializers
-
 from common.product.models import Category
 
 
@@ -12,12 +11,23 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
         fields = ['id', 'guid', 'title', 'title_uz', 'title_ru', 'title_en', 'photo']
 
 
+class CategorySubCategoriesListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'guid', 'title']
+
+
 class CategoryListSerializer(serializers.ModelSerializer):
     photo_small = serializers.ImageField(read_only=True)
+    subcategories = serializers.SerializerMethodField()
+
+    def get_subcategories(self, category):
+        subcategories = category.categorySubCategories
+        return CategorySubCategoriesListSerializer(subcategories, many=True).data
 
     class Meta:
         model = Category
-        fields = ['id', 'guid', 'title', 'photo_small']
+        fields = ['id', 'guid', 'title', 'photo_small', 'subcategories']
 
 
 class CategoryDetailSerializer(serializers.ModelSerializer):
