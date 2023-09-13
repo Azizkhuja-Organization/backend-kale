@@ -11,6 +11,7 @@ class Social(BaseModel):
     instagram = models.URLField(null=True, blank=True)
     facebook = models.URLField(null=True, blank=True)
     youtube = models.URLField(null=True, blank=True)
+    phone = models.CharField(max_length=15, null=True, blank=True)
 
     def __str__(self):
         return "Social"
@@ -24,7 +25,7 @@ class Filial(BaseModel):
     phone = models.CharField(max_length=14)
 
     def __str__(self):
-        return self.title
+        return self.phone
 
 
 # class FilialImage(BaseModel):
@@ -44,4 +45,4 @@ class Map(BaseModel):
     isMap = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.title + " " + self.phone
+        return self.phone

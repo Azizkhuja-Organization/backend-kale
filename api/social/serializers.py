@@ -12,4 +12,4 @@ class SocialLinksSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Social
-        fields = ['id', 'guid', 'telegram', 'instagram', 'facebook', 'youtube', 'filials']
+        fields = ['id', 'guid', 'telegram', 'instagram', 'facebook', 'youtube', 'filials', 'phone']
