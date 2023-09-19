@@ -15,7 +15,7 @@ class ProductCreateSerializer(serializers.ModelSerializer):
         fields = ['id', 'guid', 'subcategory', 'code', 'title', 'title_uz', 'title_ru', 'title_en', 'description',
                   'description_uz', 'description_ru', 'description_en', 'price', 'material', 'material_uz',
                   'material_ru', 'material_en', 'unit', 'file3D', 'status', 'brand', 'size', 'manufacturer',
-                  'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo', 'photos']
+                  'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo', 'photos' ,'cornerStatus']
 
 
 class ProductUpdateSerializer(serializers.ModelSerializer):
@@ -27,7 +27,7 @@ class ProductUpdateSerializer(serializers.ModelSerializer):
         fields = ['id', 'guid', 'subcategory', 'code', 'title', 'title_uz', 'title_ru', 'title_en', 'description',
                   'description_uz', 'description_ru', 'description_en', 'price', 'material', 'material_uz',
                   'material_ru', 'material_en', 'unit', 'file3D', 'status', 'brand', 'size', 'manufacturer',
-                  'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo', 'photos']
+                  'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo', 'photos', 'cornerStatus']
 
 
 class ProductListSerializer(serializers.ModelSerializer):
