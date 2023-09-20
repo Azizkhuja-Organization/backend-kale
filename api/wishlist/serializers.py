@@ -11,8 +11,8 @@ class WishlistProductDetailSerializer(serializers.ModelSerializer):
     isCart = serializers.BooleanField(default=False)
 
     def get_photo_small(self, product):
-        if product.photo_small and not "http" in product.photo_small:
-            return env('BASE_URL') + product.photo_small.url
+        if product.photo and not "http" in product.photo:
+            return env('BASE_URL') + product.photo.url
         return None
 
     class Meta:

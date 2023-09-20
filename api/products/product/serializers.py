@@ -15,7 +15,7 @@ class ProductCreateSerializer(serializers.ModelSerializer):
         fields = ['id', 'guid', 'subcategory', 'code', 'title', 'title_uz', 'title_ru', 'title_en', 'description',
                   'description_uz', 'description_ru', 'description_en', 'price', 'material', 'material_uz',
                   'material_ru', 'material_en', 'unit', 'file3D', 'status', 'brand', 'size', 'manufacturer',
-                  'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo', 'photos' ,'cornerStatus']
+                  'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo', 'photos', 'cornerStatus']
 
 
 class ProductUpdateSerializer(serializers.ModelSerializer):
@@ -32,10 +32,16 @@ class ProductUpdateSerializer(serializers.ModelSerializer):
 
 class ProductListSerializer(serializers.ModelSerializer):
     subcategory = SubCategoryListSerializer()
-    photo_small = serializers.ImageField(read_only=True)
+    # photo_small = serializers.ImageField(read_only=True)
+    photo_small = serializers.SerializerMethodField()
     isLiked = serializers.BooleanField(default=False)
     isCompared = serializers.BooleanField(default=False)
     isCart = serializers.BooleanField(default=False)
+
+    def get_photo_small(self, product):
+        if product.photo and not "http" in product.photo:
+            return env('BASE_URL') + product.photo.url
+        return None
 
     class Meta:
         model = Product
@@ -45,11 +51,17 @@ class ProductListSerializer(serializers.ModelSerializer):
 
 class ProductDetailSerializer(serializers.ModelSerializer):
     subcategory = SubCategoryListSerializer()
-    photo_medium = serializers.ImageField(read_only=True)
+    # photo_medium = serializers.ImageField(read_only=True)
+    photo_medium = serializers.SerializerMethodField()
     photos = serializers.SerializerMethodField()
     isLiked = serializers.BooleanField(default=False)
     isCompared = serializers.BooleanField(default=False)
     isCart = serializers.BooleanField(default=False)
+
+    def get_photo_medium(self, product):
+        if product.photo and not "http" in product.photo:
+            return env('BASE_URL') + product.photo.url
+        return None
 
     def get_photos(self, product):
         product_images = product.productImages.all()

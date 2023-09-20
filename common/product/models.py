@@ -71,10 +71,10 @@ class Product(BaseModel):
     manufacturer = models.CharField(max_length=20, null=True, blank=True)
 
     photo = models.ImageField(_("Image of Product"), upload_to='productImage', null=True, blank=True)
-    photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(500, 500)], format='PNG',
-                                  options={'quality': 90})
-    photo_small = ImageSpecField(source='photo', processors=[ResizeToFill(200, 200)], format='PNG',
-                                 options={'quality': 90})
+    # photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(500, 500)], format='PNG',
+    #                               options={'quality': 90})
+    # photo_small = ImageSpecField(source='photo', processors=[ResizeToFill(200, 200)], format='PNG',
+    #                              options={'quality': 90})
     quantity = models.IntegerField(default=0)
     discount = models.FloatField(default=0)
     isTop = models.BooleanField(_("Is Top"), default=False)
@@ -92,8 +92,8 @@ class Product(BaseModel):
         return self.price
 
     def __str__(self):
-        return self.title_ru
-        # return f"#{self.id}"
+        # return self.title_ru
+        return f"#{self.id}"
 
 
 class ProductImage(BaseModel):

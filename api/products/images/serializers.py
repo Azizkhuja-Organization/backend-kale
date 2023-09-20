@@ -14,7 +14,13 @@ class ProductImageCreateSerializer(serializers.ModelSerializer):
 
 class ProductImageListSerializer(serializers.ModelSerializer):
     product = serializers.CharField(source='product.title')
-    photo_small = serializers.ImageField(read_only=True)
+    # photo_small = serializers.ImageField(read_only=True)
+    photo_small = serializers.SerializerMethodField()
+
+    def get_photo_small(self, product):
+        if product.photo and not "http" in product.photo:
+            return env('BASE_URL') + product.photo.url
+        return None
 
     class Meta:
         model = ProductImage

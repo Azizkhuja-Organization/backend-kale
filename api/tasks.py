@@ -1,10 +1,14 @@
+import base64
+import datetime
+
 from celery import shared_task
 from django.contrib.auth import get_user_model
+from django.core.files.base import ContentFile
 
 from api.auth.send_sms_func import sent_sms_base
 from common.product.models import Product, Category, SubCategory
 from common.users.models import Code
-from kale.utils.one_s_get_products import get_products
+from kale.utils.one_s_get_products import get_products, get_product_photo
 
 User = get_user_model()
 
@@ -26,12 +30,13 @@ def verified_user(guid):
 
 @shared_task(name='deleteProducts')
 def deleteProducts():
-    for i in Product.objects.all():
-        i.delete()
+    i = Product.objects.all()
+    i.delete()
 
 
 @shared_task(name='updateProducts')
 def updateProducts():
+    print(datetime.datetime.now(), "START")
     products = get_products()
     newProducts = []
     updateProducts = []
@@ -50,9 +55,16 @@ def updateProducts():
             category = SubCategory.objects.filter(title_ru=category_name).first()
             if category is None:
                 continue
-
             pr = Product.objects.filter(code=code).first()
+
+            photo_content = None
+
             if pr and pr.code == code and pr.quantity < quantity:
+                if pr.photo is None:
+                    photo = get_product_photo(code)
+                    if photo:
+                        photo_data = photo.split(";base64,")[1]
+                        photo_content = ContentFile(base64.b64decode(photo_data), name=f"{code}_photo.png")
                 updateProducts.append(Product(
                     id=pr.id,
                     subcategory=category,
@@ -65,9 +77,14 @@ def updateProducts():
                     brand=brand,
                     size=size,
                     manufacturer_ru=manufacturer,
-                    quantity=quantity
+                    quantity=quantity,
+                    photo=photo_content
                 ))
             elif pr is None:
+                photo = get_product_photo(code)
+                if photo:
+                    photo_data = photo.split(";base64,")[1]
+                    photo_content = ContentFile(base64.b64decode(photo_data), name=f"{code}_photo.png")
                 newProducts.append(Product(
                     subcategory=category,
                     code=code,
@@ -80,7 +97,8 @@ def updateProducts():
                     brand=brand,
                     size=size,
                     manufacturer_ru=manufacturer,
-                    quantity=quantity
+                    quantity=quantity,
+                    photo=photo_content
                 ))
     if newProducts:
         Product.objects.bulk_create(newProducts)
@@ -89,6 +107,8 @@ def updateProducts():
                                     fields=['subcategory', 'title_ru', 'description_ru', 'price', 'unit', 'brand',
                                             'size',
                                             'manufacturer_ru', 'quantity'])
+
+    print(datetime.datetime.now(), "END")
     return
 
 
