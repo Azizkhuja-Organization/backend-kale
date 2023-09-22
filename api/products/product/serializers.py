@@ -77,4 +77,4 @@ class ProductDetailSerializer(serializers.ModelSerializer):
                   'description_uz', 'description_ru', 'description_en', 'price', 'material', 'material_uz',
                   'material_ru', 'material_en', 'unit', 'file3D', 'status', 'brand', 'size', 'manufacturer',
                   'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo_medium', 'photos', 'isLiked',
-                  'isCompared', 'isCart']
+                  'isCompared', 'isCart', 'cornerStatus']
