@@ -1,4 +1,4 @@
-from django.db.models import Q, Exists, OuterRef
+from django.db.models import Q, Exists, OuterRef, F
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
@@ -54,8 +54,9 @@ class ProductListAPIView(ListAPIView):
             queryset = queryset.annotate(
                 isLiked=Exists(wishlist.products.all().filter(id__in=OuterRef('pk')))).annotate(
                 isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('pk')))).annotate(
-                isCart=Exists(
-                    CartProduct.objects.filter(product_id=OuterRef('pk'), cart__user_id=self.request.user.id)))
+                isCart=Exists(CartProduct.objects.filter(product_id=OuterRef('pk'),
+                                                         cart__user_id=self.request.user.id))).annotate(
+                cartProductQuantity=F('cartProduct__quantity'))
 
         hasLiked = self.request.query_params.get('hasLiked')
         if hasLiked and self.request.user.is_authenticated:
@@ -116,7 +117,8 @@ class ProductDetailAPIView(RetrieveAPIView):
             queryset = queryset.annotate(isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('pk'))))
 
             queryset = queryset.annotate(isCart=Exists(
-                CartProduct.objects.filter(product_id=OuterRef('pk'), cart__user_id=self.request.user.id)))
+                CartProduct.objects.filter(product_id=OuterRef('pk'), cart__user_id=self.request.user.id))).annotate(
+                cartProductQuantity=F('cartProduct__quantity'))
         return queryset
 
 

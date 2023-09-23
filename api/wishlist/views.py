@@ -1,4 +1,4 @@
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, F
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -37,5 +37,6 @@ class WishlistProductsAPIView(ListAPIView):
             isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('id')))).annotate(
             isCart=Exists(
                 CartProduct.objects.filter(product_id=OuterRef('pk'), cart__user_id=self.request.user.id))).order_by(
-            '-id')
+            '-id').annotate(
+            cartProductQuantity=F('cartProduct__quantity'))
         return Response(WishlistProductDetailSerializer(products, many=True).data, status=status.HTTP_200_OK)

@@ -1,4 +1,4 @@
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, F
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -37,7 +37,9 @@ class ComparisonProductsAPIView(ListAPIView):
         wishlist, created = Wishlist.objects.get_or_create(user=request.user)
         products = comparison.products.select_related('subcategory').annotate(
             isLiked=Exists(wishlist.products.all().filter(id__in=OuterRef('pk')))).annotate(
-            isCart=Exists(CartProduct.objects.filter(product_id=OuterRef('pk'), cart__user_id=self.request.user.id)))
+            isCart=Exists(
+                CartProduct.objects.filter(product_id=OuterRef('pk'), cart__user_id=self.request.user.id))).annotate(
+            cartProductQuantity=F('cartProduct__quantity'))
         subcategory = self.request.query_params.get('subcategory')
         if subcategory:
             products = products.filter(subcategory=subcategory)

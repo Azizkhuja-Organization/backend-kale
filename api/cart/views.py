@@ -43,20 +43,26 @@ class CartAddSubAPIView(APIView):
         product = Product.objects.filter(id=id).first()
         if not product:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        hasCart = False
+        quantity = 0
         action = request.query_params.get('action')
         if action is not None and action in ['add', 'sub']:
             cart, created = Cart.objects.get_or_create(user=request.user)
             cartProducts = cart.cartCartProduct.all().select_related('cart', 'product')
             cartProduct = cartProducts.filter(product=product, cart=cart).first()
             if cartProduct is None and action == 'add':
+                hasCart = True
                 CartProduct.objects.create(cart=cart, product=product, orderPrice=product.amount)
             elif action == 'add' and cartProduct:
+                hasCart = True
                 cartProduct.add
             elif action == 'sub' and cartProduct:
                 if cartProduct.quantity == 1:
+                    hasCart = False
                     cartProduct.delete()
                 cartProduct.sub
-        return Response(status=status.HTTP_200_OK)
+        return Response({'hasCart': hasCart, 'quantity': cartProduct.quantity if hasCart else 0},
+                        status=status.HTTP_200_OK)
 
 
 # CART PRODUCTS
@@ -91,7 +97,8 @@ class CartProductListAPIView(ListAPIView):
 
         queryset = queryset.annotate(
             isLiked=Exists(wishlist.products.all().filter(id__in=OuterRef('product_id')))).annotate(
-            isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('product_id'))))
+            isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('product_id')))).annotate(
+            cartProductQuantity=F('cartProduct__quantity'))
 
         total = queryset.aggregate(totalSum=Sum(F('orderPrice')))
         if not self.request.query_params.get('p'):
