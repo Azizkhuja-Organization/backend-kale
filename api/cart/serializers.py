@@ -4,6 +4,7 @@ from api.products.product.serializers import ProductDetailSerializer
 from api.users.serializers import UserListSerializer
 from common.order.models import Cart, CartProduct
 from common.product.models import Product
+from config.settings.base import env
 
 
 # CART
