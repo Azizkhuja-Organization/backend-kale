@@ -9,6 +9,7 @@ class WishlistProductDetailSerializer(serializers.ModelSerializer):
     isCompared = serializers.BooleanField(default=False)
     isLiked = serializers.BooleanField(default=True)
     isCart = serializers.BooleanField(default=False)
+    cartProductQuantity = serializers.IntegerField(default=0)
 
     def get_photo_small(self, product):
         if product.photo and not "http" in product.photo:
@@ -18,4 +19,4 @@ class WishlistProductDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'guid', 'code', 'title', 'price', 'material', 'size', 'photo_small', 'cornerStatus',
-                  'isCompared', 'isLiked', 'isCart']
+                  'isCompared', 'isLiked', 'isCart', 'cartProductQuantity']
