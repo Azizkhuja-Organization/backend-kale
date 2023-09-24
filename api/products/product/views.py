@@ -117,8 +117,7 @@ class ProductDetailAPIView(RetrieveAPIView):
             queryset = queryset.annotate(isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('pk'))))
 
             queryset = queryset.annotate(isCart=Exists(
-                CartProduct.objects.filter(product_id=OuterRef('pk'), cart__user_id=self.request.user.id))).annotate(
-                cartProductQuantity=F('cartProduct__quantity'))
+                CartProduct.objects.filter(product_id=OuterRef('pk'), cart__user_id=self.request.user.id)))
         return queryset
 
 

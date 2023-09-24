@@ -33,4 +33,4 @@ jobs:
         key: ${{ secrets.NEW_KEY }}
         script: |
           git --work-tree=/home/user/projects/kale/backend --git-dir=/home/user/projects/kale/backend/.git clean -f .
-          /usr/bin/docker-compose -f /home/user/projects/kale/backend/production.yml restart
+          /usr/bin/docker-compose -f /home/user/projects/kale/backend/production.yml up --build
