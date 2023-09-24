@@ -97,8 +97,7 @@ class CartProductListAPIView(ListAPIView):
 
         queryset = queryset.annotate(
             isLiked=Exists(wishlist.products.all().filter(id__in=OuterRef('product_id')))).annotate(
-            isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('product_id')))).annotate(
-            cartProductQuantity=F('cartProduct__quantity'))
+            isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('product_id'))))
 
         total = queryset.aggregate(totalSum=Sum(F('orderPrice')))
         if not self.request.query_params.get('p'):
