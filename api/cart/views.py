@@ -44,7 +44,6 @@ class CartAddSubAPIView(APIView):
         if not product:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         hasCart = False
-        quantity = 0
         action = request.query_params.get('action')
         if action is not None and action in ['add', 'sub']:
             cart, created = Cart.objects.get_or_create(user=request.user)
@@ -61,8 +60,9 @@ class CartAddSubAPIView(APIView):
                     hasCart = False
                     cartProduct.delete()
                 cartProduct.sub
-        return Response({'hasCart': hasCart, 'quantity': cartProduct.quantity if hasCart else 0},
-                        status=status.HTTP_200_OK)
+            quantity = 0 if cartProduct is None else cartProduct.quantity
+            return Response({'hasCart': hasCart, 'quantity': quantity if hasCart else 0},
+                            status=status.HTTP_200_OK)
 
 
 # CART PRODUCTS
