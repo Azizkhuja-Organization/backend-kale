@@ -1,6 +1,4 @@
 from django.core.management.base import BaseCommand, CommandError
-from polls.models import Question as Poll
-
 
 import base64
 import datetime
@@ -9,8 +7,6 @@ from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 
 from api.auth.send_sms_func import sent_sms_base
-from common.product.models import Product, Category, SubCategory
-from common.users.models import Code
 from kale.utils.one_s_get_products import get_products, get_product_photo
 
 
