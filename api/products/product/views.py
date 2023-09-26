@@ -45,7 +45,7 @@ class ProductCreateAPIView(CreateAPIView):
 
 
 class ProductUpdatesAPIView(APIView):
-    def get(self):
+    def get(self, request, *args, **kwargs):
         products = get_products()
         newProducts = []
         updateProducts = []
