@@ -59,7 +59,7 @@ def updateProducts():
 
             photo_content = None
 
-            if pr and pr.code == code and pr.quantity < quantity:
+            if pr and pr.code == code: # and pr.quantity < quantity:
                 if pr.photo is None:
                     photo = get_product_photo(code)
                     if photo:
