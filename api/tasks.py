@@ -112,6 +112,51 @@ def updateProducts():
     return
 
 
+@shared_task(name='updateProducts_5_min')
+def updateProducts_5_min():
+    products = get_products()
+    newProducts = []
+    updateProducts = []
+    for product in products.get("Товары"):
+        category_name = product.get("Категория")
+        quantity = product.get("Остаток")
+        code = product.get("Код")
+        price = product.get("Цена")
+        title = product.get("Наименование")
+        description = product.get("Описание")
+        if code and price > 0 and quantity > 0 and title:
+            category = SubCategory.objects.filter(title_ru=category_name).first()
+            if category is None:
+                continue
+            pr = Product.objects.filter(code=code).first()
+
+            if pr and pr.code == code:
+                updateProducts.append(Product(
+                    id=pr.id,
+                    subcategory=category,
+                    title_ru=title,
+                    description_ru=description,
+                    price=price,
+                    quantity=quantity,
+                ))
+            elif pr is None:
+                newProducts.append(Product(
+                    subcategory=category,
+                    code=code,
+                    title_ru=title,
+                    description_ru=description,
+                    price=price,
+                    quantity=quantity,
+                ))
+    if newProducts:
+        Product.objects.bulk_create(newProducts)
+    if updateProducts:
+        Product.objects.bulk_update(updateProducts,
+                                    fields=['subcategory', 'title_ru', 'description_ru', 'price', 'quantity'])
+
+    return
+
+
 categories = [
     {
         "title": "Унитаз",

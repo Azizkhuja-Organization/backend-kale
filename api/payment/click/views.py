@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from api.permissions import IsClient
 from common.order.models import Order, OrderStatus, PaymentTypes, PaymentStatus, CartProduct
 from common.payment.payme.models import Payment, PaymentType
+from common.product.models import Product
 from config.settings.base import env
 
 
@@ -179,6 +180,12 @@ class PaymentCompleteAPIView(CreateAPIView):
             cartProducts = CartProduct.objects.filter(cart__user=order.user,
                                                       product_id__in=order.products.all().select_related(
                                                           'product').values_list('product_id'))
+            for c in cartProducts:
+                product = Product.objects.filter(id=c.product_id).first()
+                if product:
+                    if product.quantity >= c.quantity:
+                        product.quantity -= c.quantity
+                        product.save()
             cartProducts.delete()
 
         result['click_trans_id'] = request.data.get('click_trans_id', None)

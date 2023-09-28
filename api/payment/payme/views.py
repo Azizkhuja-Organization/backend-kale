@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 
 from common.order.models import Order, PaymentTypes, OrderStatus, CartProduct
 from common.payment.payme.models import Payment, PaymentType, PaymentStatus
+from common.product.models import Product
 from kale.contrib.paymeuz.config import *
 from kale.contrib.paymeuz.methods import *
 from kale.contrib.paymeuz.models import Transaction
@@ -170,5 +171,11 @@ class PaymentApiView(APIView):
             cartProducts = CartProduct.objects.filter(cart__user=order.user,
                                                       product_id__in=order.products.all().select_related(
                                                           'product').values_list('product_id'))
+            for c in cartProducts:
+                product = Product.objects.filter(id=c.product_id).first()
+                if product:
+                    if product.quantity >= c.quantity:
+                        product.quantity -= c.quantity
+                        product.save()
             cartProducts.delete()
         return result
