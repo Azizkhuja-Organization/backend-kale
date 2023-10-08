@@ -82,3 +82,19 @@ class ProductDetailSerializer(serializers.ModelSerializer):
                   'material_ru', 'material_en', 'unit', 'file3D', 'status', 'brand', 'size', 'manufacturer',
                   'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo_medium', 'photos', 'isLiked',
                   'isCompared', 'isCart', 'cornerStatus', 'isTop', 'quantity']
+
+
+class ProductOneSerializerFor1C(serializers.Serializer):
+    Наименование = serializers.CharField(max_length=100)
+    Код = serializers.CharField(allow_blank=True, max_length=50)
+    ЕдиницаИзмерения = serializers.CharField(max_length=5)
+    ТорговаяМарка = serializers.CharField(allow_blank=True)
+    Размеры = serializers.CharField(allow_blank=True)
+    Описание = serializers.CharField(allow_blank=True)
+    Производитель = serializers.CharField()
+    Категория = serializers.CharField(allow_blank=True)
+    Брэнд = serializers.CharField()
+
+
+class Product1CCreateUpdateSerializer(serializers.Serializer):
+    Товары = ProductOneSerializerFor1C(many=True)

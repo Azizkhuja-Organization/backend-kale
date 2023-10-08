@@ -64,7 +64,7 @@ class PaymentClick(APIView):
 
 
 class PaymentPrepareAPIView(CreateAPIView):
-
+    serializer_class = None
     def create(self, request, *args, **kwargs):
         orderID = request.data.get('merchant_trans_id', None)
         result = self.click_webhook_errors(request)

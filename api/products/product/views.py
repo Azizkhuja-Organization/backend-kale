@@ -7,14 +7,17 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import BaseAuthentication
 
 from api.paginator import CustomPagination
 from api.permissions import IsAdmin
 from api.products.images.serializers import ProductImageCreateSerializer
 from api.products.product.serializers import ProductCreateSerializer, ProductListSerializer, ProductDetailSerializer, \
-    ProductUpdateSerializer
+    ProductUpdateSerializer, Product1CCreateUpdateSerializer
 from common.order.models import Wishlist, Comparison, CartProduct
-from common.product.models import Product, ProductImage, SubCategory
+from common.product.models import Product, ProductImage, SubCategory, ProductStatus
 from kale.utils.one_s_get_products import get_product_photo, get_products
 
 
@@ -232,3 +235,59 @@ class ProductDeleteAPIView(DestroyAPIView):
     serializer_class = ProductCreateSerializer
     permission_classes = [IsAdmin]
     lookup_field = 'guid'
+
+
+################### 1C ################
+from django.contrib.auth import get_user_model
+User = get_user_model()
+class CustomAuthentication(BaseAuthentication):
+    def authenticate(self, request):
+        auth_header = request.META.get('HTTP_AUTHORIZATION')
+        if auth_header and auth_header.startswith('Basic '):
+            encoded_credentials = auth_header.split(' ')[1]
+            try:
+                decoded_credentials = base64.b64decode(encoded_credentials).decode('utf-8')
+            except UnicodeDecodeError:
+                decoded_credentials = None
+            if decoded_credentials:
+                username, password = decoded_credentials.split(':')
+                if username == 'kaleapi' and password == 'kaleapi':
+                    return User.objects.filter(is_superuser=True).first(), None
+        raise AuthenticationFailed('Invalid credentials')
+
+
+class Product1CCreateUpdateAPIView(CreateAPIView):
+    serializer_class = Product1CCreateUpdateSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [CustomAuthentication]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Extract the data from the validated serializer
+        validated_data = serializer.validated_data
+        try:
+            for product in validated_data["Товары"]:
+                Product.objects.create(
+                    subcategory=None,  # You need to specify the values for these fields based on your requirements
+                    code=product['Код'],
+                    title=product['Наименование'],
+                    description=product['Описание'],
+                    price=0,  # Example value, customize as needed
+                    material=None, # Example value, customize as needed
+                    unit=product['ЕдиницаИзмерения'],
+                    file3D=None,  # Customize as needed
+                    brand=product['ТорговаяМарка'],
+                    size=product['Размеры'],
+                    manufacturer=product['Производитель'],
+                    photo=None,  # Customize as needed
+                    quantity=0,  # Example value, customize as needed
+                    discount=0,  # Example value, customize as needed
+                    isTop=False,  # Example value, customize as needed
+                    cornerStatus=None,  # Customize as needed
+                    status=ProductStatus.DRAFT,  # Customize as needed
+                )
+        except Exception as e:
+            return Response(f"Ошибка: {str(e)}", status=status.HTTP_409_CONFLICT)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
