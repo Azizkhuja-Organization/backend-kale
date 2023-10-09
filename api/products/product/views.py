@@ -15,7 +15,7 @@ from api.paginator import CustomPagination
 from api.permissions import IsAdmin
 from api.products.images.serializers import ProductImageCreateSerializer
 from api.products.product.serializers import ProductCreateSerializer, ProductListSerializer, ProductDetailSerializer, \
-    ProductUpdateSerializer, Product1CCreateUpdateSerializer
+    ProductUpdateSerializer, Product1CCreateUpdateSerializer, Product1CDestroySerializer
 from common.order.models import Wishlist, Comparison, CartProduct
 from common.product.models import Product, ProductImage, SubCategory, ProductStatus
 from kale.utils.one_s_get_products import get_product_photo, get_products
@@ -239,7 +239,10 @@ class ProductDeleteAPIView(DestroyAPIView):
 
 ################### 1C ################
 from django.contrib.auth import get_user_model
+
 User = get_user_model()
+
+
 class CustomAuthentication(BaseAuthentication):
     def authenticate(self, request):
         auth_header = request.META.get('HTTP_AUTHORIZATION')
@@ -268,26 +271,57 @@ class Product1CCreateUpdateAPIView(CreateAPIView):
         # Extract the data from the validated serializer
         validated_data = serializer.validated_data
         try:
-            for product in validated_data["Товары"]:
-                Product.objects.create(
-                    subcategory=None,  # You need to specify the values for these fields based on your requirements
-                    code=product['Код'],
-                    title=product['Наименование'],
-                    description=product['Описание'],
-                    price=0,  # Example value, customize as needed
-                    material=None, # Example value, customize as needed
-                    unit=product['ЕдиницаИзмерения'],
-                    file3D=None,  # Customize as needed
-                    brand=product['ТорговаяМарка'],
-                    size=product['Размеры'],
-                    manufacturer=product['Производитель'],
-                    photo=None,  # Customize as needed
-                    quantity=0,  # Example value, customize as needed
-                    discount=0,  # Example value, customize as needed
-                    isTop=False,  # Example value, customize as needed
-                    cornerStatus=None,  # Customize as needed
-                    status=ProductStatus.DRAFT,  # Customize as needed
-                )
+            for product_data in validated_data["Товары"]:
+                code = product_data["Код"]
+                product_instance = Product.objects.filter(code=code).first()
+
+                if product_instance:
+                    # Update the existing product
+                    product_instance.title = product_data['Наименование']
+                    product_instance.description = product_data['Описание']
+                    product_instance.unit = product_data['ЕдиницаИзмерения']
+                    product_instance.brand = product_data['ТорговаяМарка']
+                    product_instance.size = product_data['Размеры']
+                    product_instance.manufacturer = product_data['Производитель']
+                    # Update other fields as needed
+                    product_instance.save()
+                else:
+                    Product.objects.create(
+                        subcategory=None,  # You need to specify the values for these fields based on your requirements
+                        code=product_data['Код'],
+                        title=product_data['Наименование'],
+                        description=product_data['Описание'],
+                        price=0,  # Example value, customize as needed
+                        material=None,  # Example value, customize as needed
+                        unit=product_data['ЕдиницаИзмерения'],
+                        file3D=None,  # Customize as needed
+                        brand=product_data['ТорговаяМарка'],
+                        size=product_data['Размеры'],
+                        manufacturer=product_data['Производитель'],
+                        photo=None,  # Customize as needed
+                        quantity=0,  # Example value, customize as needed
+                        discount=0,  # Example value, customize as needed
+                        isTop=False,  # Example value, customize as needed
+                        cornerStatus=None,  # Customize as needed
+                        status=ProductStatus.DRAFT,  # Customize as needed
+                    )
         except Exception as e:
             return Response(f"Ошибка: {str(e)}", status=status.HTTP_409_CONFLICT)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class Product1CDestroyAPIView(CreateAPIView):
+    serializer_class = Product1CDestroySerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [CustomAuthentication]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        validated_data = serializer.validated_data
+        try:
+            code = validated_data["Код"]
+            Product.objects.filter(code=code).delete()
+        except Exception as e:
+            return Response(f"Ошибка: {str(e)}", status=status.HTTP_409_CONFLICT)
+        return Response(serializer.data, status=status.HTTP_200_OK)

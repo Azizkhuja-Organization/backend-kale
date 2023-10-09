@@ -91,10 +91,13 @@ class ProductOneSerializerFor1C(serializers.Serializer):
     ТорговаяМарка = serializers.CharField(allow_blank=True)
     Размеры = serializers.CharField(allow_blank=True)
     Описание = serializers.CharField(allow_blank=True)
-    Производитель = serializers.CharField()
+    Производитель = serializers.CharField(allow_blank=True)
     Категория = serializers.CharField(allow_blank=True)
     Брэнд = serializers.CharField()
 
 
 class Product1CCreateUpdateSerializer(serializers.Serializer):
     Товары = ProductOneSerializerFor1C(many=True)
+
+class Product1CDestroySerializer(serializers.Serializer):
+    Код = serializers.CharField(max_length=50)
