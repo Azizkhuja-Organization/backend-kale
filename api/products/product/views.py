@@ -284,6 +284,11 @@ class Product1CCreateUpdateAPIView(CreateAPIView):
                     product_instance.size = product_data['Размеры']
                     product_instance.manufacturer = product_data['Производитель']
                     # Update other fields as needed
+                    photo = get_product_photo(code)
+                    if photo:
+                        photo_data = photo.split(";base64,")[1]
+                        photo_content = ContentFile(base64.b64decode(photo_data), name=f"{code}_photo.png")
+                        product_instance.photo = photo_content
                     product_instance.save()
                 else:
                     Product.objects.create(
@@ -320,8 +325,9 @@ class Product1CDestroyAPIView(CreateAPIView):
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
         try:
-            code = validated_data["Код"]
-            Product.objects.filter(code=code).delete()
+            for product_data in validated_data["Товары"]:
+                code = product_data["Код"]
+                Product.objects.filter(code=code).delete()
         except Exception as e:
             return Response(f"Ошибка: {str(e)}", status=status.HTTP_409_CONFLICT)
         return Response(serializer.data, status=status.HTTP_200_OK)

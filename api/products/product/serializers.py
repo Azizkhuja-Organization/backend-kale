@@ -99,5 +99,9 @@ class ProductOneSerializerFor1C(serializers.Serializer):
 class Product1CCreateUpdateSerializer(serializers.Serializer):
     Товары = ProductOneSerializerFor1C(many=True)
 
-class Product1CDestroySerializer(serializers.Serializer):
+class ProductAll1CDestroySerializer(serializers.Serializer):
     Код = serializers.CharField(max_length=50)
+
+
+class Product1CDestroySerializer(serializers.Serializer):
+    Товары = ProductAll1CDestroySerializer(many=True)
