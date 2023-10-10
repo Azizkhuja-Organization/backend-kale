@@ -49,7 +49,8 @@ class CartAddSubAPIView(APIView):
             cart, created = Cart.objects.get_or_create(user=request.user)
             cartProducts = cart.cartCartProduct.all().select_related('cart', 'product')
             cartProduct = cartProducts.filter(product=product, cart=cart).first()
-            if product.quantity <= cartProduct.quantity:
+
+            if cartProduct and product.quantity <= cartProduct.quantity:
                 return Response({"message": "Product quantity does not enough"}, status=status.HTTP_400_BAD_REQUEST)
 
             if cartProduct is None and action == 'add':
