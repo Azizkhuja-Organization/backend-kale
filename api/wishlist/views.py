@@ -27,6 +27,7 @@ class WishlistAddSubAPIView(APIView):
 
 
 class WishlistProductsAPIView(ListAPIView):
+    serializer_class = None
     permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):

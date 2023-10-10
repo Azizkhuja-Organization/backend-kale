@@ -31,6 +31,7 @@ class ComparisonAddSubAPIView(APIView):
 
 class ComparisonProductsAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = None
 
     def get(self, request, *args, **kwargs):
         comparison, created = Comparison.objects.get_or_create(user=request.user)

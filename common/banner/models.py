@@ -13,14 +13,14 @@ class Banner(BaseModel):
     photo_small = ImageSpecField(source='photo', processors=[ResizeToFill(322, 209)], format='PNG',
                                  options={'quality': 70})
     photo2 = models.ImageField(_("Image of Banner"), upload_to='bannerImage', null=True, blank=True)
-    photo_medium2 = ImageSpecField(source='photo', processors=[ResizeToFill(1463, 420)], format='PNG',
+    photo_medium2 = ImageSpecField(source='photo2', processors=[ResizeToFill(1463, 420)], format='PNG',
                                    options={'quality': 100})
-    photo_small2 = ImageSpecField(source='photo', processors=[ResizeToFill(322, 209)], format='PNG',
+    photo_small2 = ImageSpecField(source='photo2', processors=[ResizeToFill(322, 209)], format='PNG',
                                   options={'quality': 70})
     photo3 = models.ImageField(_("Image of Banner"), upload_to='bannerImage', null=True, blank=True)
-    photo_medium3 = ImageSpecField(source='photo', processors=[ResizeToFill(1463, 420)], format='PNG',
+    photo_medium3 = ImageSpecField(source='photo3', processors=[ResizeToFill(1463, 420)], format='PNG',
                                    options={'quality': 100})
-    photo_small3 = ImageSpecField(source='photo', processors=[ResizeToFill(322, 209)], format='PNG',
+    photo_small3 = ImageSpecField(source='photo3', processors=[ResizeToFill(322, 209)], format='PNG',
                                   options={'quality': 70})
     url = models.CharField(max_length=250, null=True, blank=True)
 
