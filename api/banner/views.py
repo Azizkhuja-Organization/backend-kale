@@ -84,5 +84,4 @@ class PointerNumberDetailAPIView(UpdateAPIView, DestroyAPIView, RetrieveAPIView)
 class HeaderDiscountDetailAPIView(ModelViewSet):
     queryset = HeaderDiscount.objects.all()
     serializer_class = HeaderDiscountCreateSerializer
-    permission_classes = [IsAdmin]
     lookup_field = 'guid'
