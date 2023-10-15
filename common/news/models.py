@@ -6,7 +6,6 @@ from imagekit.processors import ResizeToFill
 
 from common.users.base import BaseModel, BaseMeta
 
-
 class News(BaseModel):
     title = models.CharField(max_length=250, null=True, blank=True)
     description = RichTextField(null=True, blank=True)
@@ -18,6 +17,7 @@ class News(BaseModel):
                                  options={'quality': 70})
     viewCount = models.IntegerField(default=0)
     status = models.BooleanField(default=False)
+    isActual = models.BooleanField(default=False)
 
     class Meta(BaseMeta):
         pass

@@ -36,6 +36,7 @@ class OrderCreateAPIView(CreateAPIView):
         order.products.set(orderProducts)
         order.totalAmount = totalAmount
         order.save()
+        cartProducts.delete()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 

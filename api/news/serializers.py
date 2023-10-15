@@ -10,7 +10,7 @@ class NewsCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = News
         fields = ['id', 'guid', 'title', 'title_uz', 'title_ru', 'title_en', 'description', 'description_uz',
-                  'description_ru', 'description_en', 'photo', 'videoURL', 'status']
+                  'description_ru', 'description_en', 'photo', 'videoURL', 'status', 'isActual']
 
 
 class NewsUpdateSerializer(serializers.ModelSerializer):
@@ -19,7 +19,7 @@ class NewsUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = News
         fields = ['id', 'guid', 'title', 'title_uz', 'title_ru', 'title_en', 'description', 'description_uz',
-                  'description_ru', 'description_en', 'photo', 'videoURL', 'status']
+                  'description_ru', 'description_en', 'photo', 'videoURL', 'status', 'isActual']
 
 
 class NewsListSerializer(serializers.ModelSerializer):
@@ -27,7 +27,7 @@ class NewsListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = News
-        fields = ['id', 'guid', 'title', 'photo_small', 'videoURL', 'viewCount', 'created_at', 'status']
+        fields = ['id', 'guid', 'title', 'photo_small', 'videoURL', 'viewCount', 'created_at', 'status', 'isActual']
 
 
 class NewsDetailSerializer(serializers.ModelSerializer):
@@ -36,4 +36,5 @@ class NewsDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = News
         fields = ['id', 'guid', 'title', 'title_uz', 'title_ru', 'title_en', 'description', 'description_uz', 'status',
-                  'description_ru', 'description_en', 'photo_medium', 'videoURL', 'videoURL', 'viewCount', 'created_at']
+                  'description_ru', 'description_en', 'photo_medium', 'videoURL', 'videoURL', 'viewCount', 'created_at',
+                  'isActual']

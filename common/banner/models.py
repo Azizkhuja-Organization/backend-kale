@@ -67,3 +67,10 @@ class PointerNumber(BaseModel):
 
     def __str__(self):
         return f"PointerNumber #{self.id}"
+
+
+class HeaderDiscount(BaseModel):
+    text = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"HeaderDiscount #{self.id}"
