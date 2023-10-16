@@ -13,7 +13,7 @@ class ProductCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'guid', 'subcategory', 'code', 'title', 'title_uz', 'title_ru', 'title_en', 'description',
-                  'description_uz', 'description_ru', 'description_en', 'price', 'material', 'material_uz',
+                  'description_uz', 'description_ru', 'description_en', 'price', 'oldPrice', 'material', 'material_uz',
                   'material_ru', 'material_en', 'unit', 'file3D', 'status', 'brand', 'size', 'manufacturer',
                   'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo', 'photos', 'cornerStatus', 'isTop',
                   'quantity']
@@ -26,7 +26,7 @@ class ProductUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'guid', 'subcategory', 'code', 'title', 'title_uz', 'title_ru', 'title_en', 'description',
-                  'description_uz', 'description_ru', 'description_en', 'price', 'material', 'material_uz',
+                  'description_uz', 'description_ru', 'description_en', 'price', 'oldPrice', 'material', 'material_uz',
                   'material_ru', 'material_en', 'unit', 'file3D', 'status', 'brand', 'size', 'manufacturer',
                   'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo', 'photos', 'cornerStatus', 'isTop',
                   'quantity']
@@ -48,9 +48,9 @@ class ProductListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'guid', 'subcategory', 'title', 'code', 'price', 'brand', 'size', 'manufacturer', 'photo_small',
-                  'file3D', 'cornerStatus', 'isLiked', 'isCompared', 'isCart', 'status', 'cartProductQuantity', 'isTop',
-                  'quantity']
+        fields = ['id', 'guid', 'subcategory', 'title', 'code', 'price', 'oldPrice', 'brand', 'size', 'manufacturer',
+                  'photo_small', 'file3D', 'cornerStatus', 'isLiked', 'isCompared', 'isCart', 'status',
+                  'cartProductQuantity', 'isTop', 'quantity']
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
@@ -78,7 +78,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'guid', 'subcategory', 'code', 'title', 'title_uz', 'title_ru', 'title_en', 'description',
-                  'description_uz', 'description_ru', 'description_en', 'price', 'material', 'material_uz',
+                  'description_uz', 'description_ru', 'description_en', 'price', 'oldPrice', 'material', 'material_uz',
                   'material_ru', 'material_en', 'unit', 'file3D', 'status', 'brand', 'size', 'manufacturer',
                   'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo_medium', 'photos', 'isLiked',
                   'isCompared', 'isCart', 'cornerStatus', 'isTop', 'quantity']
@@ -98,6 +98,7 @@ class ProductOneSerializerFor1C(serializers.Serializer):
 
 class Product1CCreateUpdateSerializer(serializers.Serializer):
     Товары = ProductOneSerializerFor1C(many=True)
+
 
 class ProductAll1CDestroySerializer(serializers.Serializer):
     Код = serializers.CharField(max_length=50)
