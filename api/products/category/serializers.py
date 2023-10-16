@@ -23,7 +23,9 @@ class CategoryListSerializer(serializers.ModelSerializer):
 
     def get_subcategories(self, category):
         subcategories = category.categorySubCategories
-        return CategorySubCategoriesListSerializer(subcategories, many=True).data
+        if subcategories:
+            return CategorySubCategoriesListSerializer(subcategories, many=True).data
+        return []
 
     class Meta:
         model = Category

@@ -24,8 +24,14 @@ class SubCategoryListSerializer(serializers.ModelSerializer):
         fields = ['id', 'guid', 'category', 'title']
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'guid', 'title']
+
+
 class SubCategoryDetailSerializer(serializers.ModelSerializer):
-    category = CategoryListSerializer()
+    category = CategorySerializer()
 
     class Meta:
         model = SubCategory
