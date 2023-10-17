@@ -1,11 +1,16 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from rest_framework.generics import CreateAPIView, UpdateAPIView, ListAPIView, DestroyAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from api.banner.serializers import BannerCreateSerializer, BannerListSerializer, PointerNumberCreateSerializer, \
     SmallBannerCreateSerializer, SmallBannerListSerializer, HeaderDiscountCreateSerializer
+from api.paginator import CustomPagination
 from api.permissions import IsAdmin
 from common.banner.models import Banner, PointerNumber, SmallBanner, HeaderDiscount
+from config.settings.base import CACHE_TTL
 
 
 class BannerCreateAPIView(CreateAPIView):
@@ -17,6 +22,20 @@ class BannerCreateAPIView(CreateAPIView):
 class BannerListAPIView(ListAPIView):
     queryset = Banner.objects.all()
     serializer_class = BannerListSerializer
+    pagination_class = CustomPagination
+
+    @method_decorator(cache_page(CACHE_TTL))
+    @method_decorator(vary_on_cookie)
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class BannerUpdateAPIView(UpdateAPIView):
@@ -42,6 +61,20 @@ class SmallBannerCreateAPIView(CreateAPIView):
 class SmallBannerListAPIView(ListAPIView):
     queryset = SmallBanner.objects.all()
     serializer_class = SmallBannerListSerializer
+    pagination_class = CustomPagination
+
+    @method_decorator(cache_page(CACHE_TTL))
+    @method_decorator(vary_on_cookie)
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class SmallBannerUpdateAPIView(UpdateAPIView):
@@ -68,6 +101,8 @@ class PointerNumberListAPIView(ListAPIView):
     queryset = PointerNumber.objects.all()
     serializer_class = PointerNumberCreateSerializer
 
+    @method_decorator(cache_page(CACHE_TTL))
+    @method_decorator(vary_on_cookie)
     def list(self, request, *args, **kwargs):
         number = self.get_queryset().first()
         serializer = self.get_serializer(number)

@@ -2,14 +2,17 @@ import base64
 
 from django.core.files.base import ContentFile
 from django.db.models import Q, Exists, OuterRef, F
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
+from rest_framework.authentication import BaseAuthentication
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import BaseAuthentication
 
 from api.paginator import CustomPagination
 from api.permissions import IsAdmin
@@ -18,6 +21,7 @@ from api.products.product.serializers import ProductCreateSerializer, ProductLis
     ProductUpdateSerializer, Product1CCreateUpdateSerializer, Product1CDestroySerializer
 from common.order.models import Wishlist, Comparison, CartProduct
 from common.product.models import Product, ProductImage, SubCategory, ProductStatus
+from config.settings.base import CACHE_TTL
 from kale.utils.one_s_get_products import get_product_photo, get_products
 
 
@@ -127,9 +131,12 @@ class ProductListAPIView(ListAPIView):
     serializer_class = ProductListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['subcategory', 'unit', 'status', 'brand', 'manufacturer', 'cornerStatus', 'isTop']
+    pagination_class = CustomPagination
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
+    @method_decorator(cache_page(CACHE_TTL))
+    @method_decorator(vary_on_cookie)
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
         if self.request.user.is_authenticated:
             wishlist, created = Wishlist.objects.get_or_create(user_id=self.request.user.id)
             comparison, created2 = Comparison.objects.get_or_create(user_id=self.request.user.id)
@@ -179,10 +186,14 @@ class ProductListAPIView(ListAPIView):
         q = self.request.query_params.get('q')
         if q:
             queryset = queryset.filter(Q(title__icontains=q))
-        p = self.request.query_params.get('p')
-        if p:
-            self.pagination_class = CustomPagination
-        return queryset
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ProductDetailAPIView(RetrieveAPIView):
@@ -202,6 +213,13 @@ class ProductDetailAPIView(RetrieveAPIView):
             queryset = queryset.annotate(isCart=Exists(
                 CartProduct.objects.filter(product_id=OuterRef('pk'), cart__user_id=self.request.user.id)))
         return queryset
+
+    @method_decorator(cache_page(CACHE_TTL))
+    @method_decorator(vary_on_cookie)
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 class ProductUpdateAPIView(UpdateAPIView):
