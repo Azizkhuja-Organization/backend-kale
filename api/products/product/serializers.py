@@ -13,7 +13,7 @@ class ProductCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'guid', 'subcategory', 'code', 'title', 'title_uz', 'title_ru', 'title_en', 'description',
-                  'description_uz', 'description_ru', 'description_en', 'price', 'oldPrice', 'material', 'material_uz',
+                  'description_uz', 'description_ru', 'description_en', 'price', 'discountPrice', 'material', 'material_uz',
                   'material_ru', 'material_en', 'unit', 'file3D', 'status', 'brand', 'size', 'manufacturer',
                   'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo', 'photos', 'cornerStatus', 'isTop',
                   'quantity']
@@ -26,7 +26,7 @@ class ProductUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'guid', 'subcategory', 'code', 'title', 'title_uz', 'title_ru', 'title_en', 'description',
-                  'description_uz', 'description_ru', 'description_en', 'price', 'oldPrice', 'material', 'material_uz',
+                  'description_uz', 'description_ru', 'description_en', 'price', 'discountPrice', 'material', 'material_uz',
                   'material_ru', 'material_en', 'unit', 'file3D', 'status', 'brand', 'size', 'manufacturer',
                   'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo', 'photos', 'cornerStatus', 'isTop',
                   'quantity']
@@ -48,7 +48,7 @@ class ProductListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'guid', 'subcategory', 'title', 'code', 'price', 'oldPrice', 'brand', 'size', 'manufacturer',
+        fields = ['id', 'guid', 'subcategory', 'title', 'code', 'price', 'discountPrice', 'brand', 'size', 'manufacturer',
                   'photo_small', 'file3D', 'cornerStatus', 'isLiked', 'isCompared', 'isCart', 'status',
                   'cartProductQuantity', 'isTop', 'quantity']
 
@@ -78,7 +78,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'guid', 'subcategory', 'code', 'title', 'title_uz', 'title_ru', 'title_en', 'description',
-                  'description_uz', 'description_ru', 'description_en', 'price', 'oldPrice', 'material', 'material_uz',
+                  'description_uz', 'description_ru', 'description_en', 'price', 'discountPrice', 'material', 'material_uz',
                   'material_ru', 'material_en', 'unit', 'file3D', 'status', 'brand', 'size', 'manufacturer',
                   'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo_medium', 'photos', 'isLiked',
                   'isCompared', 'isCart', 'cornerStatus', 'isTop', 'quantity']

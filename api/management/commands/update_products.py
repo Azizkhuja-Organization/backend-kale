@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 
 from api.auth.send_sms_func import sent_sms_base
+from common.product.models import SubCategory, Product
 from kale.utils.one_s_get_products import get_products, get_product_photo
 
 

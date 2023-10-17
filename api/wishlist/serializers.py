@@ -18,5 +18,5 @@ class WishlistProductDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'guid', 'code', 'title', 'price', 'oldPrice', 'material', 'size', 'photo_small', 'cornerStatus',
+        fields = ['id', 'guid', 'code', 'title', 'price', 'discountPrice', 'material', 'size', 'photo_small', 'cornerStatus',
                   'isCompared', 'isLiked', 'isCart', 'cartProductQuantity']

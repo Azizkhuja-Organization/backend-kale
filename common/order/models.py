@@ -27,14 +27,14 @@ class CartProduct(BaseModel):
     @property
     def add(self):
         self.quantity = self.quantity + 1
-        self.orderPrice = self.quantity * self.product.price * (1 - self.product.discount / 100)
+        self.orderPrice = self.quantity * self.product.amount# * (1 - self.product.discount / 100)
         self.save()
 
     @property
     def sub(self):
         if self.quantity > 1:
             self.quantity = self.quantity - 1
-            self.orderPrice = self.quantity * self.product.price * (1 - self.product.discount / 100)
+            self.orderPrice = self.quantity * self.product.amount# * (1 - self.product.discount / 100)
             self.save()
 
     def __str__(self):

@@ -62,7 +62,7 @@ class Product(BaseModel):
     title = models.CharField(max_length=250, null=True, blank=True)
     description = RichTextField(null=True, blank=True)
     price = models.FloatField(default=0)
-    oldPrice = models.FloatField(default=0)
+    discountPrice = models.FloatField(default=0)
     material = models.CharField(max_length=100, null=True, blank=True)
     unit = models.CharField(max_length=5, choices=ProductUnit.choices, default=ProductUnit.PIECE)
     file3D = models.URLField(blank=True, null=True)
@@ -88,8 +88,10 @@ class Product(BaseModel):
 
     @property
     def amount(self):
-        if self.discount:
-            return round(self.price * (1 - self.discount / 100), 3)
+        # if self.discount:
+        #     return round(self.price * (1 - self.discount / 100), 3)
+        if self.discountPrice:
+            return self.discountPrice
         return self.price
 
     def __str__(self):

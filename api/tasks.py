@@ -45,7 +45,7 @@ def updateProducts():
         quantity = product.get("Остаток")
         code = product.get("Код")
         price = product.get("Цена", 0)
-        oldPrice = product.get("Цена", 0)
+        discountPrice = product.get("ЦенаСоСкидкой", 0)
         title = product.get("Наименование")
         unit = product.get("ЕдиницаИзмерения")
         brand = product.get("ТорговаяМарка")
@@ -73,7 +73,7 @@ def updateProducts():
                     title_ru=title,
                     description_ru=description,
                     price=price,
-                    oldPrice=oldPrice,
+                    discountPrice=discountPrice,
                     # material_ru=material,
                     unit=unit,
                     brand=brand,
@@ -94,7 +94,7 @@ def updateProducts():
                     title_ru=title,
                     description_ru=description,
                     price=price,
-                    oldPrice=oldPrice,
+                    discountPrice=discountPrice,
                     # material_ru=material,
                     unit=unit,
                     brand=brand,
@@ -108,7 +108,7 @@ def updateProducts():
     if updateProducts:
         Product.objects.bulk_update(updateProducts,
                                     fields=['subcategory', 'title_ru', 'description_ru', 'price', 'unit', 'brand',
-                                            'size', 'oldPrice',
+                                            'size', 'discountPrice',
                                             'manufacturer_ru', 'quantity'])
 
     print(datetime.datetime.now(), "END")
