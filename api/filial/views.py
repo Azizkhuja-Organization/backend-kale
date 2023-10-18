@@ -24,8 +24,8 @@ class FilialListAPIView(ListAPIView):
     serializer_class = FilialListSerializer
     pagination_class = CustomPagination
 
-    @method_decorator(cache_page(CACHE_TTL))
-    @method_decorator(vary_on_cookie)
+    # @method_decorator(cache_page(CACHE_TTL))
+    # @method_decorator(vary_on_cookie)
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         q = self.request.query_params.get('q')

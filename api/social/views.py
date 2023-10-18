@@ -20,8 +20,8 @@ class SocialListAPIView(ListAPIView):
     queryset = Social.objects.all()
     serializer_class = SocialLinksSerializer
 
-    @method_decorator(cache_page(CACHE_TTL))
-    @method_decorator(vary_on_cookie)
+    # @method_decorator(cache_page(CACHE_TTL))
+    # @method_decorator(vary_on_cookie)
     def list(self, request, *args, **kwargs):
         socialLinks = self.queryset.first()
 

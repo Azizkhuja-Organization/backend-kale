@@ -133,8 +133,8 @@ class ProductListAPIView(ListAPIView):
     filterset_fields = ['subcategory', 'unit', 'status', 'brand', 'manufacturer', 'cornerStatus', 'isTop']
     pagination_class = CustomPagination
 
-    @method_decorator(cache_page(CACHE_TTL))
-    @method_decorator(vary_on_cookie)
+    # @method_decorator(cache_page(CACHE_TTL))
+    # @method_decorator(vary_on_cookie)
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         if self.request.user.is_authenticated:
@@ -214,8 +214,8 @@ class ProductDetailAPIView(RetrieveAPIView):
                 CartProduct.objects.filter(product_id=OuterRef('pk'), cart__user_id=self.request.user.id)))
         return queryset
 
-    @method_decorator(cache_page(CACHE_TTL))
-    @method_decorator(vary_on_cookie)
+    # @method_decorator(cache_page(CACHE_TTL))
+    # @method_decorator(vary_on_cookie)
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
