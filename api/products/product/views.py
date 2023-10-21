@@ -2,9 +2,6 @@ import base64
 
 from django.core.files.base import ContentFile
 from django.db.models import Q, Exists, OuterRef, F
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
-from django.views.decorators.vary import vary_on_cookie
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.authentication import BaseAuthentication
@@ -20,8 +17,7 @@ from api.products.images.serializers import ProductImageCreateSerializer
 from api.products.product.serializers import ProductCreateSerializer, ProductListSerializer, ProductDetailSerializer, \
     ProductUpdateSerializer, Product1CCreateUpdateSerializer, Product1CDestroySerializer
 from common.order.models import Wishlist, Comparison, CartProduct
-from common.product.models import Product, ProductImage, SubCategory, ProductStatus
-from config.settings.base import CACHE_TTL
+from common.product.models import Product, ProductImage, SubCategory, ProductCornerStatus
 from kale.utils.one_s_get_products import get_product_photo, get_products
 
 
@@ -294,13 +290,21 @@ class Product1CCreateUpdateAPIView(CreateAPIView):
                 product_instance = Product.objects.filter(code=code).first()
 
                 if product_instance:
+                    price = product_data.get("Цена")
+                    dis = product_data.get("ЦенаСоСкидкой")
+                    discount = ((price - dis) / price) * 100 if product_data.get("ЦенаСоСкидкой") else 0
                     # Update the existing product
                     product_instance.title = product_data['Наименование']
+                    product_instance.price = price
+                    product_instance.discountPrice = dis
                     product_instance.description = product_data['Описание']
                     product_instance.unit = product_data['ЕдиницаИзмерения']
                     product_instance.brand = product_data['ТорговаяМарка']
                     product_instance.size = product_data['Размеры']
                     product_instance.manufacturer = product_data['Производитель']
+                    product_instance.quantity = product_data.get("Остаток")
+                    product_instance.discount = discount
+                    product_instance.cornerStatus = ProductCornerStatus.DISCOUNT if discount else None
                     # Update other fields as needed
                     photo = get_product_photo(code)
                     if photo:
@@ -309,24 +313,26 @@ class Product1CCreateUpdateAPIView(CreateAPIView):
                         product_instance.photo = photo_content
                     product_instance.save()
                 else:
+                    price = product_data.get("Цена")
+                    dis = product_data.get("ЦенаСоСкидкой")
+                    discount = ((price - dis) / price) * 100 if product_data.get("ЦенаСоСкидкой") else 0
                     Product.objects.create(
-                        subcategory=None,  # You need to specify the values for these fields based on your requirements
+                        subcategory=None,
                         code=product_data['Код'],
                         title=product_data['Наименование'],
                         description=product_data['Описание'],
-                        price=0,  # Example value, customize as needed
-                        material=None,  # Example value, customize as needed
+                        price=price,
+                        discountPrice=product_data.get("ЦенаСоСкидкой"),
+                        material=None,
                         unit=product_data['ЕдиницаИзмерения'],
-                        file3D=None,  # Customize as needed
+                        file3D=None,
                         brand=product_data['ТорговаяМарка'],
                         size=product_data['Размеры'],
                         manufacturer=product_data['Производитель'],
-                        photo=None,  # Customize as needed
-                        quantity=0,  # Example value, customize as needed
-                        discount=0,  # Example value, customize as needed
-                        isTop=False,  # Example value, customize as needed
-                        cornerStatus=None,  # Customize as needed
-                        status=ProductStatus.DRAFT,  # Customize as needed
+                        photo=None,
+                        quantity=product_data.get("Остаток"),
+                        discount=discount,
+                        cornerStatus=ProductCornerStatus.DISCOUNT if discount else None
                     )
         except Exception as e:
             return Response(f"Ошибка: {str(e)}", status=status.HTTP_409_CONFLICT)
