@@ -283,11 +283,15 @@ class Product1CCreateUpdateAPIView(CreateAPIView):
     authentication_classes = [CustomAuthentication]
 
     def create(self, request, *args, **kwargs):
+        from sentry_sdk import capture_message
+        capture_message('Begin')
         serializer = self.get_serializer(data=request.data)
+        capture_message('Serializer', request.data)
         serializer.is_valid(raise_exception=True)
 
         # Extract the data from the validated serializer
         validated_data = serializer.validated_data
+        capture_message("validated_data", validated_data)
         try:
             for product_data in validated_data["Товары"]:
                 code = product_data["Код"]
@@ -308,6 +312,7 @@ class Product1CCreateUpdateAPIView(CreateAPIView):
                         photo_content = ContentFile(base64.b64decode(photo_data), name=f"{code}_photo.png")
                         product_instance.photo = photo_content
                     product_instance.save()
+                    print("IF", product_instance)
                 else:
                     Product.objects.create(
                         subcategory=None,  # You need to specify the values for these fields based on your requirements
@@ -328,7 +333,9 @@ class Product1CCreateUpdateAPIView(CreateAPIView):
                         cornerStatus=None,  # Customize as needed
                         status=ProductStatus.DRAFT,  # Customize as needed
                     )
+                    capture_message("else")
         except Exception as e:
+            capture_message("Exception", str(e))
             return Response(f"Ошибка: {str(e)}", status=status.HTTP_409_CONFLICT)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -339,13 +346,18 @@ class Product1CDestroyAPIView(CreateAPIView):
     authentication_classes = [CustomAuthentication]
 
     def create(self, request, *args, **kwargs):
+        from sentry_sdk import capture_message
+        capture_message("BEGIN DELETE")
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
         try:
+            capture_message("begin foreach")
             for product_data in validated_data["Товары"]:
+                capture_message("foreach data", product_data)
                 code = product_data["Код"]
                 Product.objects.filter(code=code).delete()
         except Exception as e:
+            capture_message("oshibka deletion", str(e))
             return Response(f"Ошибка: {str(e)}", status=status.HTTP_409_CONFLICT)
         return Response(serializer.data, status=status.HTTP_200_OK)
