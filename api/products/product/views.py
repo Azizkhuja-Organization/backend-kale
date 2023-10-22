@@ -259,7 +259,9 @@ User = get_user_model()
 
 class CustomAuthentication(BaseAuthentication):
     def authenticate(self, request):
+        from sentry_sdk import capture_message
         auth_header = request.META.get('HTTP_AUTHORIZATION')
+        capture_message("Auth header", auth_header)
         if auth_header and auth_header.startswith('Basic '):
             encoded_credentials = auth_header.split(' ')[1]
             try:
