@@ -62,7 +62,7 @@ class Product(BaseModel):
     title = models.CharField(max_length=250, null=True, blank=True)
     description = RichTextField(null=True, blank=True)
     price = models.FloatField(default=0)
-    discountPrice = models.FloatField(default=0)
+    discountPrice = models.FloatField(null=True, blank=True)
     material = models.CharField(max_length=100, null=True, blank=True)
     unit = models.CharField(max_length=5, choices=ProductUnit.choices, default=ProductUnit.PIECE)
     file3D = models.URLField(blank=True, null=True)
@@ -72,10 +72,6 @@ class Product(BaseModel):
     manufacturer = models.CharField(max_length=20, null=True, blank=True)
 
     photo = models.ImageField(_("Image of Product"), upload_to='productImage', null=True, blank=True)
-    # photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(500, 500)], format='PNG',
-    #                               options={'quality': 90})
-    # photo_small = ImageSpecField(source='photo', processors=[ResizeToFill(200, 200)], format='PNG',
-    #                              options={'quality': 90})
     quantity = models.IntegerField(default=0)
     discount = models.FloatField(default=0)
     isTop = models.BooleanField(_("Is Top"), default=False)

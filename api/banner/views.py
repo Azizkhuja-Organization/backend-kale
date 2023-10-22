@@ -1,6 +1,3 @@
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
-from django.views.decorators.vary import vary_on_cookie
 from rest_framework.generics import CreateAPIView, UpdateAPIView, ListAPIView, DestroyAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -10,7 +7,6 @@ from api.banner.serializers import BannerCreateSerializer, BannerListSerializer,
 from api.paginator import CustomPagination
 from api.permissions import IsAdmin
 from common.banner.models import Banner, PointerNumber, SmallBanner, HeaderDiscount
-from config.settings.base import CACHE_TTL
 
 
 class BannerCreateAPIView(CreateAPIView):
@@ -112,3 +108,8 @@ class HeaderDiscountDetailAPIView(ModelViewSet):
     queryset = HeaderDiscount.objects.all()
     serializer_class = HeaderDiscountCreateSerializer
     lookup_field = 'guid'
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset.last())
+        return Response(serializer.data)
