@@ -4,5 +4,11 @@ from .models import Category, Product, SubCategory, ProductImage
 
 admin.site.register(SubCategory)
 admin.site.register(Category)
-admin.site.register(Product)
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ["code", "title", "price", "subcategory"]
+
+
 admin.site.register(ProductImage)
