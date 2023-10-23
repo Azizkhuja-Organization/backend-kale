@@ -21,8 +21,6 @@ schema_view = get_schema_view(
     public=True,
     permission_classes=(permissions.AllowAny,)
 )
-def trigger_error(request):
-    division_by_zero = 1 / 0
 
 urlpatterns = [
                   path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -42,8 +40,6 @@ if settings.DEBUG:
 urlpatterns += [
     # AUTHENTICATION
     path('auth/', include("api.auth.urls")),
-    path('try', trigger_error),
-
     # API base url
     path("api/", include("api.api_router")),
 

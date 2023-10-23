@@ -36,7 +36,6 @@ def deleteProducts():
 
 @shared_task(name='updateProducts')
 def updateProducts():
-    print(datetime.datetime.now(), "START")
     products = get_products()
     newProducts = []
     updateProducts = []
@@ -56,52 +55,35 @@ def updateProducts():
             category = SubCategory.objects.filter(title_ru=category_name).first()
             if category is None:
                 continue
-            pr = Product.objects.filter(code=code).first()
+            pr = Product.objects.filter(code=code)
 
-            photo_content = None
-
-            if pr and pr.code == code: # and pr.quantity < quantity:
-                if pr.photo is None:
-                    photo = get_product_photo(code)
-                    if photo:
-                        photo_data = photo.split(";base64,")[1]
-                        photo_content = ContentFile(base64.b64decode(photo_data), name=f"{code}_photo.png")
+            if pr.exists() and pr.first().code == code: # and pr.quantity < quantity:
                 updateProducts.append(Product(
                     id=pr.id,
                     subcategory=category,
-                    # title=title,
                     title_ru=title,
                     description_ru=description,
                     price=price,
                     discountPrice=discountPrice,
-                    # material_ru=material,
                     unit=unit,
                     brand=brand,
                     size=size,
                     manufacturer_ru=manufacturer,
-                    quantity=quantity,
-                    photo=photo_content
+                    quantity=quantity
                 ))
-            elif pr is None:
-                photo = get_product_photo(code)
-                if photo:
-                    photo_data = photo.split(";base64,")[1]
-                    photo_content = ContentFile(base64.b64decode(photo_data), name=f"{code}_photo.png")
+            else:
                 newProducts.append(Product(
                     subcategory=category,
                     code=code,
-                    # title=title,
                     title_ru=title,
                     description_ru=description,
                     price=price,
                     discountPrice=discountPrice,
-                    # material_ru=material,
                     unit=unit,
                     brand=brand,
                     size=size,
                     manufacturer_ru=manufacturer,
-                    quantity=quantity,
-                    photo=photo_content
+                    quantity=quantity
                 ))
     if newProducts:
         Product.objects.bulk_create(newProducts)
@@ -110,8 +92,6 @@ def updateProducts():
                                     fields=['subcategory', 'title_ru', 'description_ru', 'price', 'unit', 'brand',
                                             'size', 'discountPrice',
                                             'manufacturer_ru', 'quantity'])
-
-    print(datetime.datetime.now(), "END")
     return
 
 

@@ -9,6 +9,7 @@ admin.site.register(Category)
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ["code", "title", "price", "subcategory"]
+    search_fields = ("code",)
 
 
 admin.site.register(ProductImage)
