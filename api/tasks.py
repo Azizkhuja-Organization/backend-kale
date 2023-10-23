@@ -57,7 +57,8 @@ def updateProducts():
                 continue
             pr = Product.objects.filter(code=code)
 
-            if pr.exists() and pr.first().code == code: # and pr.quantity < quantity:
+            if pr.exists():
+                pr = pr.first()
                 updateProducts.append(Product(
                     id=pr.id,
                     subcategory=category,
