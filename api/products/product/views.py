@@ -123,10 +123,19 @@ class ProductUpdatesAPIView(APIView):
 
 
 class ProductListAPIView(ListAPIView):
-    queryset = Product.objects.select_related('subcategory', 'subcategory__category').all()
+    queryset = Product.objects.select_related('subcategory__category')
     serializer_class = ProductListSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['subcategory', 'unit', 'status', 'brand', 'manufacturer', 'cornerStatus', 'isTop']
+    filterset_fields = {
+        "id": ["exact", "in"],
+        "subcategory": ["exact"],
+        "unit": ["exact"],
+        "status": ["exact"],
+        "brand": ["exact"],
+        "manufacturer": ["exact"],
+        "cornerStatus": ["exact"],
+        "isTop": ["exact"],
+    }
     pagination_class = CustomPagination
 
     # @method_decorator(cache_page(CACHE_TTL))

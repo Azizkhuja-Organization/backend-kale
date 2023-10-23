@@ -71,6 +71,7 @@ class PointerNumber(BaseModel):
 
 class HeaderDiscount(BaseModel):
     text = models.CharField(max_length=100)
+    enabled = models.BooleanField(default=True)
 
     def __str__(self):
         return f"HeaderDiscount #{self.id}"
