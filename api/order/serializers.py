@@ -101,10 +101,12 @@ class OrderCreateSerializerV2(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         products_data = validated_data.pop('products')
-        order_instance = super().create(validated_data)
+        order_products = []
 
         for product_data in products_data:
-            product_data['order'] = order_instance
-            OrderProduct.objects.create(**product_data)
+            order_product = OrderProduct.objects.create(**product_data)
+            order_products.append(order_product)
 
+        order_instance = Order.objects.create(**validated_data)
+        order_instance.products.set(order_products)
         return order_instance
