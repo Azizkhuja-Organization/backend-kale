@@ -95,18 +95,3 @@ class OrderCreateAPIViewV2(CreateAPIView):
     serializer_class = OrderCreateSerializerV2
     permission_classes = [IsClient]
 
-    @transaction.atomic
-    def create(self, request, *args, **kwargs):
-        products_data = request.data.pop('products')
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        order_instance = serializer.save()
-
-        for product_data in products_data:
-            product_data['order'] = order_instance.id
-            order_product_serializer = OrderCreateOrderProductSerializer(data=product_data)
-            order_product_serializer.is_valid(raise_exception=True)
-            order_product_serializer.save()
-
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
