@@ -454,6 +454,8 @@ PAYME_SETTINGS = {
 
 # CLICK
 PAYMENT_HOST = env('CLICK_PAYMENT_HOST')
+CLICK_SERVICE_ID = env('CLICK_SERVICE_ID')
+CLICK_MERCHANT_ID = env('CLICK_MERCHANT_ID')
 PAYMENT_USES_SSL = True  # set the True value if you are using the SSL
 PAYMENT_MODEL = 'common.payment.click.Payment'
 PAYMENT_VARIANTS = {
