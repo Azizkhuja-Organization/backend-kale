@@ -104,7 +104,7 @@ class OrderCreateSerializerV2(serializers.ModelSerializer):
         order_instance = super().create(validated_data)
 
         for product_data in products_data:
-            product_data['order'] = order_instance.id
-            OrderProduct.objects.create(order=order_instance, **product_data)
+            product_data['order'] = order_instance
+            OrderProduct.objects.create(**product_data)
 
         return order_instance
