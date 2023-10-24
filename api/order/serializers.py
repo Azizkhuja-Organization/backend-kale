@@ -86,7 +86,8 @@ class OrderCreateOrderProductSerializer(serializers.ModelSerializer):
         quantity = data['quantity']
 
         if product.quantity < quantity:
-            raise serializers.ValidationError("Requested quantity is greater than available quantity for the product.")
+            error_message = "Requested quantity is greater than available quantity for the product."
+            raise serializers.ValidationError({"quantity": [error_message]})
 
         return data
 
