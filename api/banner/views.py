@@ -111,5 +111,8 @@ class HeaderDiscountDetailAPIView(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset.last())
-        return Response(serializer.data)
+        if queryset.exists():
+            serializer = self.get_serializer(queryset.first())
+            return Response(serializer.data)
+        else:
+            return Response(status=404)
