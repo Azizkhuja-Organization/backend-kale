@@ -9,8 +9,9 @@ from django.views.generic import TemplateView
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView, \
-    SpectacularJSONAPIView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from django.views.decorators.csrf import csrf_exempt
+
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -55,7 +56,7 @@ urlpatterns += [
         schema_view.without_ui(cache_timeout=0),
         name='schema-json'
     ),
-    path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
+    path("api/schema/", csrf_exempt(SpectacularAPIView.as_view()), name="api-schema"),
     path(
         "api/docs/",
         SpectacularSwaggerView.as_view(url_name="api-schema"),
