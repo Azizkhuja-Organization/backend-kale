@@ -1,11 +1,12 @@
 from django.db.models import Q
+from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
 from rest_framework.response import Response
 
 from api.order.serializers import OrderCreateSerializer, OrderListSerializer, OrderDetailSerializer, \
-    OrderUpdateSerializer
+    OrderUpdateSerializer, OrderCreateSerializerV2, OrderCreateOrderProductSerializer
 from api.paginator import CustomPagination
 from api.permissions import IsClient, IsAdmin
 from common.order.models import Order, CartProduct, OrderProduct, OrderStatus, PaymentTypes, PaymentStatus
@@ -87,3 +88,25 @@ class OrderDeleteAPIView(DestroyAPIView):
     serializer_class = OrderUpdateSerializer
     permission_classes = [IsAdmin]
     lookup_field = 'guid'
+
+
+class OrderCreateAPIViewV2(CreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderCreateSerializerV2
+    permission_classes = [IsClient]
+
+    @transaction.atomic
+    def create(self, request, *args, **kwargs):
+        products_data = request.data.pop('products')
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        order_instance = serializer.save()
+
+        for product_data in products_data:
+            product_data['order'] = order_instance.id
+            order_product_serializer = OrderCreateOrderProductSerializer(data=product_data)
+            order_product_serializer.is_valid(raise_exception=True)
+            order_product_serializer.save()
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

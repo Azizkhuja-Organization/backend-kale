@@ -69,7 +69,7 @@ class PaymentTypes(models.IntegerChoices):
 
 class Order(BaseModel):
     user = models.ForeignKey(User, related_name="orderUser", on_delete=models.SET_NULL, null=True, blank=True)
-    code = models.CharField(max_length=50, unique=True, null=True, blank=True)
+    code = models.CharField(max_length=50, unique=True, null=True, blank=True, editable=False)
     address = models.ForeignKey(Address, related_name="orderAddress", on_delete=models.SET_NULL, null=True, blank=True)
     products = models.ManyToManyField(OrderProduct, related_name='orderedProducts', blank=True)
     totalAmount = models.FloatField(default=0)

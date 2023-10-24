@@ -9,12 +9,14 @@ from django.views.generic import TemplateView
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView, \
+    SpectacularJSONAPIView
 
 schema_view = get_schema_view(
     openapi.Info(
         title='Kale API',
         description="Documentation of API endpoints of Kale",
-        default_version='v1',
+        default_version='v2',
         contact=openapi.Contact(email="baxtikdev@gmail.com"),
         license=openapi.License(name='Kale License'),
     ),
@@ -52,6 +54,12 @@ urlpatterns += [
         'swagger.json',
         schema_view.without_ui(cache_timeout=0),
         name='schema-json'
+    ),
+    path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
+    path(
+        "api/docs/",
+        SpectacularSwaggerView.as_view(url_name="api-schema"),
+        name="api-docs",
     ),
     path(
         'docs/',

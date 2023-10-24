@@ -73,3 +73,4 @@ django-ckeditor==6.6.1
 # PAYME
 paymeuz==0.2
 django-payments==2.0.0
+drf-spectacular==0.26.5

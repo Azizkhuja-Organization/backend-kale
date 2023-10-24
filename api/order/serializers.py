@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from common.order.models import Order, OrderProduct
+from common.address.models import Address
+from common.order.models import Order, OrderProduct, CartProduct
 from common.product.models import Product
 from common.users.models import User
 from config.settings.base import env
@@ -72,3 +73,26 @@ class OrderDetailSerializer(serializers.ModelSerializer):
         model = Order
         fields = ['id', 'guid', 'user', 'products', 'address', 'totalAmount', 'orderedTime', 'deliveredTime',
                   'installation', 'comment', 'installation', 'paymentStatus', 'paymentType', 'status']
+
+
+class OrderCreateOrderProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderProduct
+        fields = ['id', 'guid', 'product', 'quantity', 'orderPrice', 'discount']
+
+    def validate(self, data):
+        product = data['product']
+        quantity = data['quantity']
+
+        if product.quantity < quantity:
+            raise serializers.ValidationError("Requested quantity is greater than available quantity for the product.")
+
+        return data
+
+class OrderCreateSerializerV2(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    products = OrderCreateOrderProductSerializer(many=True, write_only=True)
+
+    class Meta:
+        model = Order
+        fields = ['id', 'guid', 'user', 'products', 'address', 'installation', 'comment', 'paymentType']

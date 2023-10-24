@@ -101,6 +101,7 @@ THIRD_PARTY_APPS = [
     'drf_yasg',
     'imagekit',
     'drf_base64',
+    'drf_spectacular',
 ]
 
 LOCAL_APPS = [
@@ -353,6 +354,7 @@ REST_FRAMEWORK = {
         "rest_framework.filters.OrderingFilter",
         "rest_framework.filters.SearchFilter",
     ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 
     "DEFAULT_PERMISSION_CLASSES": (
         # "rest_framework.permissions.BasePermission",
@@ -461,4 +463,23 @@ PAYMENT_VARIANTS = {
         'merchant_user_id': env('CLICK_MERCHANT_USER_ID'),
         'secret_key': env('CLICK_SECRET_KEY')
     })
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Kale API",
+    "DESCRIPTION": "Documentation of API endpoints of Kale",
+    "VERSION": "2.0.0",
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.AllowAny"],
+    'AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    "SERVERS": [
+        {"url": "https://api.kale.mdholding.uz", "description": "Production server"},
+        {"url": "http://localhost:8000", "description": "Local Development server"},
+    ],
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SCHEMA_PATH_PREFIX': '/api/',
 }

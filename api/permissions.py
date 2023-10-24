@@ -15,7 +15,7 @@ class IsClient(BasePermission):
         if not request.user.is_authenticated:
             return False
         return bool(
-            request.user and request.user.is_active and request.user.is_verified == True and request.user.role == User.UserRole.CLIENT)
+            request.user and request.user.is_active and request.user.is_verified is True and request.user.role == User.UserRole.CLIENT)
 
 
 class IsOwn(BasePermission):
