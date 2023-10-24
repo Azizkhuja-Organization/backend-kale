@@ -105,7 +105,7 @@ class PointerNumberDetailAPIView(UpdateAPIView, DestroyAPIView, RetrieveAPIView)
 
 
 class HeaderDiscountDetailAPIView(ModelViewSet):
-    queryset = HeaderDiscount.objects.filter(enabled=True)
+    queryset = HeaderDiscount.objects.all().order_by('-enabled')
     serializer_class = HeaderDiscountCreateSerializer
     lookup_field = 'guid'
 
