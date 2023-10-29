@@ -299,54 +299,55 @@ class Product1CCreateUpdateAPIView(CreateAPIView):
         # Extract the data from the validated serializer
         validated_data = serializer.validated_data
         capture_message("validated_data", validated_data)
-        try:
-            for product_data in validated_data["Товары"]:
-                code = product_data["Код"]
-                product_instance = Product.objects.filter(code=code).first()
+        # try:
+        for product_data in validated_data["Товары"]:
+            code = product_data["Код"]
+            product_instance = Product.objects.filter(code=code).first()
 
-                if product_instance:
-                    # Update the existing product
-                    product_instance.title = product_data['Наименование']
-                    product_instance.description = product_data['Описание']
-                    product_instance.unit = product_data['ЕдиницаИзмерения']
-                    product_instance.brand = product_data['ТорговаяМарка']
-                    product_instance.size = product_data['Размеры']
-                    product_instance.manufacturer = product_data['Производитель']
-                    product_instance.quantity = product_data.get("Остаток")
-                    # Update other fields as needed
-                    photo = get_product_photo(code)
-                    if photo:
-                        photo_data = photo.split(";base64,")[1]
-                        photo_content = ContentFile(base64.b64decode(photo_data), name=f"{code}_photo.png")
-                        product_instance.photo = photo_content
-                    product_instance.save()
-                    capture_message("IF", product_instance)
-                else:
-                    price = product_data.get("Цена", 0)
-                    dis = product_data.get("ЦенаСоСкидкой", 0)
-                    discount = ((price - dis) / price) * 100 if product_data.get("ЦенаСоСкидкой") else 0
-                    product = Product.objects.create(
-                        subcategory=None,
-                        code=product_data['Код'],
-                        title=product_data['Наименование'],
-                        description=product_data['Описание'],
-                        price=price,
-                        discountPrice=product_data.get("ЦенаСоСкидкой"),
-                        material=None,
-                        unit=product_data['ЕдиницаИзмерения'],
-                        file3D=None,
-                        brand=product_data['ТорговаяМарка'],
-                        size=product_data['Размеры'],
-                        manufacturer=product_data['Производитель'],
-                        photo=None,
-                        quantity=product_data.get("Остаток"),
-                        discount=discount,
-                        cornerStatus=ProductCornerStatus.DISCOUNT if discount else None
-                    )
-                    capture_message("else", product)
-        except Exception as e:
-            capture_message("Exception", str(e))
-            return Response(f"Ошибка: {str(e)}", status=status.HTTP_409_CONFLICT)
+            if product_instance:
+                # Update the existing product
+                product_instance.title = product_data['Наименование']
+                product_instance.description = product_data['Описание']
+                product_instance.unit = product_data['ЕдиницаИзмерения']
+                product_instance.brand = product_data['ТорговаяМарка']
+                product_instance.size = product_data['Размеры']
+                product_instance.manufacturer = product_data['Производитель']
+                product_instance.quantity = product_data.get("Остаток")
+                # Update other fields as needed
+                photo = get_product_photo(code)
+                if photo:
+                    photo_data = photo.split(";base64,")[1]
+                    photo_content = ContentFile(base64.b64decode(photo_data), name=f"{code}_photo.png")
+                    product_instance.photo = photo_content
+                product_instance.save()
+                capture_message("IF", product_instance)
+            else:
+                price = product_data.get("Цена", 0)
+                dis = product_data.get("ЦенаСоСкидкой", 0)
+                discount = ((price - dis) / price) * 100 if product_data.get("ЦенаСоСкидкой") else 0
+                product = Product.objects.create(
+                    subcategory=None,
+                    code=product_data['Код'],
+                    title=product_data['Наименование'],
+                    description=product_data['Описание'],
+                    price=price,
+                    discountPrice=product_data.get("ЦенаСоСкидкой"),
+                    material=None,
+                    unit=product_data['ЕдиницаИзмерения'],
+                    file3D=None,
+                    brand=product_data['ТорговаяМарка'],
+                    size=product_data['Размеры'],
+                    manufacturer=product_data['Производитель'],
+                    photo=None,
+                    quantity=product_data.get("Остаток"),
+                    discount=discount,
+                    cornerStatus=ProductCornerStatus.DISCOUNT if discount else None
+                )
+                capture_message("else", product)
+                raise Exception
+        # except Exception as e:
+        #     capture_message("Exception", str(e))
+        #     return Response(f"Ошибка: {str(e)}", status=status.HTTP_409_CONFLICT)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
