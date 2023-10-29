@@ -53,4 +53,4 @@ class PointerNumberCreateSerializer(serializers.ModelSerializer):
 class HeaderDiscountCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = HeaderDiscount
-        fields = ['id', 'guid', 'text', 'enabled']
+        fields = ['id', 'guid', 'text', 'text_ru', 'text_en', 'text_uz', 'enabled']
