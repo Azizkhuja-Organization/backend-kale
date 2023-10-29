@@ -305,21 +305,14 @@ class Product1CCreateUpdateAPIView(CreateAPIView):
                 product_instance = Product.objects.filter(code=code).first()
 
                 if product_instance:
-                    price = product_data.get("Цена")
-                    dis = product_data.get("ЦенаСоСкидкой")
-                    discount = ((price - dis) / price) * 100 if product_data.get("ЦенаСоСкидкой") else 0
                     # Update the existing product
                     product_instance.title = product_data['Наименование']
-                    product_instance.price = price
-                    product_instance.discountPrice = dis
                     product_instance.description = product_data['Описание']
                     product_instance.unit = product_data['ЕдиницаИзмерения']
                     product_instance.brand = product_data['ТорговаяМарка']
                     product_instance.size = product_data['Размеры']
                     product_instance.manufacturer = product_data['Производитель']
                     product_instance.quantity = product_data.get("Остаток")
-                    product_instance.discount = discount
-                    product_instance.cornerStatus = ProductCornerStatus.DISCOUNT if discount else None
                     # Update other fields as needed
                     photo = get_product_photo(code)
                     if photo:
@@ -327,12 +320,12 @@ class Product1CCreateUpdateAPIView(CreateAPIView):
                         photo_content = ContentFile(base64.b64decode(photo_data), name=f"{code}_photo.png")
                         product_instance.photo = photo_content
                     product_instance.save()
-                    print("IF", product_instance)
+                    capture_message("IF", product_instance)
                 else:
-                    price = product_data.get("Цена")
-                    dis = product_data.get("ЦенаСоСкидкой")
+                    price = product_data.get("Цена", 0)
+                    dis = product_data.get("ЦенаСоСкидкой", 0)
                     discount = ((price - dis) / price) * 100 if product_data.get("ЦенаСоСкидкой") else 0
-                    Product.objects.create(
+                    product = Product.objects.create(
                         subcategory=None,
                         code=product_data['Код'],
                         title=product_data['Наименование'],
@@ -350,7 +343,7 @@ class Product1CCreateUpdateAPIView(CreateAPIView):
                         discount=discount,
                         cornerStatus=ProductCornerStatus.DISCOUNT if discount else None
                     )
-                    capture_message("else")
+                    capture_message("else", product)
         except Exception as e:
             capture_message("Exception", str(e))
             return Response(f"Ошибка: {str(e)}", status=status.HTTP_409_CONFLICT)
