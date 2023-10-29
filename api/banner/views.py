@@ -110,7 +110,7 @@ class HeaderDiscountDetailAPIView(ModelViewSet):
     lookup_field = 'guid'
 
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset().filter(enabled=True)
+        queryset = self.get_queryset()
         if queryset.exists():
             serializer = self.get_serializer(queryset.first())
             return Response(serializer.data)
