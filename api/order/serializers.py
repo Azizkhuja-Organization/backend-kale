@@ -86,7 +86,7 @@ class OrderCreateOrderProductSerializer(serializers.ModelSerializer):
     def validate(self, data):
         product = data['product']
         quantity = data['quantity']
-        discount = data['discount']
+        discount = data.get('discount', 0.0)
 
         if data['orderPrice'] < discount:
             error_message = "Discount field is greater than available orderPrice"
