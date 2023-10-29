@@ -114,7 +114,8 @@ class OrderCreateSerializerV2(serializers.ModelSerializer):
         totalAmount = 0
         for product_data in products_data:
             order_product = OrderProduct.objects.create(**product_data)
-            totalAmount += product_data['orderPrice'] if product_data['discount'] == 0 else product_data['discount']
+            discount = product_data.get('discount', 0)
+            totalAmount += product_data['orderPrice'] if discount == 0 else discount
             order_products.append(order_product)
 
         order_instance = Order.objects.create(**validated_data)
