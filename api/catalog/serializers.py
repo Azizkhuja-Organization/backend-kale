@@ -24,10 +24,13 @@ class CatalogUpdateSerializer(serializers.ModelSerializer):
 
 class CatalogListSerializer(serializers.ModelSerializer):
     photo_small = serializers.ImageField(read_only=True)
+    description_ru = serializers.CharField()
+    description_en = serializers.CharField()
+    description_uz = serializers.CharField()
 
     class Meta:
         model = Catalog
-        fields = ['id', 'guid', 'title', 'photo_small', 'file']
+        fields = ['id', 'guid', 'title', 'photo_small', 'file', 'description_ru', 'description_uz', 'description_en']
 
 
 class CatalogDetailSerializer(serializers.ModelSerializer):
