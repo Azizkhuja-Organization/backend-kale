@@ -312,7 +312,7 @@ class Product1CCreateUpdateAPIView(CreateAPIView):
                 product_instance.brand = product_data['ТорговаяМарка']
                 product_instance.size = product_data['Размеры']
                 product_instance.manufacturer = product_data['Производитель']
-                product_instance.quantity = product_data.get("Остаток")
+                product_instance.quantity = product_data.get("Остаток", 0)
                 # Update other fields as needed
                 photo = get_product_photo(code)
                 if photo:
