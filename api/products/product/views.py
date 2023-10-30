@@ -135,7 +135,7 @@ class ProductListAPIView(ListAPIView):
         "manufacturer": ["exact"],
         "cornerStatus": ["exact"],
         "isTop": ["exact"],
-        "field3D": ["isnull"],
+        "file3D": ["isnull"],
     }
     pagination_class = CustomPagination
 
