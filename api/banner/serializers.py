@@ -41,7 +41,7 @@ class SmallBannerListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SmallBanner
-        fields = ['id', 'guid', 'photo_medium', 'photo_medium2', 'photo_medium3', 'url']
+        fields = ['id', 'guid', 'photo', 'photo2', 'photo3', 'photo_medium', 'photo_medium2', 'photo_medium3', 'url']
 
 
 class PointerNumberCreateSerializer(serializers.ModelSerializer):
