@@ -24,10 +24,32 @@ class NewsUpdateSerializer(serializers.ModelSerializer):
 
 class NewsListSerializer(serializers.ModelSerializer):
     photo_small = serializers.ImageField(read_only=True)
+    short_description_uz = serializers.SerializerMethodField()
+    short_description_ru = serializers.SerializerMethodField()
+    short_description_en = serializers.SerializerMethodField()
+
+    def get_short_description_uz(self, obj):
+        if obj.description_uz:
+            return obj.description[:100]  # Return the first 100 characters of the description
+        else:
+            return None
+
+    def get_short_description_ru(self, obj):
+        if obj.description_ru:
+            return obj.description[:100]  # Return the first 100 characters of the description
+        else:
+            return None
+
+    def get_short_description_en(self, obj):
+        if obj.description_en:
+            return obj.description[:100]  # Return the first 100 characters of the description
+        else:
+            return None
 
     class Meta:
         model = News
-        fields = ['id', 'guid', 'title', 'photo_small', 'videoURL', 'viewCount', 'created_at', 'status', 'isActual']
+        fields = ['id', 'guid', 'title', 'photo_small', 'videoURL', 'viewCount', 'created_at', 'status', 'isActual',
+                  'short_description_uz', 'short_description_ru', 'short_description_en']
 
 
 class NewsDetailSerializer(serializers.ModelSerializer):
