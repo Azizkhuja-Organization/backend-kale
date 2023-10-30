@@ -149,8 +149,6 @@ class ProductListAPIView(ListAPIView):
             queryset = queryset.annotate(
                 isLiked=Exists(wishlist.products.all().filter(id__in=OuterRef('pk')))).annotate(
                 isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('pk')))).annotate(
-                isCart=Exists(CartProduct.objects.filter(product_id=OuterRef('pk'),
-                                                         cart__user_id=self.request.user.id))).annotate(
                 cartProductQuantity=F('cartProduct__quantity'))
 
         hasLiked = self.request.query_params.get('hasLiked')
