@@ -12,7 +12,7 @@ class PortfolioCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Portfolio
         fields = ['id', 'guid', 'title', 'title_uz', 'title_ru', 'title_en', 'file3D', 'description', 'description_uz',
-                  'description_ru', 'description_en', 'photo', 'photos']
+                  'description_ru', 'description_en', 'photo', 'photos', 'logo']
 
 
 class PortfolioUpdateSerializer(serializers.ModelSerializer):
