@@ -38,7 +38,6 @@ class ProductListSerializer(serializers.ModelSerializer):
     photo_small = serializers.SerializerMethodField()
     isLiked = serializers.BooleanField(default=False)
     isCompared = serializers.BooleanField(default=False)
-    cartProductQuantity = serializers.IntegerField(default=0)
     discountPrice = serializers.SerializerMethodField()
 
     def get_photo_small(self, product):
