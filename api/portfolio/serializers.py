@@ -38,7 +38,6 @@ class PortfolioListSerializer(serializers.ModelSerializer):
     file = serializers.SerializerMethodField()
     photos = serializers.SerializerMethodField()
 
-    # TODO: Remove for list view
     def get_photos(self, portfolio):
         portfolio_images = portfolio.portfolioImages.all()
         return [{
@@ -57,7 +56,8 @@ class PortfolioListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Portfolio
-        fields = ['id', 'guid', 'title', 'description', 'photo_medium', 'file', 'photos', 'logo']
+        fields = ['id', 'guid', 'title', 'description', 'photo_medium', 'file', 'photos', 'logo',
+                  'logo_medium', 'logo_medium']
 
 
 class PortfolioDetailSerializer(serializers.ModelSerializer):
