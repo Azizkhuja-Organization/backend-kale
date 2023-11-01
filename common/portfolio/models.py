@@ -12,10 +12,6 @@ class Portfolio(BaseModel):
     description = RichTextField(null=True, blank=True)
     file3D = models.URLField(null=True, blank=True)
     logo = models.ImageField(_("Image for logo Portfolio"), blank=True, null=True)
-    logo_medium = ImageSpecField(source='logo', processors=[ResizeToFill(1460, 575)], format='PNG',
-                                  options={'quality': 90})
-    logo_small = ImageSpecField(source='logo', processors=[ResizeToFill(350, 235)], format='PNG',
-                                 options={'quality': 90})
     photo = models.ImageField(_("Image of Portfolio"), upload_to='portfolioImage')
     photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(1460, 575)], format='PNG',
                                   options={'quality': 90})
