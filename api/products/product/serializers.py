@@ -36,7 +36,6 @@ class ProductListSerializer(serializers.ModelSerializer):
     subcategory = SubCategoryListSerializer()
     # photo_small = serializers.ImageField(read_only=True)
     photo_small = serializers.SerializerMethodField()
-    isLiked = serializers.BooleanField(default=False)
     isCompared = serializers.BooleanField(default=False)
     discountPrice = serializers.SerializerMethodField()
 
@@ -63,9 +62,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     # photo_medium = serializers.ImageField(read_only=True)
     photo_medium = serializers.SerializerMethodField()
     photos = serializers.SerializerMethodField()
-    isLiked = serializers.BooleanField(default=False)
     isCompared = serializers.BooleanField(default=False)
-    isCart = serializers.BooleanField(default=False)
 
     def get_photo_medium(self, product):
         if product.photo and not "http" in product.photo:
