@@ -427,6 +427,7 @@ MODELTRANSLATION_TRANSLATION_FILES = (
     'common.portfolio.translations',
     'common.product.translations',
     'common.social.translations',
+    'common.banner.translations',
 )
 
 # CHANNEL LAYER

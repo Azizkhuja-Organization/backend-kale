@@ -11,6 +11,7 @@ class Portfolio(BaseModel):
     title = models.CharField(max_length=250, null=True, blank=True)
     description = RichTextField(null=True, blank=True)
     file3D = models.URLField(null=True, blank=True)
+    logo = models.ImageField(_("Image for logo Portfolio"), blank=True, null=True)
     photo = models.ImageField(_("Image of Portfolio"), upload_to='portfolioImage')
     photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(1460, 575)], format='PNG',
                                   options={'quality': 90})
@@ -25,6 +26,7 @@ class Portfolio(BaseModel):
 
 
 class PortfolioImage(BaseModel):
+    title = models.CharField(max_length=50, default="Interior photo")
     portfolio = models.ForeignKey(Portfolio, related_name='portfolioImages', on_delete=models.CASCADE)
     photo = models.ImageField(_("Image of Portfolio"), upload_to='portfolioImage', null=True, blank=True)
     photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(1460, 575)], format='PNG',

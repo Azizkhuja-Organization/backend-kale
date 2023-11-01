@@ -38,6 +38,7 @@ class PortfolioListSerializer(serializers.ModelSerializer):
     file = serializers.SerializerMethodField()
     photos = serializers.SerializerMethodField()
 
+    # TODO: Remove for list view
     def get_photos(self, portfolio):
         portfolio_images = portfolio.portfolioImages.all()
         return [{
@@ -67,6 +68,7 @@ class PortfolioDetailSerializer(serializers.ModelSerializer):
         portfolio_images = portfolio.portfolioImages.all()
         return [{
             "id": portfolioImage.id,
+            "title": portfolioImage.title,
             "guid": portfolioImage.guid,
             "photo_medium": env('BASE_URL') + portfolioImage.photo_medium.url
         } for portfolioImage in portfolio_images if not "http" in portfolioImage.photo_medium.url]
@@ -81,4 +83,4 @@ class PortfolioDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Portfolio
         fields = ['id', 'guid', 'title', 'title_uz', 'title_ru', 'title_en', 'photos', 'file3D', 'description',
-                  'description_uz', 'description_ru', 'description_en', 'photo_medium', 'file']
+                  'description_uz', 'description_ru', 'description_en', 'photo_medium', 'file', 'logo']

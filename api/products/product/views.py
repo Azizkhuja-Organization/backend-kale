@@ -144,13 +144,10 @@ class ProductListAPIView(ListAPIView):
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         if self.request.user.is_authenticated:
-            wishlist, created = Wishlist.objects.get_or_create(user_id=self.request.user.id)
             comparison, created2 = Comparison.objects.get_or_create(user_id=self.request.user.id)
 
             queryset = queryset.annotate(
-                isLiked=Exists(wishlist.products.all().filter(id__in=OuterRef('pk')))).annotate(
-                isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('pk')))).annotate(
-                cartProductQuantity=F('cartProduct__quantity'))
+                isCompared=Exists(comparison.products.all().filter(id__in=OuterRef('pk'))))
 
         hasLiked = self.request.query_params.get('hasLiked')
         if hasLiked and self.request.user.is_authenticated:
