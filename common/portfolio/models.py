@@ -26,7 +26,6 @@ class Portfolio(BaseModel):
 
 
 class PortfolioImage(BaseModel):
-    title = models.CharField(max_length=50, default="Interior photo")
     portfolio = models.ForeignKey(Portfolio, related_name='portfolioImages', on_delete=models.CASCADE)
     photo = models.ImageField(_("Image of Portfolio"), upload_to='portfolioImage', null=True, blank=True)
     photo_medium = ImageSpecField(source='photo', processors=[ResizeToFill(1460, 575)], format='PNG',
