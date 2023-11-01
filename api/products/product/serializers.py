@@ -82,8 +82,8 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         fields = ['id', 'guid', 'subcategory', 'code', 'title', 'title_uz', 'title_ru', 'title_en', 'description',
                   'description_uz', 'description_ru', 'description_en', 'price', 'discountPrice', 'material', 'material_uz',
                   'material_ru', 'material_en', 'unit', 'file3D', 'status', 'brand', 'size', 'manufacturer',
-                  'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo_medium', 'photos', 'isLiked',
-                  'isCompared', 'isCart', 'cornerStatus', 'isTop', 'quantity']
+                  'manufacturer_uz', 'manufacturer_ru', 'manufacturer_en', 'photo_medium', 'photos',
+                  'isCompared', 'cornerStatus', 'isTop', 'quantity']
 
 
 class ProductOneSerializerFor1C(serializers.Serializer):
