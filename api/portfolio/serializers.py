@@ -57,7 +57,7 @@ class PortfolioListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Portfolio
-        fields = ['id', 'guid', 'title', 'description', 'photo_medium', 'file', 'photos']
+        fields = ['id', 'guid', 'title', 'description', 'photo_medium', 'file', 'photos', 'logo']
 
 
 class PortfolioDetailSerializer(serializers.ModelSerializer):
