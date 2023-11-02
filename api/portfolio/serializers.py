@@ -43,7 +43,6 @@ class PortfolioListSerializer(serializers.ModelSerializer):
         return [{
             "id": portfolioImage.id,
             "guid": portfolioImage.guid,
-            "title": portfolioImage.title,
             "photo_medium": env('BASE_URL') + portfolioImage.photo_medium.url
         } for portfolioImage in portfolio_images if not "http" in portfolioImage.photo_medium.url]
 
@@ -68,7 +67,6 @@ class PortfolioDetailSerializer(serializers.ModelSerializer):
         portfolio_images = portfolio.portfolioImages.all()
         return [{
             "id": portfolioImage.id,
-            "title": portfolioImage.title,
             "guid": portfolioImage.guid,
             "photo_medium": env('BASE_URL') + portfolioImage.photo_medium.url
         } for portfolioImage in portfolio_images if not "http" in portfolioImage.photo_medium.url]
