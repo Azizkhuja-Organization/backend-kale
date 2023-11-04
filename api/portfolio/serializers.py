@@ -7,6 +7,7 @@ from config.settings.base import env
 
 class PortfolioCreateSerializer(serializers.ModelSerializer):
     photo = Base64ImageField(required=True)
+    logo = Base64ImageField(required=True)
     photos = serializers.ListField(write_only=True, required=False)
 
     class Meta:
@@ -17,6 +18,7 @@ class PortfolioCreateSerializer(serializers.ModelSerializer):
 
 class PortfolioUpdateSerializer(serializers.ModelSerializer):
     photo = Base64ImageField(required=False)
+    logo = Base64ImageField(required=False)
     photos = serializers.ListField(write_only=True, required=False)
 
     class Meta:
