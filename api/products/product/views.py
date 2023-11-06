@@ -320,7 +320,7 @@ class Product1CCreateUpdateAPIView(CreateAPIView):
                     size=product_data['Размеры'],
                     manufacturer=product_data['Производитель'],
                     photo=None,
-                    quantity=product_data.get("Остаток"),
+                    quantity=product_data.get("Остаток", 0),
                     discount=discount,
                     cornerStatus=ProductCornerStatus.DISCOUNT if discount else None
                 )
