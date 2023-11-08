@@ -17,7 +17,7 @@ class OrderProductProductDetailSerializer(serializers.ModelSerializer):
 
 
     def get_photo_small(self, product):
-        if product.photo and not "http" in product.photo:
+        if product.photo:
             return env('BASE_URL') + product.photo.url
         return None
 

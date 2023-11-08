@@ -28,7 +28,13 @@ class PortfolioUpdateSerializer(serializers.ModelSerializer):
 
 
 class PortfolioImagesDetailSerializer(serializers.ModelSerializer):
-    photo_medium = serializers.ImageField(read_only=True)
+    # photo_medium = serializers.ImageField(read_only=True)
+    photo_medium = serializers.SerializerMethodField()
+
+    def get_photo_medium(self, product):
+        if product.photo:
+            return env('BASE_URL') + product.photo.url
+        return None
 
     class Meta:
         model = PortfolioImage
@@ -36,9 +42,15 @@ class PortfolioImagesDetailSerializer(serializers.ModelSerializer):
 
 
 class PortfolioListSerializer(serializers.ModelSerializer):
-    photo_medium = serializers.ImageField(read_only=True)
+    # photo_medium = serializers.ImageField(read_only=True)
     file = serializers.SerializerMethodField()
     photos = serializers.SerializerMethodField()
+    photo_medium = serializers.SerializerMethodField()
+
+    def get_photo_medium(self, product):
+        if product.photo:
+            return env('BASE_URL') + product.photo.url
+        return None
 
     def get_photos(self, portfolio):
         portfolio_images = portfolio.portfolioImages.all()
@@ -46,7 +58,7 @@ class PortfolioListSerializer(serializers.ModelSerializer):
             "id": portfolioImage.id,
             "guid": portfolioImage.guid,
             "photo_medium": env('BASE_URL') + portfolioImage.photo_medium.url
-        } for portfolioImage in portfolio_images if not "http" in portfolioImage.photo_medium.url]
+        } for portfolioImage in portfolio_images if not "https" in portfolioImage.photo_medium.url]
 
     def get_file(self, portfolio):
         if portfolio.photo:
@@ -61,9 +73,15 @@ class PortfolioListSerializer(serializers.ModelSerializer):
 
 
 class PortfolioDetailSerializer(serializers.ModelSerializer):
-    photo_medium = serializers.ImageField(read_only=True)
+    # photo_medium = serializers.ImageField(read_only=True)
     photos = serializers.SerializerMethodField()
     file = serializers.SerializerMethodField()
+    photo_medium = serializers.SerializerMethodField()
+
+    def get_photo_medium(self, product):
+        if product.photo:
+            return env('BASE_URL') + product.photo.url
+        return None
 
     def get_photos(self, portfolio):
         portfolio_images = portfolio.portfolioImages.all()
@@ -71,7 +89,7 @@ class PortfolioDetailSerializer(serializers.ModelSerializer):
             "id": portfolioImage.id,
             "guid": portfolioImage.guid,
             "photo_medium": env('BASE_URL') + portfolioImage.photo_medium.url
-        } for portfolioImage in portfolio_images if not "http" in portfolioImage.photo_medium.url]
+        } for portfolioImage in portfolio_images if not "https" in portfolioImage.photo_medium.url]
 
     def get_file(self, portfolio):
         if portfolio.photo:

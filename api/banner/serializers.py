@@ -2,6 +2,7 @@ from drf_base64.fields import Base64ImageField
 from rest_framework import serializers
 
 from common.banner.models import Banner, SmallBanner, PointerNumber, HeaderDiscount
+from config.settings.base import env
 
 
 class BannerCreateSerializer(serializers.ModelSerializer):
@@ -15,9 +16,27 @@ class BannerCreateSerializer(serializers.ModelSerializer):
 
 
 class BannerListSerializer(serializers.ModelSerializer):
-    photo_medium = serializers.ImageField(read_only=True)
-    photo_medium2 = serializers.ImageField(read_only=True)
-    photo_medium3 = serializers.ImageField(read_only=True)
+    # photo_medium = serializers.ImageField(read_only=True)
+    # photo_medium2 = serializers.ImageField(read_only=True)
+    # photo_medium3 = serializers.ImageField(read_only=True)
+    photo_medium = serializers.SerializerMethodField()
+    photo_medium2 = serializers.SerializerMethodField()
+    photo_medium3 = serializers.SerializerMethodField()
+
+    def get_photo_medium3(self, product):
+        if product.photo:
+            return env('BASE_URL') + product.photo.url
+        return None
+
+    def get_photo_medium2(self, product):
+        if product.photo:
+            return env('BASE_URL') + product.photo.url
+        return None
+
+    def get_photo_medium1(self, product):
+        if product.photo:
+            return env('BASE_URL') + product.photo.url
+        return None
 
     class Meta:
         model = Banner
@@ -35,9 +54,27 @@ class SmallBannerCreateSerializer(serializers.ModelSerializer):
 
 
 class SmallBannerListSerializer(serializers.ModelSerializer):
-    photo_medium = serializers.ImageField(read_only=True)
-    photo_medium2 = serializers.ImageField(read_only=True)
-    photo_medium3 = serializers.ImageField(read_only=True)
+    # photo_medium = serializers.ImageField(read_only=True)
+    # photo_medium2 = serializers.ImageField(read_only=True)
+    # photo_medium3 = serializers.ImageField(read_only=True)
+    photo_medium = serializers.SerializerMethodField()
+    photo_medium2 = serializers.SerializerMethodField()
+    photo_medium3 = serializers.SerializerMethodField()
+
+    def get_photo_medium3(self, product):
+        if product.photo:
+            return env('BASE_URL') + product.photo.url
+        return None
+
+    def get_photo_medium2(self, product):
+        if product.photo:
+            return env('BASE_URL') + product.photo.url
+        return None
+
+    def get_photo_medium1(self, product):
+        if product.photo:
+            return env('BASE_URL') + product.photo.url
+        return None
 
     class Meta:
         model = SmallBanner

@@ -12,7 +12,7 @@ class WishlistProductDetailSerializer(serializers.ModelSerializer):
     cartProductQuantity = serializers.IntegerField(default=0)
 
     def get_photo_small(self, product):
-        if product.photo and not "http" in product.photo:
+        if product.photo:
             return env('BASE_URL') + product.photo.url
         return None
 
