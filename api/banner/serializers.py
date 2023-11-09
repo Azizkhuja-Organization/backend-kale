@@ -33,7 +33,7 @@ class BannerListSerializer(serializers.ModelSerializer):
             return env('BASE_URL') + product.photo.url
         return None
 
-    def get_photo_medium1(self, product):
+    def get_photo_medium(self, product):
         if product.photo:
             return env('BASE_URL') + product.photo.url
         return None
