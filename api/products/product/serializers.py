@@ -45,7 +45,8 @@ class ProductListSerializer(serializers.ModelSerializer):
         return None
 
     def get_discountPrice(self, product):
-        if product.discountPrice == product.price or product.discountPrice > product.price:
+        discountPrice = product.discountPrice if product.discountPrice is not None else 0
+        if product.discountPrice == product.price or discountPrice > product.price:
             return None
         else:
             return product.discountPrice
