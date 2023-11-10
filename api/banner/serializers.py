@@ -23,19 +23,19 @@ class BannerListSerializer(serializers.ModelSerializer):
     photo_medium2 = serializers.SerializerMethodField()
     photo_medium3 = serializers.SerializerMethodField()
 
-    def get_photo_medium3(self, product):
-        if product.photo:
-            return env('BASE_URL') + product.photo.url
+    def get_photo_medium3(self, banner):
+        if banner.photo3:
+            return env('BASE_URL') + banner.photo_medium3.url
         return None
 
-    def get_photo_medium2(self, product):
-        if product.photo:
-            return env('BASE_URL') + product.photo.url
+    def get_photo_medium2(self, banner):
+        if banner.photo2:
+            return env('BASE_URL') + banner.photo_medium2.url
         return None
 
-    def get_photo_medium(self, product):
-        if product.photo:
-            return env('BASE_URL') + product.photo.url
+    def get_photo_medium(self, banner):
+        if banner.photo:
+            return env('BASE_URL') + banner.photo_medium.url
         return None
 
     class Meta:
@@ -61,19 +61,19 @@ class SmallBannerListSerializer(serializers.ModelSerializer):
     photo_medium2 = serializers.SerializerMethodField()
     photo_medium3 = serializers.SerializerMethodField()
 
-    def get_photo_medium3(self, product):
-        if product.photo:
-            return env('BASE_URL') + product.photo.url
+    def get_photo_medium3(self, banner):
+        if banner.photo3:
+            return env('BASE_URL') + banner.photo_medium3.url
         return None
 
-    def get_photo_medium2(self, product):
-        if product.photo:
-            return env('BASE_URL') + product.photo.url
+    def get_photo_medium2(self, banner):
+        if banner.photo2:
+            return env('BASE_URL') + banner.photo_medium2.url
         return None
 
-    def get_photo_medium(self, product):
-        if product.photo:
-            return env('BASE_URL') + product.photo.url
+    def get_photo_medium(self, banner):
+        if banner.photo:
+            return env('BASE_URL') + banner.photo_medium.url
         return None
 
     class Meta:
