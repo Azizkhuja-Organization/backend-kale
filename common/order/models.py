@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
 
-from common.address.models import Address
+from common.address.models import Address, Region, District
 from common.payment.payme.models import PaymentStatus
 from common.product.models import Product
 from common.users.base import BaseModel, BaseMeta
@@ -71,6 +71,9 @@ class Order(BaseModel):
     user = models.ForeignKey(User, related_name="orderUser", on_delete=models.SET_NULL, null=True, blank=True)
     code = models.CharField(max_length=50, unique=True, null=True, blank=True, editable=False)
     address = models.ForeignKey(Address, related_name="orderAddress", on_delete=models.SET_NULL, null=True, blank=True)
+    region = models.ForeignKey(Region, related_name="orderRegion", on_delete=models.SET_NULL, null=True, blank=True)
+    district = models.ForeignKey(District, related_name="orderDistrict", on_delete=models.SET_NULL, null=True, blank=True)
+    street = models.ForeignKey(District, related_name="orderStreet", on_delete=models.SET_NULL, null=True, blank=True)
     products = models.ManyToManyField(OrderProduct, related_name='orderedProducts', blank=True)
     totalAmount = models.FloatField(default=0)
     orderedTime = models.DateTimeField(default=timezone.now)

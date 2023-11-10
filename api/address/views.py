@@ -1,9 +1,10 @@
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
 
-from api.address.serializers import AddressCreateSerializer
+from api.address.serializers import AddressCreateSerializer, RegionSerializer, DistrictSerializer, StreetSerializer
 from api.paginator import CustomPagination
 from api.permissions import IsAdmin, IsClient
-from common.address.models import Address
+from rest_framework.permissions import AllowAny
+from common.address.models import Address, Region, District, Street
 from common.users.models import User
 
 
@@ -34,3 +35,23 @@ class AddressDetailAPIView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
     serializer_class = AddressCreateSerializer
     permission_classes = [IsAdmin | IsClient]
     lookup_field = 'guid'
+
+
+class RegionViewSet(ListAPIView):
+    queryset = Region.objects.all()
+    serializer_class = RegionSerializer
+    permission_classes = [AllowAny]
+
+
+class DistrictViewSet(ListAPIView):
+    queryset = District.objects.all()
+    serializer_class = DistrictSerializer
+    filterset_fields = ["region_id"]
+    permission_classes = [AllowAny]
+
+
+class StreetViewSet(ListAPIView):
+    queryset = Street.objects.all()
+    serializer_class = StreetSerializer
+    filterset_fields = ["district_id"]
+    permission_classes = [AllowAny]

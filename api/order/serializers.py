@@ -50,14 +50,15 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'guid', 'user', 'products', 'address', 'installation', 'comment', 'paymentType']
+        fields = ['id', 'guid', 'user', 'products', 'address', 'installation', 'comment', 'paymentType',
+                  'region', 'district', 'street']
 
 
 class OrderUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'guid', 'user', 'products', 'address', 'installation', 'comment', 'paymentType', 'totalAmount',
-                  'deliveredTime', 'paymentStatus', 'paymentType', 'status']
+                  'deliveredTime', 'paymentStatus', 'paymentType', 'status', 'region', 'district', 'street']
 
 
 class OrderListSerializer(serializers.ModelSerializer):
@@ -75,7 +76,8 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'guid', 'user', 'products', 'address', 'totalAmount', 'orderedTime', 'deliveredTime',
-                  'installation', 'comment', 'installation', 'paymentStatus', 'paymentType', 'status']
+                  'installation', 'comment', 'installation', 'paymentStatus', 'paymentType', 'status', 'region',
+                  'district', 'street']
 
 
 class OrderCreateOrderProductSerializer(serializers.ModelSerializer):
@@ -105,7 +107,8 @@ class OrderCreateSerializerV2(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'guid', 'user', 'products', 'address', 'installation', 'comment', 'paymentType', 'billing_url']
+        fields = ['id', 'guid', 'user', 'products', 'address', 'installation', 'comment', 'paymentType', 'billing_url',
+                  'region', 'district', 'street']
 
     @transaction.atomic
     def create(self, validated_data):
