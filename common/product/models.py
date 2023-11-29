@@ -1,3 +1,8 @@
+import os
+from io import BytesIO
+
+from PIL import Image
+from django.core.files.base import ContentFile
 from ckeditor.fields import RichTextField
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -93,6 +98,24 @@ class Product(BaseModel):
     def __str__(self):
         # return self.title_ru
         return f"#{self.id}"
+
+    def save(self, *args, **kwargs):
+        if self.photo:
+            img = Image.open(self.photo)
+            img = self.make_square(img)
+            buffer = BytesIO()
+            img.save(buffer, format='JPEG')  # You can change the format if needed
+            self.photo.save(self.photo.name, ContentFile(buffer.getvalue()), save=False)
+
+            print("HERE 4")
+        super().save(*args, **kwargs)
+
+    def make_square(self, image):
+        width, height = image.size
+        new_size = max(width, height)
+        new_image = Image.new("RGB", (new_size, new_size), "white")  # Use "RGBA" for transparency
+        new_image.paste(image, ((new_size - width) // 2, (new_size - height) // 2))
+        return new_image
 
 
 class ProductImage(BaseModel):
