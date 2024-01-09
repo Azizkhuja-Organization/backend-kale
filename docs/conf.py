@@ -12,14 +12,15 @@
 
 import os
 import sys
+
 import django
 
 if os.getenv("READTHEDOCS", default=False) == "True":
-    sys.path.insert(0, os.path.abspath(".."))
-    os.environ["DJANGO_READ_DOT_ENV_FILE"] = "True"
+    sys.path.insert(0, os.path.abspath("/app"))
     os.environ["USE_DOCKER"] = "no"
 else:
     sys.path.insert(0, os.path.abspath("/app"))
+    sys.path.insert(1, os.path.abspath("/app/common"))
 os.environ["DATABASE_URL"] = "sqlite:///readthedocs.db"
 os.environ["CELERY_BROKER_URL"] = os.getenv("REDIS_URL", "redis://redis:6379")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
@@ -30,7 +31,6 @@ django.setup()
 project = "kale"
 copyright = """2023, baxtikdev"""
 author = "baxtikdev"
-
 
 # -- General configuration ---------------------------------------------------
 

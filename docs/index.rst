@@ -13,6 +13,7 @@ Welcome to kale's documentation!
    howto
    pycharm/configuration
    users
+   API
 
 
 

@@ -1,7 +1,4 @@
 from django.db.models import Q, Prefetch
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
-from django.views.decorators.vary import vary_on_cookie
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, ListAPIView, DestroyAPIView
 from rest_framework.response import Response
@@ -10,16 +7,23 @@ from api.paginator import CustomPagination
 from api.permissions import IsAdmin
 from api.products.category.serializers import CategoryCreateSerializer, CategoryListSerializer, CategoryDetailSerializer
 from common.product.models import Category, SubCategory
-from config.settings.base import CACHE_TTL
 
 
 class CategoryCreateAPIView(CreateAPIView):
+    """
+        Category create
+    """
+
     queryset = Category.objects.all()
     serializer_class = CategoryCreateSerializer
     permission_classes = [IsAdmin]
 
 
 class CategoryListAPIView(ListAPIView):
+    """
+        Category list
+    """
+
     queryset = Category.objects.all().order_by('id')
     serializer_class = CategoryListSerializer
     pagination_class = CustomPagination
@@ -58,12 +62,20 @@ class CategoryListAPIView(ListAPIView):
 
 
 class CategoryDetailAPIView(RetrieveAPIView):
+    """
+        Category detail
+    """
+
     queryset = Category.objects.all()
     serializer_class = CategoryDetailSerializer
     lookup_field = 'guid'
 
 
 class CategoryUpdateAPIView(UpdateAPIView):
+    """
+        Category update
+    """
+
     queryset = Category.objects.all()
     serializer_class = CategoryCreateSerializer
     permission_classes = [IsAdmin]
@@ -71,6 +83,10 @@ class CategoryUpdateAPIView(UpdateAPIView):
 
 
 class CategoryDeleteAPIView(DestroyAPIView):
+    """
+        Category Delete
+    """
+
     queryset = Category.objects.all()
     serializer_class = CategoryCreateSerializer
     permission_classes = [IsAdmin]
