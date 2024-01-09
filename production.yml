@@ -36,6 +36,25 @@ services:
     env_file:
       - ./.envs/.production/.postgres
 
+
+  docs:
+    <<: *django
+    image: kale_local_docs
+    container_name: kale_local_docs
+    build:
+      context: .
+      dockerfile: ./compose/local/docs/Dockerfile
+    env_file:
+      - ./.env
+    volumes:
+      - ./docs:/docs:z
+      - ./config:/app/config:z
+      - ./kale:/app/kale:z
+      - ./common:/app/common:z
+    ports:
+      - '9000:9000'
+    command: /start-docs
+
   #  traefik:
   #    build:
   #      context: .
