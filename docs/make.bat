@@ -13,7 +13,9 @@ set BUILDDIR=_build
 set APP=..\kale
 
 if "%1" == "" goto help
-
+if /I "%1" == "production" (
+        set SPHINXOPTS=
+)
 %SPHINXBUILD% >NUL 2>NUL
 if errorlevel 9009 (
 	echo.
@@ -32,7 +34,7 @@ if errorlevel 9009 (
 goto end
 
 :livehtml
-sphinx-autobuild -b html --open-browser -p 9000 --watch %APP% -c . %SOURCEDIR% %BUILDDIR%/html
+sphinx-build %SPHINXBUILD% -b html -c . %SOURCEDIR% %BUILDDIR%/html
 GOTO :EOF
 
 :apidocs
