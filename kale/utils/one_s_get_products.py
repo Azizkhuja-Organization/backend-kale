@@ -1,3 +1,4 @@
+"""
 import requests
 
 username = "kaleapi"
@@ -21,3 +22,4 @@ def get_product_photo(code):
         return "data:image/png;base64," + base64Photo.replace("\r", '').replace("\n", '').replace("\'", '')
     except:
         return None
+"""

@@ -25,7 +25,7 @@ def sent_sms_base(id, user_code, phone_number):
                 "sms": {
                     "originator": "3700",
                     "content": {
-                        "text": f"Ваш проверочный код: {user_code}"
+                        "text": f"MDGroup: ваш код {user_code} для авторизации в мобильном приложении"
                     }
                 }
             }

@@ -22,14 +22,14 @@ class SubCategoryCreateAPIView(CreateAPIView):
 
 
 class SubCategoryListAPIView(ListAPIView):
-    queryset = SubCategory.objects.select_related('category').all()
     serializer_class = SubCategoryListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['category']
     pagination_class = CustomPagination
 
-    # @method_decorator(cache_page(CACHE_TTL))
-    # @method_decorator(vary_on_cookie)
+    def get_queryset(self):
+        return SubCategory.objects.select_related('category').order_by('id')
+
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         others = self.request.query_params.get('others')

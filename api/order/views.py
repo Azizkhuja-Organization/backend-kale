@@ -45,7 +45,7 @@ class OrderListAPIView(ListAPIView):
     queryset = Order.objects.prefetch_related('products', 'products__product').select_related('user', 'address').all()
     serializer_class = OrderListSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['user', 'installation', 'paymentStatus', 'paymentType', 'status']
+    filterset_fields = ['user', 'installation', 'paymentStatus', 'paymentType', 'status', 'address']
     permission_classes = [IsClient | IsAdmin]
 
     def get_queryset(self):

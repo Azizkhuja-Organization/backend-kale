@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from collections import OrderedDict
 
 from api.products.category.serializers import CategoryListSerializer
 from common.product.models import Category, SubCategory
@@ -23,6 +24,10 @@ class SubCategoryListSerializer(serializers.ModelSerializer):
         model = SubCategory
         fields = ['id', 'guid', 'category', 'title']
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation = OrderedDict(sorted(representation.items(), key=lambda item: item[0]))
+        return representation
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
