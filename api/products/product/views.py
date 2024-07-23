@@ -143,6 +143,10 @@ class ProductListAPIView(ListAPIView):
     # @method_decorator(vary_on_cookie)
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
+
+        # Add the filter to show only products with quantity > 0
+        queryset = queryset.filter(quantity__gt=0)
+
         if self.request.user.is_authenticated:
             comparison, created2 = Comparison.objects.get_or_create(user_id=self.request.user.id)
 
@@ -191,6 +195,7 @@ class ProductListAPIView(ListAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 class ProductDetailAPIView(RetrieveAPIView):
